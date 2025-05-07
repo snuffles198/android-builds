@@ -182,10 +182,10 @@ rm -f goupload.sh GOFILE.txt
 
 # Upload output to telegram
 cd /home/admin
-VERSION=$(curl --silent "https://api.github.com/repos/$OWNER/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
 tar xf tdl_Linux.tgz ; check_fail
-unzip -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
 cd /tmp/src/android/
 /home/admin/tdl upload -c $TDL_CLIENT_ID -p "$GO_FILE"
 cd /home/admin
