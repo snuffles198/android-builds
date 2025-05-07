@@ -43,7 +43,7 @@ cleanup_self () {
    rm -rf vendor/lineage-priv/keys
    rm -rf vendor/lineage-priv
    rm -rf priv-keys
-   rm -rf .config/b2/account_info
+   rm -rf .config/b2/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
@@ -144,7 +144,7 @@ b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
 mkdir --parents vendor/lineage-priv/keys
 mv priv-keys/* vendor/lineage-priv/keys
 rm -rf priv-keys
-rm -rf .config/b2/account_info
+rm -rf .config/b2/
 deactivate
 unset BUCKET_NAME
 unset KEY_ENCRYPTION_PASSWORD
