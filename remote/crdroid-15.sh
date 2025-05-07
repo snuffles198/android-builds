@@ -59,7 +59,7 @@ cleanup_self () {
    rm -rf custom_scripts/
    cd /home/admin
    rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip
+   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
    rm -f tdl.sh
    cd /tmp/src/android/
 }
