@@ -11,6 +11,7 @@ set -v
 # Template helper variables
 PACKAGE_NAME=lineage-20
 VARIANT_NAME=user
+BUILD_TYPE=vanilla
 DEVICE_BRANCH=13.0
 VENDOR_BRANCH=13.0
 XIAOMI_BRANCH=lineage-20
