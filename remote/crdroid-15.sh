@@ -18,7 +18,7 @@ XIAOMI_BRANCH=lineage-22.2
 REPO_URL="-u https://github.com/crdroidandroid/android.git -b 15.0 --git-lfs"
 OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/15.0/{device}.json"
 
-# Random helper stuff
+# Random template helper stuff
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost 
 export KBUILD_BUILD_USER=user
@@ -56,6 +56,11 @@ cleanup_self () {
    rm -rf /tmp/android-certs*
    rm -rf /home/admin/venv/
    rm -rf custom_scripts/
+   cd /home/admin
+   rm -rf .tdl
+   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip
+   rm -f tdl.sh
+   cd /tmp/src/android/
 }
 
 # Better than ' || exit 1 '
@@ -135,6 +140,7 @@ pip install --upgrade b2 ; check_fail
 b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
 mkdir priv-keys
 b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
+b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
 mkdir --parents vendor/lineage-priv/keys
 mv priv-keys/* vendor/lineage-priv/keys
 rm -rf priv-keys
@@ -174,6 +180,20 @@ GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
 
+# Upload output to telegram
+cd /home/admin
+VERSION=$(curl --silent "https://api.github.com/repos/$OWNER/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
+tar xf tdl_Linux.tgz ; check_fail
+unzip -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+cd /tmp/src/android/
+/home/admin/tdl upload -c $TDL_CLIENT_ID -p "$GO_FILE"
+cd /home/admin
+rm -rf .tdl
+rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
+rm -f tdl.sh
+cd /tmp/src/android/
+
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
@@ -194,6 +214,8 @@ fi
 # Build it
 
 # Upload output to gofile
+
+# Upload output to telegram
 
 cleanup_self
 exit 0
