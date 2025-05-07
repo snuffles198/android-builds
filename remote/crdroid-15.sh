@@ -187,7 +187,7 @@ wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/td
 tar xf tdl_Linux.tgz ; check_fail
 unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
 cd /tmp/src/android/
-/home/admin/tdl upload -c $TDL_CLIENT_ID -p "$GO_FILE"
+/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
 cd /home/admin
 rm -rf .tdl
 rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
