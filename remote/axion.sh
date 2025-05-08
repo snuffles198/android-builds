@@ -8,13 +8,17 @@ cd /tmp/src/android/
 
 set -v
 
+# Template helper variables
 PACKAGE_NAME=axion
 VARIANT_NAME=user
+BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
 REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-22.2 --git-lfs"
 OTA_SED_STRING="AxionAOSP/official_devices/refs/heads/main/OTA/{variant}/{device}.json"
+
+# Random template helper stuff
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost 
 export KBUILD_BUILD_USER=user
@@ -23,6 +27,7 @@ SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 
+# Send push notifications
 notify_send() {
    local MSG
    MSG="$@"
@@ -32,18 +37,16 @@ notify_send() {
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
 
-# Always clean up. Especially secrets and creds.
+# Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys
    rm -rf vendor/lineage-priv
    rm -rf priv-keys
-   rm -rf .config/b2/account_info
-   rm -f $PACKAGE_NAME*.zip
+   rm -rf .config/b2/
+   rm -rf /home/admin/.config/b2/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
-   cd vendor/lineage && git reset --hard && cd ../..
-   rm -f backuptool*
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/
@@ -54,14 +57,19 @@ cleanup_self () {
    rm -rf /tmp/android-certs*
    rm -rf /home/admin/venv/
    rm -rf custom_scripts/
+   cd /home/admin
+   rm -rf .tdl
+   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
+   rm -f tdl.sh
+   cd /tmp/src/android/
 }
 
-# Better than || exit 1
+# Better than ' || exit 1 '
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-          notify_send "Build $PACKAGE_NAME on crave.io softfailed."
-          echo "weird. build failed but OTA package exists."
+   	  notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+          echo weird. build failed but OTA package exists.
           echo softfail > result.txt
 	  cleanup_self
           exit 1
@@ -75,7 +83,7 @@ check_fail () {
    fi
 }
 
-# Better to NOT sync on silly failures
+# repo sync. or not.
 if echo "$@" | grep resume; then
    echo "resuming"
 else
@@ -84,7 +92,7 @@ else
    /opt/crave/resync.sh ; check_fail
 fi
 
-# Fetch device trees and stuff
+# Download trees
 rm -rf kernel/xiaomi/chime/
 rm -rf vendor/xiaomi/chime/
 rm -rf device/xiaomi/chime/
@@ -99,12 +107,11 @@ rm -f lineage-22.1.tar.xz
 curl -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
 tar xf toolchain.tar.xz ; check_fail
 rm -f toolchain.tar.xz
-#rm -f "prebuilts/clang/host/linux-x86/clang-stablekern/lib/libc++.so.1.0" "prebuilts/clang/host/linux-x86/clang-stablekern/lib/libc++abi.so.1.0"
 git clone https://github.com/Joe7500/device_xiaomi_chime.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
-# Source code patches
+# Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
 cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
@@ -124,14 +131,14 @@ cat backuptool.sh | sed -e 's#export V=22#export V=1# g' > backuptool.sh.1
 cp backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 rm backuptool.sh
 
-# Bringup device tree for specific rom
+# Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 echo 'AXION_MAINTAINER := Joe' >> lineage_chime.mk
 echo 'AXION_PROCESSOR := Snapdragon_662' >> lineage_chime.mk
 echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
 echo 'AXION_CPU_BIG_CORES := 4,5,6,7' >> lineage_chime.mk
 echo 'AXION_CAMERA_REAR_INFO := 48' >> lineage_chime.mk
-echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk 
+echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk
 echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
@@ -142,8 +149,11 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 #echo 'override KERNEL_TOOLCHAIN_PREFIX_arm := arm-linux-android-' >> BoardConfig.mk
 cd ../../../
 echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
-# Get signing keys. Don't leak creds to logs.
+# Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
 rm -rf /home/admin/venv
 virtualenv /home/admin/venv ; check_fail
@@ -154,10 +164,12 @@ pip install --upgrade b2 ; check_fail
 b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
 mkdir priv-keys
 b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
+b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
 mkdir --parents vendor/lineage-priv/keys
 mv priv-keys/* vendor/lineage-priv/keys
 rm -rf priv-keys
-rm -rf .config/b2/account_info
+rm -rf .config/b2/
+rm -rf /home/admin/.config/b2/
 deactivate
 unset BUCKET_NAME
 unset KEY_ENCRYPTION_PASSWORD
@@ -167,79 +179,71 @@ unset KEY_PASSWORD
 cat /tmp/crave_bashrc | grep -vE "BKEY_ID|BUCKET_NAME|KEY_ENCRYPTION_PASSWORD|BAPP_KEY|TG_CID|TG_TOKEN" > /tmp/crave_bashrc.1
 mv /tmp/crave_bashrc.1 /tmp/crave_bashrc
 
-sleep 15
+sleep 10
 
+# Build it
 set +v
 
 source build/envsetup.sh          ; check_fail
-#lunch lineage_chime-ap4a-user     ; check_fail
-#lunch lineage_chime-bp1a-user;
-axion chime eng va               ; check_fail
+axion chime user va               ; check_fail
 mka installclean
 m bacon -j $(nproc --all)         ; check_fail
 
 set -v
 
 echo success > result.txt
-notify_send "Build $PACKAGE_NAME on crave.io succeeded"
+notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
-# Upload to Gofile
-if cp out/target/product/chime/$PACKAGE_NAME*VANILLA*.zip . ; then
-    GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*VANILLA*.zip | tail -1`
-    GO_FILE_MD5=`md5sum "$GO_FILE"`
-    GO_FILE=`pwd`/$GO_FILE
-    curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
-    bash goupload.sh $GO_FILE
-    GO_LINK=`cat GOFILE.txt`
-    notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-    rm -f goupload.sh GOFILE.txt
+# Upload output to gofile
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+GO_LINK=`cat GOFILE.txt`
+notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
+rm -f goupload.sh GOFILE.txt
+
+# Upload output to telegram
+if [[ ! -f $GO_FILE ]]; then
+   GO_FILE=builder.sh
 fi
-
-cd device/xiaomi/chime
-cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
-mv lineage_chime.mk.1 lineage_chime.mk
-echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
-cd ../../../
-
-cd packages/apps/Updater/ && git reset --hard && cd ../../../
-cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.GMS.chime.json#g" > strings.xml.1
-cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
-check_fail
-
-#cd vendor/lineage && git reset --hard && cd ../..
-
-set +v
-
-source build/envsetup.sh          ; check_fail
-#lunch lineage_chime-ap4a-user     ; check_fail
-#lunch lineage_chime-bp1a-user;
-axion chime eng gms              ; check_fail
-mka installclean
-m bacon -j $(nproc --all)         ; check_fail
-
-set -v
-
-echo success > result.txt
-notify_send "Build $PACKAGE_NAME GMS on crave.io succeeded."
-
-if cp out/target/product/chime/$PACKAGE_NAME*GMS*.zip . ; then
-    GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*GMS*.zip | tail -1`
-    GO_FILE_MD5=`md5sum "$GO_FILE"`
-    GO_FILE=`pwd`/$GO_FILE
-    curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
-    bash goupload.sh $GO_FILE
-    GO_LINK=`cat GOFILE.txt`
-    notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-    rm -f goupload.sh GOFILE.txt
-fi
+cd /home/admin
+VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
+tar xf tdl_Linux.tgz ; check_fail
+unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+cd /tmp/src/android/
+/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
+cd /home/admin
+rm -rf .tdl
+rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
+rm -f tdl.sh
+cd /tmp/src/android/
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
-# Always clean up.
+if [ "$BUILD_TYPE" == "vanilla" ]; then
+   cleanup_self
+   exit 0
+fi
+
+# Do gapps dirty build
+#
+#
+#
+
+# Setup AOSP source
+
+# Setup device tree
+
+# Build it
+
+# Upload output to gofile
+
+# Upload output to telegram
+
 cleanup_self
-
-sleep 60
-
 exit 0

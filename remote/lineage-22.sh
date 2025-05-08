@@ -9,14 +9,15 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=crDroidAndroid-14
+PACKAGE_NAME=lineage-22
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-21
-VENDOR_BRANCH=lineage-21
-XIAOMI_BRANCH=lineage-21
-REPO_URL="-u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs"
-OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/14.0/{device}.json"
+DEVICE_BRANCH=lineage-22.2
+VENDOR_BRANCH=lineage-22.2
+XIAOMI_BRANCH=lineage-22.2
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs"
+OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
+OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -121,7 +122,7 @@ rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/uti
 
 cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
+cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 

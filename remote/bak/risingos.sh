@@ -121,7 +121,7 @@ cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 rm -f strings.xml.*
 check_fail
 
-rm -rf hardware/xiaomi/megvii
+#rm -rf hardware/xiaomi/megvii
 
 sed -ie 's/^TARGET_KERNEL_CLANG_VERSION.*$//g' device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk

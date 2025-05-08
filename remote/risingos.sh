@@ -9,14 +9,13 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=crDroidAndroid-14
+PACKAGE_NAME=RisingOS
 VARIANT_NAME=user
-BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-21
-VENDOR_BRANCH=lineage-21
-XIAOMI_BRANCH=lineage-21
-REPO_URL="-u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs"
-OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/14.0/{device}.json"
+BUILD_TYPE=gapps
+DEVICE_BRANCH=lineage-22.2
+VENDOR_BRANCH=lineage-22.2
+XIAOMI_BRANCH=lineage-22.2
+REPO_URL="-u https://github.com/RisingOS-Revived/android -b qpr2 --git-lfs"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -124,11 +123,41 @@ cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml.backup.orig.txt
+cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/fifteen/OTA/device/GAPPS/{device}.json#Joe7500/Builds/main/rising-rev-gapps-chime.json#g' > strings.xml.new.txt
+mv strings.xml.new.txt strings.xml.backup.orig.txt
+cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/fifteen/OTA/device/VANILLA/{device}.json#Joe7500/Builds/main/rising-rev-vanilla-chime.json#g' > strings.xml.new.txt
+mv strings.xml.new.txt strings.xml.backup.orig.txt
+cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/fifteen/OTA/device/CORE/{device}.json#Joe7500/Builds/main/rising-rev-core-chime.json#g' > strings.xml.new.txt
+mv strings.xml.new.txt strings.xml.backup.orig.txt
+cp strings.xml.backup.orig.txt strings.xml
+cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
+check_fail
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
+
+# Setup vanilla device tree
+cd device/xiaomi/chime && git reset --hard ; check_fail
+export RISING_MAINTAINER="Joe"
+cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
+echo 'RISING_MAINTAINER="Joe"' >> lineage_chime.mk
+echo 'RISING_MAINTAINER := Joe'  >> lineage_chime.mk
+echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
+    RisingChipset="Chime" \
+    RisingMaintainer="Joe"' >> lineage_chime.mk
+echo 'WITH_GMS := false' >> lineage_chime.mk
+echo 'PRODUCT_PACKAGES += \
+   Gallery2
+' >> device.mk
+sed -ie 's/^TARGET_KERNEL_CLANG_VERSION.*$//g' BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+cd ../../../
 
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
@@ -169,11 +198,11 @@ mka bacon                         ; check_fail
 set -v
 
 echo success > result.txt
-notify_send "Build $PACKAGE_NAME on crave.io succeeded."
+notify_send "Build $PACKAGE_NAME VANILLA  on crave.io succeeded."
 
 # Upload output to gofile
-cp out/target/product/chime/$PACKAGE_NAME*.zip .
-GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+cp out/target/product/chime/$PACKAGE_NAME*VANILLA*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*VANILLA*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
@@ -181,6 +210,7 @@ bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
+cp $GO_FILE $GO_FILE.new.zip
 
 # Upload output to telegram
 if [[ ! -f $GO_FILE ]]; then
@@ -199,9 +229,6 @@ rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* 
 rm -f tdl.sh
 cd /tmp/src/android/
 
-TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
-notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
-
 if [ "$BUILD_TYPE" == "vanilla" ]; then
    cleanup_self
    exit 0
@@ -212,15 +239,69 @@ fi
 #
 #
 
-# Setup AOSP source
-
 # Setup device tree
+cd device/xiaomi/chime && git reset --hard ; check_fail
+export RISING_MAINTAINER="Joe"
+cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+#echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false" >> lineage_chime.mk
+echo 'RISING_MAINTAINER := Joe' >> lineage_chime.mk
+echo 'RISING_MAINTAINER="Joe"' >> lineage_chime.mk
+echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
+    RisingChipset="Chime" \
+    RisingMaintainer="Joe"' >> lineage_chime.mk
+echo 'WITH_GMS := true
+TARGET_DEFAULT_PIXEL_LAUNCHER := true
+' >> lineage_chime.mk
+sed -ie 's/^TARGET_KERNEL_CLANG_VERSION.*$//g' BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+cd ../../../
 
 # Build it
+set +v
+
+source build/envsetup.sh          ; check_fail
+breakfast chime user              ; check_fail
+mka installclean
+mka bacon                         ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "Build $PACKAGE_NAME GAPPS  on crave.io succeeded."
 
 # Upload output to gofile
+cp out/target/product/chime/$PACKAGE_NAME*GAPPS*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*GAPPS*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+GO_LINK=`cat GOFILE.txt`
+notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
+rm -f goupload.sh GOFILE.txt
+cp $GO_FILE $GO_FILE.new.zip
 
 # Upload output to telegram
+#if [[ ! -f $GO_FILE ]]; then
+#   GO_FILE=builder.sh
+#fi
+#cd /home/admin
+#VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+#wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
+#tar xf tdl_Linux.tgz ; check_fail
+#unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+#cd /tmp/src/android/
+#/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
+#cd /home/admin
+#rm -rf .tdl
+#rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
+#rm -f tdl.sh
+#cd /tmp/src/android/
+
+TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
+notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
 cleanup_self
 exit 0
