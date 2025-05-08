@@ -181,10 +181,13 @@ sleep 10
 # Build it
 set +v
 
-source build/envsetup.sh          ; check_fail
-axion chime user va               ; check_fail
+# axion Usage: axion <device_codename> [user|userdebug|eng] [gms [pico|core] | vanilla]
+# ax usage: ax [-b|-fb|-br] [-j<num>] [user|eng|userdebug]
+# Build Types: -b Bacon -fb Fastboot -br Brunch
+source build/envsetup.sh               ; check_fail
+axion chime user vanilla               ; check_fail
 mka installclean
-m bacon -j $(nproc --all)         ; check_fail
+ax -b -j $(nproc --all) user           ; check_fail
 
 set -v
 
