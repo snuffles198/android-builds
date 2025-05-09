@@ -182,7 +182,7 @@ GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
 
-# Upload output to telegram
+# Upload output to telegram. Avoid uploading a directory by mistake.
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
