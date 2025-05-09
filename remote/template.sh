@@ -37,7 +37,7 @@ notify_send() {
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
 
-# Always cleanup
+# Always cleanup. Especially secrets.
 cleanup_self () {
    cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys
@@ -45,6 +45,7 @@ cleanup_self () {
    rm -rf priv-keys
    rm -rf .config/b2/
    rm -rf /home/admin/.config/b2/
+   rm -rf /home/admin/.tdl/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
