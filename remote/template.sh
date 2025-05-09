@@ -65,7 +65,7 @@ cleanup_self () {
    cd /tmp/src/android/
 }
 
-# Better than ' || exit 1 '
+# Better than || exit 1 
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
