@@ -9,14 +9,17 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=crDroidAndroid-15
+PACKAGE_NAME=crDroidAndroid-14
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-22.2
-VENDOR_BRANCH=lineage-22.2
-XIAOMI_BRANCH=lineage-22.2
-REPO_URL="-u https://github.com/crdroidandroid/android.git -b 15.0 --git-lfs"
-OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/15.0/{device}.json"
+DEVICE_BRANCH=lineage-21
+VENDOR_BRANCH=lineage-21
+XIAOMI_BRANCH=lineage-21
+REPO_URL="-u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs"
+OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/14.0/{device}.json"
+
+
+
 
 # Random template helper stuff
 export BUILD_USERNAME=user
