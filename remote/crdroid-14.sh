@@ -18,9 +18,6 @@ XIAOMI_BRANCH=lineage-21
 REPO_URL="-u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs"
 OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/14.0/{device}.json"
 
-
-
-
 # Random template helper stuff
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost 
