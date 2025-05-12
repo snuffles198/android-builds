@@ -112,6 +112,14 @@ git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH v
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
 # Setup AOSP source 
+#rm -f vendor/qcom/opensource/power/power.xml
+rm -rf vendor/qcom/opensource/power/
+rm -f out/target/product/chime/vendor/etc/vintf/manifest/power.xml
+rm -rf hardware/xiaomi/megvii
+cat vendor/yaap/config/common.mk | grep -v 'call inherit-product, device/qcom/common/common.mk' > vendor/yaap/config/common.mk.1
+mv vendor/yaap/config/common.mk.1 vendor/yaap/config/common.mk
+cat vendor/yaap/config/common.mk | grep -v 'TARGET_EXCLUDE_QCOM_SEPOLICY' > vendor/yaap/config/common.mk.1
+mv vendor/yaap/config/common.mk.1 vendor/yaap/config/common.mk
 #patch -f -p 1 < wfdservice.rc.patch ; check_fail
 #cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
 #patch -f -p 1 < InterfaceController.java.patch ; check_fail
@@ -158,15 +166,6 @@ cd device/xiaomi/chime/configs/props
 cat vendor.prop | grep -v ro.soc.manufacturer > vendor.prop.1
 mv vendor.prop.1 vendor.prop
 cd ../../../../../
-#rm -f vendor/qcom/opensource/power/power.xml
-rm -rf vendor/qcom/opensource/power/
-rm -f out/target/product/chime/vendor/etc/vintf/manifest/power.xml
-rm -rf hardware/xiaomi/megvii
-cat vendor/yaap/config/common.mk | grep -v 'call inherit-product, device/qcom/common/common.mk' > vendor/yaap/config/common.mk.1
-mv vendor/yaap/config/common.mk.1 vendor/yaap/config/common.mk
-cat vendor/yaap/config/common.mk | grep -v 'TARGET_EXCLUDE_QCOM_SEPOLICY' > vendor/yaap/config/common.mk.1
-mv vendor/yaap/config/common.mk.1 vendor/yaap/config/common.mk
-
 
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
