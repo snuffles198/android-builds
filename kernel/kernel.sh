@@ -8,6 +8,8 @@ base_root=`pwd`
 #rm -rf `ls -d * | grep -v tar.xz | grep -v tar.gz`
 #rm -rf `ls * | grep -v tar.xz | grep -v tar.gz`
 
+sudo apt install --yes python3
+
 wget https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz || exit 1
 wget https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz || exit 1
 
