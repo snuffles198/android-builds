@@ -40,14 +40,17 @@ mv hani-ci.sh.1 hani-ci.sh
 export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 
+wget https://github.com/Joe7500/build-scripts/raw/refs/heads/main/kernel/anykernel3.tar.gz
+tar xf anykernel3.tar.gz
+
 # Build it
-bash hani-ci.sh --build || exit 0
+bash hani-ci.sh --build || exit 1
 
 # Cleanup
 mv 4.19*.zip ../
 wget https://github.com/Joe7500/Builds/blob/main/crave/gofile.sh || exit 0
 mv toolchain ../
-rm -rf *
+#rm -rf *
 
 
 # Begin KSU
