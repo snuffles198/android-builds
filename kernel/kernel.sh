@@ -49,16 +49,22 @@ mv prebuilts/clang/host/linux-x86/clang-stablekern/ toolchain
 mv toolchain ../
 rm -rf prebuilts
 
+###
+###
+###
+###
+###
 # Begin vanilla
 tar xf ../kernel.tar.gz
 mv ../toolchain .
+
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
+
 cat arch/arm64/configs/vendor/xiaomi/bengal_defconfig | grep -v "CONFIG_KSU=y" > arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1
 mv arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1 arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
 echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
-
-bash KernelSU-Next/kernel/setup.sh --cleanup
-bash KernelSU/kernel/setup.sh --cleanup
 
 cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
 mv hani-ci.sh.1 hani-ci.sh
@@ -73,13 +79,163 @@ tar xf anykernel3.tar.gz
 # Build it
 bash hani-ci.sh --build || exit 1
 
+# Upload it
+KERNEL_PACKAGE=`ls 4.19*.zip`
+mv $KERNEL_PACKAGE $KERNEL_PACKAGE.van.zip
+GO_FILE=$KERNEL_PACKAGE.van.zip
+rm goupload.sh 
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+cat GOFILE.txt >> FILES.txt
+cat FILES.txt
+rm GOFILE.txt
+
 # Cleanup
 mv 4.19*.zip ../
-ls -l ../4.19*.zip
-wget https://github.com/Joe7500/Builds/blob/main/crave/gofile.sh || exit 0
 mv toolchain ../
-#rm -rf *
+cd ..
+rm -rf work
+mkdir work
+cd $base_root/work
 
-
+###
+###
+###
+###
+###
 # Begin KSU
+tar xf ../kernel.tar.gz
+mv ../toolchain .
+
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
+
+echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+
+cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+cat hani-ci.sh | grep -v KBUILD_BUILD_HOST > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+
+wget https://github.com/Joe7500/build-scripts/raw/refs/heads/main/kernel/anykernel3.tar.gz
+tar xf anykernel3.tar.gz
+
+# Build it
+bash hani-ci.sh --build || exit 1
+
+# Upload it
+KERNEL_PACKAGE=`ls 4.19*.zip`
+mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.zip
+GO_FILE=$KERNEL_PACKAGE.van.zip
+rm goupload.sh 
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+cat GOFILE.txt >> FILES.txt
+cat FILES.txt
+rm GOFILE.txt
+
+# Cleanup
+mv 4.19*.zip ../
+mv toolchain ../
+cd ..
+rm -rf work
+mkdir work
+cd $base_root/work
+
+###
+###
+###
+###
+###
+# Begin KSU-next
+tar xf ../kernel.tar.gz
+mv ../toolchain .
+
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
+
+echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+
+cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+cat hani-ci.sh | grep -v KBUILD_BUILD_HOST > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+
+wget https://github.com/Joe7500/build-scripts/raw/refs/heads/main/kernel/anykernel3.tar.gz
+tar xf anykernel3.tar.gz
+
+# Build it
+bash hani-ci.sh --build || exit 1
+
+# Upload it
+KERNEL_PACKAGE=`ls 4.19*.zip`
+mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.zip
+GO_FILE=$KERNEL_PACKAGE.van.zip
+rm goupload.sh 
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+cat GOFILE.txt >> FILES.txt
+cat FILES.txt
+rm GOFILE.txt
+
+# Cleanup
+mv 4.19*.zip ../
+mv toolchain ../
+cd ..
+rm -rf work
+mkdir work
+cd $base_root/work
+
+###
+###
+###
+###
+###
+# Begin KSU-next-susfs
+tar xf ../kernel.tar.gz
+mv ../toolchain .
+
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
+
+echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+
+cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+cat hani-ci.sh | grep -v KBUILD_BUILD_HOST > hani-ci.sh.1
+mv hani-ci.sh.1 hani-ci.sh
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+
+wget https://github.com/Joe7500/build-scripts/raw/refs/heads/main/kernel/anykernel3.tar.gz
+tar xf anykernel3.tar.gz
+
+# Build it
+bash hani-ci.sh --build || exit 1
+
+# Upload it
+KERNEL_PACKAGE=`ls 4.19*.zip`
+mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.zip
+GO_FILE=$KERNEL_PACKAGE.van.zip
+rm goupload.sh 
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+cat GOFILE.txt >> FILES.txt
+cat FILES.txt
+rm GOFILE.txt
+
+# Cleanup
+mv 4.19*.zip ../
+mv toolchain ../
+cd ..
+rm -rf work
+mkdir work
+cd $base_root/work
 
