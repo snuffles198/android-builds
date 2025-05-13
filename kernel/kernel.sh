@@ -18,6 +18,7 @@ ls -l /sbin/python*
 ls -l /bin/python*
 
 mkdir ~/bin
+rm -f ~/bin/python
 ln -s /usr/bin/python3 ~/bin/python
 export PATH=$PATH:~/bin/
 
