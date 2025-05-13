@@ -10,6 +10,12 @@ base_root=`pwd`
 
 echo $PATH
 whereis python
+ls -l /usr/local/sbin/python*
+ls -l /usr/local/bin/python*
+ls -l /usr/sbin/python*
+ls -l /usr/bin/python*
+ls -l /sbin/python*
+ls -l /bin/python*
 
 exit 1
 
