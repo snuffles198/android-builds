@@ -86,8 +86,8 @@ GO_FILE=$KERNEL_PACKAGE.van.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
-cat GOFILE.txt >> FILES.txt
-cat FILES.txt
+cat GOFILE.txt >> $base_root/FILES.txt
+cat $base_root/FILES.txt
 rm GOFILE.txt
 
 # Cleanup
@@ -133,8 +133,8 @@ GO_FILE=$KERNEL_PACKAGE.van.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
-cat GOFILE.txt >> FILES.txt
-cat FILES.txt
+cat GOFILE.txt >> $base_root/FILES.txt
+cat $base_root/FILES.txt
 rm GOFILE.txt
 
 # Cleanup
@@ -180,8 +180,8 @@ GO_FILE=$KERNEL_PACKAGE.van.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
-cat GOFILE.txt >> FILES.txt
-cat FILES.txt
+cat GOFILE.txt >> $base_root/FILES.txt
+cat $base_root/FILES.txt
 rm GOFILE.txt
 
 # Cleanup
@@ -231,8 +231,8 @@ GO_FILE=$KERNEL_PACKAGE.van.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
-cat GOFILE.txt >> FILES.txt
-cat FILES.txt
+cat GOFILE.txt >> $base_root/FILES.txt
+cat $base_root/FILES.txt
 rm GOFILE.txt
 
 # Cleanup
