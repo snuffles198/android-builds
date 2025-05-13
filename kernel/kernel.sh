@@ -25,7 +25,7 @@ export PATH=$PATH:~/bin/
 
 sudo apt install --yes python3
 
-rm -rf work kernel.tar.xz* toolchain.tar.xz* toolchain
+rm -rf work toolchain
 
 if ! ls toolchain.tar.xz ; then
   wget https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz || exit 1
