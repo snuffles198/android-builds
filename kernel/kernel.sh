@@ -17,7 +17,11 @@ ls -l /usr/bin/python*
 ls -l /sbin/python*
 ls -l /bin/python*
 
-exit 1
+mkdir ~/bin
+ln -s /usr/bin/python3 ~/bin/python
+export PATH=$PATH:~/bin/
+
+#exit 1
 
 sudo apt install --yes python3
 
