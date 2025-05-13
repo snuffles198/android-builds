@@ -8,6 +8,10 @@ base_root=`pwd`
 #rm -rf `ls -d * | grep -v tar.xz | grep -v tar.gz`
 #rm -rf `ls * | grep -v tar.xz | grep -v tar.gz`
 
+whereis python
+
+exit 1
+
 sudo apt install --yes python3
 
 rm -rf work kernel.tar.xz* toolchain.tar.xz* toolchain
