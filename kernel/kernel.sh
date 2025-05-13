@@ -201,6 +201,17 @@ cd $base_root/work
 tar xf ../kernel.tar.gz
 mv ../toolchain .
 
+
+
+
+
+
+
+
+
+patch -p 1 < ../../lilium-nippon-patches/lilium-nippon-patches/05-susfs.patch
+echo 'KSU_SUSFS_HAS_MAGIC_MOUNT=y' >> arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_KSU_SUSFS=y' >> arch/arm64/configs/vendor/chime_defconfig
 bash KernelSU-Next/kernel/setup.sh --cleanup
 bash KernelSU/kernel/setup.sh --cleanup
 curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
