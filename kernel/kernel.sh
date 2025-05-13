@@ -48,6 +48,7 @@ bash hani-ci.sh --build || exit 1
 
 # Cleanup
 mv 4.19*.zip ../
+ls -l ../4.19*.zip
 wget https://github.com/Joe7500/Builds/blob/main/crave/gofile.sh || exit 0
 mv toolchain ../
 #rm -rf *
