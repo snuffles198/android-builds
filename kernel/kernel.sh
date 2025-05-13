@@ -29,6 +29,7 @@ tar xf ../kernel.tar.gz
 mv ../toolchain .
 cat arch/arm64/configs/vendor/xiaomi/bengal_defconfig | grep -v "CONFIG_KSU=y" > arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1
 mv arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1 arch/arm64/configs/vendor/xiaomi/bengal_defconfig
+
 echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
 
 bash KernelSU-Next/kernel/setup.sh --cleanup
