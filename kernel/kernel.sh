@@ -10,16 +10,23 @@ base_root=`pwd`
 
 sudo apt install --yes python3
 
-wget https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz || exit 1
-wget https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz || exit 1
+rm -rf work kernel.tar.xz* toolchain.tar.xz* toolchain
 
+if ! ls toolchain.tar.xz ; then
+  wget https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz || exit 1
+  wget https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz || exit 1
+fi
+
+rm -rf work
 mkdir work
 cd $base_root/work
 
-tar xf ../kernel.tar.xz
-cd kernel/xiaomi/chime && tar czf ../../../../kernel.tar.gz . && cd ../../..
-if [ $? -ne 0 ]; then exit 1 ; fi
-rm -rf kernel/xiaomi/chime
+if ! ls ../kernel.tar.gz; then
+  tar xf ../kernel.tar.xz
+  cd kernel/xiaomi/chime && tar czf ../../../../kernel.tar.gz . && cd ../../..
+  if [ $? -ne 0 ]; then exit 1 ; fi
+  rm -rf kernel/xiaomi/chime
+fi
 
 tar xf ../toolchain.tar.xz
 mv prebuilts/clang/host/linux-x86/clang-stablekern/ toolchain
