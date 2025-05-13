@@ -64,7 +64,7 @@ bash KernelSU/kernel/setup.sh --cleanup
 cat arch/arm64/configs/vendor/xiaomi/bengal_defconfig | grep -v "CONFIG_KSU=y" > arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1
 mv arch/arm64/configs/vendor/xiaomi/bengal_defconfig.1 arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
-echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_SCHED_DEBUG=y' >> arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
 cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
 mv hani-ci.sh.1 hani-ci.sh
@@ -111,7 +111,7 @@ bash KernelSU-Next/kernel/setup.sh --cleanup
 bash KernelSU/kernel/setup.sh --cleanup
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
 
-echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_SCHED_DEBUG=y' >> arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
 cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
 mv hani-ci.sh.1 hani-ci.sh
@@ -158,7 +158,7 @@ bash KernelSU-Next/kernel/setup.sh --cleanup
 bash KernelSU/kernel/setup.sh --cleanup
 curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
 
-echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_SCHED_DEBUG=y' >> arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
 cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
 mv hani-ci.sh.1 hani-ci.sh
@@ -209,7 +209,7 @@ bash KernelSU-Next/kernel/setup.sh --cleanup
 bash KernelSU/kernel/setup.sh --cleanup
 curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 
-echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_SCHED_DEBUG=y' >> arch/arm64/configs/vendor/xiaomi/bengal_defconfig
 
 cat hani-ci.sh | grep -v KBUILD_BUILD_USER > hani-ci.sh.1
 mv hani-ci.sh.1 hani-ci.sh
