@@ -8,6 +8,7 @@ base_root=`pwd`
 #rm -rf `ls -d * | grep -v tar.xz | grep -v tar.gz`
 #rm -rf `ls * | grep -v tar.xz | grep -v tar.gz`
 
+echo $PATH
 whereis python
 
 exit 1
