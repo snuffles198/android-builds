@@ -5,8 +5,7 @@ set -v
 base_root=`pwd`
 
 # Setup
-#rm -rf `ls -d * | grep -v tar.xz | grep -v tar.gz`
-#rm -rf `ls * | grep -v tar.xz | grep -v tar.gz`
+sudo apt install --yes python3
 
 echo $PATH
 whereis python
@@ -23,8 +22,6 @@ ln -s /usr/bin/python3 ~/bin/python
 export PATH=$PATH:~/bin/
 
 #exit 1
-
-sudo apt install --yes python3
 
 rm -rf work toolchain
 
@@ -82,12 +79,12 @@ bash hani-ci.sh --build || exit 1
 # Upload it
 KERNEL_PACKAGE=`ls 4.19*.zip`
 mv $KERNEL_PACKAGE $KERNEL_PACKAGE.van.zip
-cp -f $KERNEL_PACKAGE.van.zip ..
 GO_FILE=$KERNEL_PACKAGE.van.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
 cat GOFILE.txt >> $base_root/FILES.txt
+echo "" >> $base_root/FILES.txt
 cat $base_root/FILES.txt
 rm GOFILE.txt
 
@@ -130,12 +127,12 @@ bash hani-ci.sh --build || exit 1
 # Upload it
 KERNEL_PACKAGE=`ls 4.19*.zip`
 mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.zip
-cp -f $KERNEL_PACKAGE.ksu.zip ..
 GO_FILE=$KERNEL_PACKAGE.ksu.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
 cat GOFILE.txt >> $base_root/FILES.txt
+echo "" >> $base_root/FILES.txt
 cat $base_root/FILES.txt
 rm GOFILE.txt
 
@@ -178,12 +175,12 @@ bash hani-ci.sh --build || exit 1
 # Upload it
 KERNEL_PACKAGE=`ls 4.19*.zip`
 mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.next.zip
-cp -f $KERNEL_PACKAGE.ksu.next.zip ..
 GO_FILE=$KERNEL_PACKAGE.ksu.next.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
 cat GOFILE.txt >> $base_root/FILES.txt
+echo "" >> $base_root/FILES.txt
 cat $base_root/FILES.txt
 rm GOFILE.txt
 
@@ -230,12 +227,12 @@ bash hani-ci.sh --build || exit 1
 # Upload it
 KERNEL_PACKAGE=`ls 4.19*.zip`
 mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.next.susfs.zip
-cp -f $KERNEL_PACKAGE.ksu.next.susfs.zip ..
 GO_FILE=$KERNEL_PACKAGE.ksu.next.susfs.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
 cat GOFILE.txt >> $base_root/FILES.txt
+echo "" >> $base_root/FILES.txt
 cat $base_root/FILES.txt
 rm GOFILE.txt
 
