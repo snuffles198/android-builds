@@ -179,7 +179,7 @@ bash hani-ci.sh --build || exit 1
 KERNEL_PACKAGE=`ls 4.19*.zip`
 mv $KERNEL_PACKAGE $KERNEL_PACKAGE.ksu.next.zip
 cp -f $KERNEL_PACKAGE.ksu.next.zip ..
-GO_FILE=$KERNEL_PACKAGE.van.next.zip
+GO_FILE=$KERNEL_PACKAGE.ksu.next.zip
 rm goupload.sh 
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
 bash goupload.sh $GO_FILE
