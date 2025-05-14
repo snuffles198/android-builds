@@ -111,7 +111,7 @@ else
 ###
 ###
 
-cd .repo/manifests && git revert --no-edit 7199a38 && cd ../../
+#cd .repo/manifests && git revert --no-edit 7199a38 && cd ../../
 
 ###
 ###
@@ -223,9 +223,12 @@ sleep 10
 set +v
 
 source build/envsetup.sh          ; check_fail
-breakfast chime user              ; check_fail
+#breakfast chime user              ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+#mka bacon                         ; check_fail
+riseup chime user                 ; check_fail
+rise b                            ; check_fail
+
 
 set -v
 
@@ -294,9 +297,11 @@ cd ../../../
 set +v
 
 source build/envsetup.sh          ; check_fail
-breakfast chime user              ; check_fail
+#breakfast chime user              ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+#mka bacon                         ; check_fail
+riseup chime user                 ; check_fail
+rise b                            ; check_fail
 
 set -v
 
