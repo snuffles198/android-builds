@@ -11,7 +11,24 @@ set -v
 # Template helper variables
 PACKAGE_NAME=RisingOS
 VARIANT_NAME=user
-BUILD_TYPE=gapps
+
+###
+###
+###
+###
+###
+###
+
+#BUILD_TYPE=gapps
+BUILD_TYPE=vanilla
+
+###
+###
+###
+###
+###
+###
+
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
@@ -87,6 +104,21 @@ if echo "$@" | grep resume; then
    echo "resuming"
 else
    repo init $REPO_URL  ; check_fail
+###
+###
+###
+###
+###
+###
+
+cd .repo/manifests && git revert --no-edit 7199a38 && cd ../../
+
+###
+###
+###
+###
+###
+###
    cleanup_self
    /opt/crave/resync.sh ; check_fail
 fi
