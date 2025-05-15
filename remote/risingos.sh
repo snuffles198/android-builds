@@ -19,8 +19,8 @@ VARIANT_NAME=user
 ###
 ###
 
-#BUILD_TYPE=gapps
-BUILD_TYPE=vanilla
+BUILD_TYPE=gapps
+#BUILD_TYPE=vanilla
 
 ###
 ###
