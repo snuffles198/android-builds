@@ -104,21 +104,7 @@ if echo "$@" | grep resume; then
    echo "resuming"
 else
    repo init $REPO_URL  ; check_fail
-###
-###
-###
-###
-###
-###
-
 #cd .repo/manifests && git revert --no-edit 7199a38 && cd ../../
-
-###
-###
-###
-###
-###
-###
    cleanup_self
    /opt/crave/resync.sh ; check_fail
 fi
@@ -182,8 +168,6 @@ echo 'WITH_GMS := false' >> lineage_chime.mk
 echo 'PRODUCT_PACKAGES += \
    Gallery2
 ' >> device.mk
-sed -ie 's/^TARGET_KERNEL_CLANG_VERSION.*$//g' BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 cd ../../../
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
@@ -287,8 +271,6 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
 echo 'WITH_GMS := true
 TARGET_DEFAULT_PIXEL_LAUNCHER := true
 ' >> lineage_chime.mk
-sed -ie 's/^TARGET_KERNEL_CLANG_VERSION.*$//g' BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 cd ../../../
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
