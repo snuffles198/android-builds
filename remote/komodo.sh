@@ -186,9 +186,9 @@ sleep 10
 set +v
 
 source build/envsetup.sh          ; check_fail
-breakfast chime user              ; check_fail
+lunch komodo_chime-user           ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+mka komodo                        ; check_fail
 
 set -v
 
