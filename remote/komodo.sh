@@ -143,6 +143,17 @@ mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk komodo_chime.mk
 cd ../../../
 
+# KSU next susfs
+cd kernel/xiaomi/chime/
+curl -o 05-susfs.patch https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/05-susfs.patch || exit 1
+patch -p 1 < 05-susfs.patch
+echo 'KSU_SUSFS_HAS_MAGIC_MOUNT=y' >> arch/arm64/configs/vendor/chime_defconfig
+echo 'CONFIG_KSU_SUSFS=y' >> arch/arm64/configs/vendor/chime_defconfig
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
+cd ../../../
+
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
 rm -rf /home/admin/venv
