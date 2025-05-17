@@ -9,13 +9,13 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=lineage-22
+PACKAGE_NAME=KomodoOS
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs"
+REPO_URL="-u https://github.com/Komodo-OS/manifest -b 15 --git-lfs"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
 
@@ -130,6 +130,18 @@ check_fail
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
+
+cd device/xiaomi/chime/
+cat AndroidProducts.mk | sed -e s/lineage/komodo/g > AndroidProducts.mk.1
+mv AndroidProducts.mk.1 AndroidProducts.mk
+cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/komodo/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/komodo/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+cat lineage_chime.mk | sed -e s/lineage/komodo/g > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+mv lineage_chime.mk komodo_chime.mk
+cd ../../../
 
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
