@@ -9,14 +9,15 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=crDroidAndroid-14
+PACKAGE_NAME=lineage-22
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-21
-VENDOR_BRANCH=lineage-21
-XIAOMI_BRANCH=lineage-21
-REPO_URL="-u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs"
-OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/14.0/{device}.json"
+DEVICE_BRANCH=lineage-22.2
+VENDOR_BRANCH=lineage-22.2
+XIAOMI_BRANCH=lineage-22.2
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs"
+OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
+OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -37,7 +38,7 @@ notify_send() {
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
 
-# Always cleanup. Especially secrets.
+# Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys
@@ -45,7 +46,6 @@ cleanup_self () {
    rm -rf priv-keys
    rm -rf .config/b2/
    rm -rf /home/admin/.config/b2/
-   rm -rf /home/admin/.tdl/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
@@ -65,7 +65,7 @@ cleanup_self () {
    cd /tmp/src/android/
 }
 
-# Better than || exit 1 
+# Better than ' || exit 1 '
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
@@ -122,7 +122,7 @@ rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/uti
 
 cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
+cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
@@ -183,7 +183,7 @@ GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
 
-# Upload output to telegram. Avoid uploading a directory by mistake.
+# Upload output to telegram
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
