@@ -132,6 +132,8 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 cd device/xiaomi/chime/
+cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/keys/keys.mk#g' > device.mk.1
+mv device.mk.1 device.mk
 cat AndroidProducts.mk | sed -e s/lineage/voltage/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
 cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/voltage/config/device_framework_matrix.xml#g > BoardConfig.mk.1
@@ -167,10 +169,11 @@ set -v
 pip install --upgrade b2 ; check_fail
 b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
 mkdir priv-keys
-b2 sync "b2://$BUCKET_NAME/certs-full" "priv-keys" > /dev/null 2>&1 ; check_fail
+b2 sync "b2://$BUCKET_NAME/voltage-certs" "priv-keys" > /dev/null 2>&1 ; check_fail
 b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
 mkdir --parents vendor/lineage-priv/keys
-mv priv-keys/* vendor/lineage-priv/keys
+#mv priv-keys/* vendor/lineage-priv/keys
+mv priv-keys/* vendor/voltage-priv/keys
 rm -rf priv-keys
 rm -rf .config/b2/
 rm -rf /home/admin/.config/b2/
