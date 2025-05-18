@@ -63,10 +63,7 @@ cleanup_self () {
    rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
    rm -f tdl.sh
    cd /tmp/src/android/
-   cd vendor/voltage-priv/keys
-   rm -rf *
-   git reset --hard
-   cd /tmp/src/android/
+   cd vendor/voltage-priv/keys && rm -rf * && git reset --hard && cd /tmp/src/android/
 }
 
 # Better than ' || exit 1 '
