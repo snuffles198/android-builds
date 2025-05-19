@@ -153,7 +153,6 @@ cat voltage_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > voltage_chime.mk.1
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> voltage_chime.mk.1
 mv voltage_chime.mk.1 voltage_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
-echo 'BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 cd ../../../
 
