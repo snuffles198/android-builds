@@ -144,7 +144,6 @@ mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/komodo/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
-echo 'BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 cat lineage_chime.mk | sed -e s/lineage/komodo/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
