@@ -142,7 +142,8 @@ cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/k
 mv device.mk.1 device.mk
 cat AndroidProducts.mk | sed -e s/lineage/voltage/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
-cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/voltage/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+#cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/voltage/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+cat BoardConfig.mk | grep -iv 'vendor/lineage/config/device_framework_matrix.xml' > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/voltage/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
