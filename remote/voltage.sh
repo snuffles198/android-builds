@@ -180,7 +180,8 @@ b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
 mkdir priv-keys
 b2 sync "b2://$BUCKET_NAME/voltage-certs" "priv-keys" > /dev/null 2>&1 ; check_fail
 b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
-mkdir --parents vendor/lineage-priv/keys
+#mkdir --parents vendor/lineage-priv/keys
+mkdir --parents vendor/voltage-priv/keys
 #mv priv-keys/* vendor/lineage-priv/keys
 mv priv-keys/* vendor/voltage-priv/keys
 rm -rf priv-keys
