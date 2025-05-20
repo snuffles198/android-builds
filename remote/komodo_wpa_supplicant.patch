@@ -1,0 +1,96 @@
+diff --git a/wpa_supplicant/Android.bp b/wpa_supplicant/Android.bp
+index 8c50031..54a845d 100644
+--- a/wpa_supplicant/Android.bp
++++ b/wpa_supplicant/Android.bp
+@@ -62,6 +62,33 @@ filegroup {
+     srcs: ["wpa_supplicant_template.conf"],
+ }
+ 
++cc_defaults {
++    name: "wpa_supplicant_includes_default",
++    local_include_dirs: [
++        ".",
++        "src",
++        "src/common",
++        "src/drivers",
++        "src/eap_common",
++        "src/eap_peer",
++        "src/eap_server",
++        "src/eapol_supp",
++        "src/l2_packet",
++        "src/pasn",
++        "src/radius",
++        "src/rsn_supp",
++        "src/tls",
++        "src/utils",
++        "src/wps",
++    ],
++    include_dirs: [
++        // There's an if condition for external/libnl but current code base should always have this.
++        "external/libnl/include",
++        "system/security/keystore/include",
++    ],
++}
++
++
+ cc_defaults {
+     name: "wpa_supplicant_defaults",
+     defaults: ["wpa_supplicant_cflags_defaults"],
+@@ -467,3 +494,22 @@ cc_library_headers {
+     ],
+     soc_specific: true,
+ }
++
++cc_library_shared {
++    name: "libwpa_client",
++    proprietary: true,
++    srcs: [
++        "src/common/wpa_ctrl.c",
++        "src/utils/os_unix.c",
++    ],
++    shared_libs: [
++        "libc",
++        "libcutils",
++        "liblog",
++    ],
++    defaults: [
++        "wpa_supplicant_cflags_defaults",
++        "wpa_supplicant_includes_default",
++    ],
++}
++
+diff --git a/wpa_supplicant/Android.mk b/wpa_supplicant/Android.mk
+index 1bdc589..b9deaa4 100644
+--- a/wpa_supplicant/Android.mk
++++ b/wpa_supplicant/Android.mk
+@@ -2079,18 +2079,18 @@ $(eval $(call wpa_supplicant_gen, macsec))
+ #
+ ########################
+ 
+-include $(CLEAR_VARS)
+-LOCAL_MODULE = libwpa_client
+-LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-BSD-3-Clause SPDX-license-identifier-ISC legacy_unencumbered
+-LOCAL_LICENSE_CONDITIONS := notice unencumbered
+-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../LICENSE
+-LOCAL_PROPRIETARY_MODULE := true
+-LOCAL_CFLAGS = $(L_CFLAGS)
+-LOCAL_SRC_FILES = src/common/wpa_ctrl.c src/utils/os_$(CONFIG_OS).c
+-LOCAL_C_INCLUDES = $(INCLUDES)
+-LOCAL_SHARED_LIBRARIES := libcutils liblog
+-LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/wpa_client_include $(LOCAL_PATH)/wpa_client_include/libwpa_client
+-include $(BUILD_SHARED_LIBRARY)
++#include $(CLEAR_VARS)
++#LOCAL_MODULE = libwpa_client
++#LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-BSD-3-Clause SPDX-license-identifier-ISC legacy_unencumbered
++#LOCAL_LICENSE_CONDITIONS := notice unencumbered
++#LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../LICENSE
++#LOCAL_PROPRIETARY_MODULE := true
++#LOCAL_CFLAGS = $(L_CFLAGS)
++#LOCAL_SRC_FILES = src/common/wpa_ctrl.c src/utils/os_$(CONFIG_OS).c
++#LOCAL_C_INCLUDES = $(INCLUDES)
++#LOCAL_SHARED_LIBRARIES := libcutils liblog
++#LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/wpa_client_include $(LOCAL_PATH)/wpa_client_include/libwpa_client
++#include $(BUILD_SHARED_LIBRARY)
+ 
+ ifeq ($(WPA_SUPPLICANT_USE_AIDL), y)
+ ### Aidl service library ###
