@@ -149,7 +149,7 @@ mv AndroidProducts.mk.1 AndroidProducts.mk
 curl -o lineage_frame.xml -L https://raw.githubusercontent.com/LineageOS/android_vendor_lineage/refs/heads/lineage-22.2/config/device_framework_matrix.xml
 mkdir ../../../vendor/lineage
 mkdir ../../../vendor/lineage/config
-mv lineage_frame.xml ../../../vendor/lineage/config/device_framework_matrix.xm
+mv lineage_frame.xml ../../../vendor/lineage/config/device_framework_matrix.xml
 
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/voltage/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
