@@ -142,9 +142,15 @@ cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/k
 mv device.mk.1 device.mk
 cat AndroidProducts.mk | sed -e s/lineage/voltage/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
+
 #cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/voltage/config/device_framework_matrix.xml#g > BoardConfig.mk.1
-cat BoardConfig.mk | grep -iv 'vendor/lineage/config/device_framework_matrix.xml' > BoardConfig.mk.1
-mv BoardConfig.mk.1 BoardConfig.mk
+#cat BoardConfig.mk | grep -iv 'vendor/lineage/config/device_framework_matrix.xml' > BoardConfig.mk.1
+#mv BoardConfig.mk.1 BoardConfig.mk
+curl -o lineage_frame.xml -L https://raw.githubusercontent.com/LineageOS/android_vendor_lineage/refs/heads/lineage-22.2/config/device_framework_matrix.xml
+mkdir ../../../vendor/lineage
+mkdir ../../../vendor/lineage/config
+mv lineage_frame.xml ../../../vendor/lineage/config/device_framework_matrix.xm
+
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/voltage/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 cat lineage_chime.mk | sed -e s/lineage/voltage/g > lineage_chime.mk.1
