@@ -130,6 +130,12 @@ cd external
 rm -rf wpa_supplicant_8
 git clone https://github.com/LineageOS/android_external_wpa_supplicant_8.git -b lineage-22.2 wpa_supplicant_8
 cd ..
+rm -rf packages/modules/Wifi
+git clone https://github.com/LineageOS/android_packages_modules_Wifi -b lineage-22.2 packages/modules/Wifi
+
+cd external/chromium-webview/prebuilt/arm64
+git reset --hard
+cd -
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
