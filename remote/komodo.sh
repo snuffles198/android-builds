@@ -84,6 +84,18 @@ check_fail () {
    fi
 }
 
+
+####
+# Temp. delete me.
+##
+##
+##
+rm -rf packages/modules/Wifi
+rm -rf external/wpa_supplicant_8
+
+
+
+
 # repo sync. or not.
 if echo "$@" | grep resume; then
    echo "resuming"
@@ -126,12 +138,19 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 #cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 #check_fail
 
-cd external 
-rm -rf wpa_supplicant_8
-git clone https://github.com/LineageOS/android_external_wpa_supplicant_8.git -b lineage-22.2 wpa_supplicant_8
-cd ..
-rm -rf packages/modules/Wifi
-git clone https://github.com/LineageOS/android_packages_modules_Wifi -b lineage-22.2 packages/modules/Wifi
+#cd external 
+#rm -rf wpa_supplicant_8
+#git clone https://github.com/LineageOS/android_external_wpa_supplicant_8.git -b lineage-22.2 wpa_supplicant_8
+#cd ..
+#rm -rf packages/modules/Wifi
+#git clone https://github.com/LineageOS/android_packages_modules_Wifi -b lineage-22.2 packages/modules/Wifi
+
+cd external/wpa_supplicant_8
+git reset --hard
+curl -o wpa.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/komodo_wpa_supplicant.patch
+patch -f -p 1 < wpa.patch
+rm -f wpa.patch
+cd ../../
 
 cd external/chromium-webview/prebuilt/arm64
 git reset --hard
@@ -159,7 +178,7 @@ cd ../../../
 # KSU next susfs
 cd kernel/xiaomi/chime/
 curl -o 05-susfs.patch https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/05-susfs.patch || exit 1
-patch -p 1 < 05-susfs.patch
+patch -f -p 1 < 05-susfs.patch
 echo 'KSU_SUSFS_HAS_MAGIC_MOUNT=y' >> arch/arm64/configs/vendor/chime_defconfig
 echo 'CONFIG_KSU_SUSFS=y' >> arch/arm64/configs/vendor/chime_defconfig
 bash KernelSU-Next/kernel/setup.sh --cleanup
