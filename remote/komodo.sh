@@ -14,7 +14,12 @@ VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
-XIAOMI_BRANCH=lineage-22.2
+###
+# Check version next time
+#
+#
+#
+XIAOMI_BRANCH=lineage-22.1
 REPO_URL="-u https://github.com/Komodo-OS/manifest -b 15 --git-lfs"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
