@@ -215,8 +215,8 @@ echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
 # Upload output to gofile
-cp out/target/product/chime/$PACKAGE_NAME*.zip .
-GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+cp out/target/product/chime/$PACKAGE_NAME*chime*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*chime*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
