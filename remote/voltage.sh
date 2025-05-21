@@ -156,9 +156,6 @@ mv BoardConfig.mk.1 BoardConfig.mk
 cat lineage_chime.mk | sed -e s/lineage/voltage/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk voltage_chime.mk
-cat voltage_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > voltage_chime.mk.1
-echo "RESERVE_SPACE_FOR_GAPPS := false" >> voltage_chime.mk.1
-mv voltage_chime.mk.1 voltage_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 cd ../../../
