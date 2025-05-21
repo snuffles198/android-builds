@@ -178,6 +178,7 @@ echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 cat lineage_chime.mk | sed -e s/lineage/komodo/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk komodo_chime.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 cd ../../../
 
 # KSU next susfs
