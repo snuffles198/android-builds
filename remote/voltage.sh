@@ -158,6 +158,7 @@ mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk voltage_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 cd ../../../
 
 # KSU next susfs
