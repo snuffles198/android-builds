@@ -167,6 +167,8 @@ cat vendor.prop | grep -v ro.soc.manufacturer > vendor.prop.1
 mv vendor.prop.1 vendor.prop
 cd ../../../../../
 
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
 rm -rf /home/admin/venv
