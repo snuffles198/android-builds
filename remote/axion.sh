@@ -150,6 +150,8 @@ cd ../../../
 echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
 
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
 rm -rf /home/admin/venv
