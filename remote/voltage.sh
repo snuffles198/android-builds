@@ -159,6 +159,13 @@ mv lineage_chime.mk voltage_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
+
+mkdir --parents overlay-lineage/packages/apps/Settings/res/values
+echo '<?xml version="1.0" encoding="utf-8"?>' > overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
+echo '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
+echo '<string name="voltage_maintainer">Joe</string>' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
+echo '</resources>' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
+
 cd ../../../
 
 # KSU next susfs
