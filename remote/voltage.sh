@@ -136,6 +136,7 @@ cd ..
 #mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
 curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/voltage_brightness_slider.patch
 cd packages/apps/Powerhub/
+git reset --hard
 patch -f -p 1 < ../../../voltage_brightness_slider.patch
 cd ../../../
 
