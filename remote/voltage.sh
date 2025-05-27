@@ -132,6 +132,9 @@ rm -rf wpa_supplicant_8
 git clone https://github.com/LineageOS/android_external_wpa_supplicant_8.git -b lineage-22.2 wpa_supplicant_8
 cd ..
 
+cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen name="qs_media_seekbar_progress_amplitude">1.5dp</dimen>#<dimen name="qs_media_seekbar_progress_amplitude">0dp</dimen>#g' > frameworks/base/packages/SystemUI/res/values/dimens.xml.1
+mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
+
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
@@ -166,6 +169,10 @@ echo '<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">' >> overla
 echo '<string name="voltage_maintainer">Joe</string>' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
 echo '</resources>' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
 
+cat overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml | grep -v '</resources>' > overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
+echo '    <string name="qs_brightness_slider_position"">0</string>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
+echo '</resources>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
+mv overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1 overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml
 cd ../../../
 
 # KSU next susfs
