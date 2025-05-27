@@ -170,7 +170,7 @@ echo '<string name="voltage_maintainer">Joe</string>' >> overlay-lineage/package
 echo '</resources>' >> overlay-lineage/packages/apps/Settings/res/values/voltage_strings.xml
 
 cat overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml | grep -v '</resources>' > overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
-echo '    <string name="qs_brightness_slider_position"">0</string>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
+echo '    <string name="qs_brightness_slider_position">0</string>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
 echo '</resources>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
 mv overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1 overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml
 cd ../../../
