@@ -136,10 +136,7 @@ cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen n
 mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
 
 curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/voltage_brightness_slider.patch
-cd packages/apps/Powerhub/
-git reset --hard
-patch -f -p 1 < ../../../voltage_brightness_slider.patch
-cd ../../../
+cd packages/apps/Powerhub/ && git reset --hard && patch -f -p 1 < ../../../voltage_brightness_slider.patch && cd ../../../
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
