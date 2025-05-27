@@ -132,8 +132,12 @@ rm -rf wpa_supplicant_8
 git clone https://github.com/LineageOS/android_external_wpa_supplicant_8.git -b lineage-22.2 wpa_supplicant_8
 cd ..
 
-cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen name="qs_media_seekbar_progress_amplitude">1.5dp</dimen>#<dimen name="qs_media_seekbar_progress_amplitude">0dp</dimen>#g' > frameworks/base/packages/SystemUI/res/values/dimens.xml.1
-mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
+#cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen name="qs_media_seekbar_progress_amplitude">1.5dp</dimen>#<dimen name="qs_media_seekbar_progress_amplitude">0dp</dimen>#g' > frameworks/base/packages/SystemUI/res/values/dimens.xml.1
+#mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
+curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/voltage_brightness_slider.patch
+cd packages/apps/Powerhub/
+patch -f -p 1 < ../../../voltage_brightness_slider.patch
+cd ../../../
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
