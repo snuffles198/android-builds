@@ -163,7 +163,6 @@ mv device.mk.1 device.mk
 mv lineage_chime.mk calyx_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
-echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 cd ../../../
 
 # Get dev secrets from bucket.
