@@ -131,6 +131,10 @@ cd external/tinyxml
 git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
 cd ../../
 
+curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/hardware_calyx_interfaces_power-libperfmgr.tgz
+tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
+rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
+
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
@@ -152,12 +156,15 @@ cat lineage_chime.mk | sed -e s/common_full_phone.mk/common_phone.mk/g > lineage
 mv lineage_chime.mk.1 lineage_chime.mk
 
 #cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
-cat Android.bp | grep -v 'hardware/lineage/interfaces/power-libperfmgr' > Android.bp.1
+#cat Android.bp | grep -v 'hardware/lineage/interfaces/power-libperfmgr' > Android.bp.1
+cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
 mv Android.bp.1 Android.bp
 
 cat device.mk | grep -v libstdc++_vendor > device.mk.1
 mv device.mk.1 device.mk
-cat device.mk | sed -e 's/android.hardware.power-service.lineage-libperfmgr/android.hardware.power-service.pixel-libperfmgr/g' > device.mk.1
+
+#cat device.mk | sed -e 's/android.hardware.power-service.lineage-libperfmgr/android.hardware.power-service.pixel-libperfmgr/g' > device.mk.1
+cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
 
 mv lineage_chime.mk calyx_chime.mk
@@ -200,6 +207,8 @@ source build/envsetup.sh          ; check_fail
 breakfast chime user              ; check_fail
 mka installclean
 m                         ; check_fail
+m target-files-package
+m otatools-package otatools-keys-package
 
 set -v
 
