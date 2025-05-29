@@ -92,7 +92,7 @@ else
    cleanup_self
    # Calyx hates these git repos
    rm -rf prebuilts/gcc/
-   for i in `find .repo/ | grep 'prebuilts/gcc/'`; do
+   for i in `find .repo/ | grep 'prebuilts/gcc'`; do
       rm -rf $i
    done
    /opt/crave/resync.sh || /opt/crave/resync.sh
