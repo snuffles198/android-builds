@@ -90,7 +90,7 @@ if echo "$@" | grep resume; then
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
-   # Calyx hates this git repo
+   # Calyx hates these git repos
    rm -rf prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
    /opt/crave/resync.sh || /opt/crave/resync.sh ; check_fail
 fi
