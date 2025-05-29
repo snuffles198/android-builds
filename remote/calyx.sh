@@ -211,7 +211,7 @@ set +v
 
 source build/envsetup.sh          ; check_fail
 breakfast chime user              ; check_fail
-mka installclean
+m installclean
 m                         ; check_fail
 m target-files-package
 m otatools-package otatools-keys-package
