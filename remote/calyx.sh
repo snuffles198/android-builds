@@ -164,6 +164,9 @@ mv Android.bp.1 Android.bp
 cat device.mk | grep -v libstdc++_vendor > device.mk.1
 mv device.mk.1 device.mk
 
+cat device.mk | grep -v 'vendor/lineage-priv/keys/keys.mk' > device.mk.1
+mv device.mk.1 device.mk
+
 #cat device.mk | sed -e 's/android.hardware.power-service.lineage-libperfmgr/android.hardware.power-service.pixel-libperfmgr/g' > device.mk.1
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
@@ -182,15 +185,15 @@ set +v
 source /home/admin/venv/bin/activate
 set -v
 pip install --upgrade b2 ; check_fail
-b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
-mkdir priv-keys
-b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
-b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
-mkdir --parents vendor/lineage-priv/keys
-mv priv-keys/* vendor/lineage-priv/keys
-rm -rf priv-keys
-rm -rf .config/b2/
-rm -rf /home/admin/.config/b2/
+#b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
+#mkdir priv-keys
+#b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
+#b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
+#mkdir --parents vendor/lineage-priv/keys
+#mv priv-keys/* vendor/lineage-priv/keys
+#rm -rf priv-keys
+#rm -rf .config/b2/
+#rm -rf /home/admin/.config/b2/
 deactivate
 unset BUCKET_NAME
 unset KEY_ENCRYPTION_PASSWORD
