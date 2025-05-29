@@ -146,12 +146,10 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardCon
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
 cd device/xiaomi/chime/
+
 cat AndroidProducts.mk | sed -e s/lineage/calyx/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
-cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/calyx/config/device_framework_matrix.xml#g > BoardConfig.mk.1
-mv BoardConfig.mk.1 BoardConfig.mk
-cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
-mv BoardConfig.mk.1 BoardConfig.mk
+
 cat lineage_chime.mk | sed -e s/lineage/calyx/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 
@@ -161,6 +159,8 @@ mv lineage_chime.mk.1 lineage_chime.mk
 cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+
+mv lineage_chime.mk calyx_chime.mk
 
 #cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
 #cat Android.bp | grep -v 'hardware/lineage/interfaces/power-libperfmgr' > Android.bp.1
@@ -177,9 +177,14 @@ mv device.mk.1 device.mk
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
 
-mv lineage_chime.mk calyx_chime.mk
+cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/calyx/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
+
 cd ../../../
 
 # Get dev secrets from bucket.
