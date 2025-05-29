@@ -172,6 +172,8 @@ cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/
 mv device.mk.1 device.mk
 rm -rf vendor/qcom/opensource/power
 
+rm -rf device/motorola/
+
 mv lineage_chime.mk calyx_chime.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
