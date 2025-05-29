@@ -90,8 +90,7 @@ if echo "$@" | grep resume; then
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
-   /opt/crave/resync.sh
-   /opt/crave/resync.sh ; check_fail
+   /opt/crave/resync.sh || /opt/crave/resync.sh ; check_fail
 fi
 
 # Download trees
