@@ -84,6 +84,9 @@ check_fail () {
    fi
 }
 
+# Calyx hates this git repo
+rm -rf prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+
 # repo sync. or not.
 if echo "$@" | grep resume; then
    echo "resuming"
