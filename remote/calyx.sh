@@ -84,15 +84,14 @@ check_fail () {
    fi
 }
 
-# Calyx hates this git repo
-rm -rf prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
-
 # repo sync. or not.
 if echo "$@" | grep resume; then
    echo "resuming"
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
+   # Calyx hates this git repo
+   rm -rf prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
    /opt/crave/resync.sh || /opt/crave/resync.sh ; check_fail
 fi
 
