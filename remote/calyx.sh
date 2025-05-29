@@ -158,6 +158,10 @@ mv lineage_chime.mk.1 lineage_chime.mk
 cat lineage_chime.mk | sed -e s/common_full_phone.mk/common_phone.mk/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 
+cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+
 #cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
 #cat Android.bp | grep -v 'hardware/lineage/interfaces/power-libperfmgr' > Android.bp.1
 cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
