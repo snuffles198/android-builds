@@ -95,6 +95,7 @@ else
    for i in `find .repo/ | grep 'prebuilts/gcc/'`; do
       rm -rf $i
    done
+   /opt/crave/resync.sh || /opt/crave/resync.sh
    /opt/crave/resync.sh || /opt/crave/resync.sh ; check_fail
 fi
 
