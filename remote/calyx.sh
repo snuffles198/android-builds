@@ -233,6 +233,7 @@ m otatools-package otatools-keys-package
 
 set -v
 
+rm -rf sign
 mkdir sign
 cd sign
 tar xf ../keys.tgz
