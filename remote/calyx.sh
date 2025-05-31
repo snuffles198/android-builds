@@ -233,6 +233,18 @@ m otatools-package otatools-keys-package
 
 set -v
 
+mkdir sign
+cd sign
+tar xf ../keys.tgz
+cp ../out/target/product/chime/otatools.zip .
+unzip otatools.zip
+cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
+
+cat vendor/calyx/scripts/release.sh | sed -e s/comet/chime/g > vendor/calyx/scripts/release.sh.1
+mv vendor/calyx/scripts/release.sh.1 vendor/calyx/scripts/release.sh
+chmod u+x ./vendor/calyx/scripts/release.sh
+./vendor/calyx/scripts/release.sh chime calyx_chime-target_files.zip
+
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
