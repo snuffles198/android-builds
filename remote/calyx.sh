@@ -119,12 +119,12 @@ git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH v
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
 # Setup AOSP source 
-#patch -f -p 1 < wfdservice.rc.patch ; check_fail
-#cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
-#patch -f -p 1 < InterfaceController.java.patch ; check_fail
-#rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
-#rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
-#rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
+patch -f -p 1 < wfdservice.rc.patch ; check_fail
+cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+patch -f -p 1 < InterfaceController.java.patch ; check_fail
+rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
+rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
+rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
 #cd packages/apps/Updater/ && git reset --hard && cd ../../../
 #cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
@@ -265,36 +265,57 @@ chmod u+x ./vendor/calyx/scripts/release.sh
 export BUILD_NUMBER=$(date '+%d-%m-%Y')
 ./vendor/calyx/scripts/release.sh chime calyx_chime-target_files.zip
 
+OTA_FILE=`find out/ | grep chime-ota_update | grep -v sum`
+FACTORY_FILE=`find out/ | grep chime-factory | grep -v sum`
+cp $OTA_FILE ../CalyxOS-chime-$BUILD_NUMBER.zip
+cp $FACTORY_FILE ../CalyxOS-chime-factory-$BUILD_NUMBER.zip
+cd ..
+
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
 # Upload output to gofile
 #cp out/target/product/chime/$PACKAGE_NAME*.zip .
 #GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
-#GO_FILE_MD5=`md5sum "$GO_FILE"`
-#GO_FILE=`pwd`/$GO_FILE
-#curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
-#bash goupload.sh $GO_FILE
-#GO_LINK=`cat GOFILE.txt`
-#notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-#rm -f goupload.sh GOFILE.txt
+GO_FILE_MD5=`md5sum "CalyxOS-chime-$BUILD_NUMBER.zip"`
+GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+GO_LINK=`cat GOFILE.txt`
+notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
+rm -f goupload.sh GOFILE.txt
+GO_FILE_MD5=`md5sum "CalyxOS-chime-factory-$BUILD_NUMBER.zip"`
+GO_FILE="CalyxOS-chime-factory-$BUILD_NUMBER.zip"
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+bash goupload.sh $GO_FILE
+GO_LINK=`cat GOFILE.txt`
+notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
+rm -f goupload.sh GOFILE.txt
 
 # Upload output to telegram
-#if [[ ! -f $GO_FILE ]]; then
-#   GO_FILE=builder.sh
-#fi
-#cd /home/admin
-#VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-#wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-#tar xf tdl_Linux.tgz ; check_fail
-#unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-#cd /tmp/src/android/
-#/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-#cd /home/admin
-#rm -rf .tdl
-#rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-#rm -f tdl.sh
-#cd /tmp/src/android/
+if [[ ! -f $GO_FILE ]]; then
+   GO_FILE=builder.sh
+fi
+cd /home/admin
+
+curl -o keys  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
+rm -f keys
+tar xf keys.tar
+rm -f keys.tar
+unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
+tar xf tdl_Linux.tgz ; check_fail
+cd /tmp/src/android/
+GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
+/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
+cd /home/admin
+rm -rf .tdl
+rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
+rm -f tdl.sh
+cd /tmp/src/android/
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
