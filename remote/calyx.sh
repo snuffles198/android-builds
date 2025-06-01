@@ -257,6 +257,7 @@ m otatools-package otatools-keys-package
 
 set -v
 
+# Sign release and make ota package
 rm -rf sign
 mkdir sign
 cd sign
@@ -281,6 +282,7 @@ FACTORY_FILE=`find out/ | grep chime-factory | grep -v sum`
 cp $OTA_FILE ../CalyxOS-chime-$BUILD_NUMBER.zip
 cp $FACTORY_FILE ../CalyxOS-chime-factory-$BUILD_NUMBER.zip
 cd ..
+rm -rf sign/keys
 
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
