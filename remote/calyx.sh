@@ -155,7 +155,7 @@ dumpyara/bin/dumpyara devon.zip
 cd device/google/gearhead/
 ./extract-files.py /tmp/src/android/devon
 cd ../../../
-rm -rf devon dumpyara
+rm -rf devon dumpyara devon.zip
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
