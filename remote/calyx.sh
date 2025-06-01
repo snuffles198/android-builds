@@ -144,6 +144,19 @@ rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
 
+DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
+curl -o devon.zip -L "$DEVON_URL"
+sudo apt update
+sudo apt -y install 7zip
+sudo apt -y install erofs-utils
+virtualenv dumpyara
+dumpyara/bin/pip install dumpyara
+dumpyara/bin/dumpyara devon.zip
+cd device/google/gearhead/
+./extract-files.py /tmp/src/android/devon
+cd ../../../
+rm -rf devon dumpyara
+
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
