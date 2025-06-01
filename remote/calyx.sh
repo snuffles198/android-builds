@@ -249,7 +249,12 @@ set -v
 rm -rf sign
 mkdir sign
 cd sign
-tar xf ../keys.tgz
+curl -o keys  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
+rm -f keys
+tar xf keys.tar
+rm -f keys keys.1 keys.tar
 cp ../out/target/product/chime/otatools.zip .
 unzip otatools.zip
 cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
@@ -257,6 +262,7 @@ cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
 cat vendor/calyx/scripts/release.sh | sed -e s/comet/chime/g > vendor/calyx/scripts/release.sh.1
 mv vendor/calyx/scripts/release.sh.1 vendor/calyx/scripts/release.sh
 chmod u+x ./vendor/calyx/scripts/release.sh
+export BUILD_NUMBER=$(date '+%d-%m-%Y')
 ./vendor/calyx/scripts/release.sh chime calyx_chime-target_files.zip
 
 echo success > result.txt
