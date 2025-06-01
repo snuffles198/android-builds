@@ -266,7 +266,7 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
 rm -f keys
 tar xf keys.tar
-rm -f keys keys.1 keys.tar
+rm -f keys.1 keys.tar
 cp ../out/target/product/chime/otatools.zip .
 unzip otatools.zip
 cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
@@ -310,14 +310,14 @@ if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
 cd /home/admin
-
 curl -o keys  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
 rm -f keys
 tar xf keys.tar
-rm -f keys.tar
-unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
+rm -f keys.tar keys.1
+unzip -o -P $TDL_ZIP_PASSWD tdl.zip
+rm -f tdl.zip
 VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
 tar xf tdl_Linux.tgz ; check_fail
