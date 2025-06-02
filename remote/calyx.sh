@@ -204,6 +204,8 @@ mv BoardConfig.mk.1 BoardConfig.mk
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
+echo 'PRODUCT_PACKAGES += Updater' >> device.mk
+
 cd ../../../
 
 # KSU next susfs
