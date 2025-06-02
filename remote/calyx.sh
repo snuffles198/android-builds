@@ -144,6 +144,7 @@ rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
 
+# Android auto prebuilts not included
 DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
 curl -o devon.zip -L "$DEVON_URL"
 sudo apt update
@@ -171,14 +172,11 @@ mv AndroidProducts.mk.1 AndroidProducts.mk
 
 cat lineage_chime.mk | sed -e s/lineage/calyx/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
-
 cat lineage_chime.mk | sed -e s/common_full_phone.mk/common_phone.mk/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
-
 cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
-
 mv lineage_chime.mk calyx_chime.mk
 
 #cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
@@ -188,10 +186,8 @@ mv Android.bp.1 Android.bp
 
 cat device.mk | grep -v libstdc++_vendor > device.mk.1
 mv device.mk.1 device.mk
-
 cat device.mk | grep -v 'vendor/lineage-priv/keys/keys.mk' > device.mk.1
 mv device.mk.1 device.mk
-
 #cat device.mk | sed -e 's/android.hardware.power-service.lineage-libperfmgr/android.hardware.power-service.pixel-libperfmgr/g' > device.mk.1
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
