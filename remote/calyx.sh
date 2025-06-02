@@ -90,7 +90,7 @@ if echo "$@" | grep resume; then
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
-   # Calyx hates these git repos
+   # Calyx hates these lineage git repos
    rm -rf prebuilts/gcc/
    for i in `find .repo/ | grep 'prebuilts/gcc'`; do
       rm -rf $i
