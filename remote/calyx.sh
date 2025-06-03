@@ -18,6 +18,8 @@ XIAOMI_BRANCH=lineage-22.2
 REPO_URL="--git-lfs -u https://gitlab.com/CalyxOS/platform_manifest -b android15-qpr2 --git-lfs"
 #OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 #OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
+OTA_SED_STRING="https://release.calyxinstitute.org/"
+OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/calyx/"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -126,11 +128,11 @@ rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-#cd packages/apps/Updater/ && git reset --hard && cd ../../../
-#cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-#cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
-#cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
-#check_fail
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cp packages/apps/Updater/res/values/config.xml strings.xml
+cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
+cp strings.xml.1 packages/apps/Updater/res/values/config.xml
+check_fail
 
 git clone https://android.googlesource.com/platform/external/tinyxml external/tinyxml
 cd external/tinyxml
