@@ -200,6 +200,10 @@ mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 
+curl -o releasetools.py -L "https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/calyx_device_releasetools.patch"
+patch -p 1 < releasetools.py
+rm -f releasetools.py
+
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
