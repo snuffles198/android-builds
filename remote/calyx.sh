@@ -145,6 +145,7 @@ rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 
 rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
+rm -rf sign/
 
 # Android auto prebuilts not included
 DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
