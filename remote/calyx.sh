@@ -147,6 +147,9 @@ rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
 rm -rf sign/
 
+if echo "$@" | grep resume; then
+   echo "resuming"
+else
 # Android auto prebuilts not included
 DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
 curl -o devon.zip -L "$DEVON_URL"
@@ -160,6 +163,7 @@ cd device/google/gearhead/
 ./extract-files.py /tmp/src/android/devon
 cd ../../../
 rm -rf devon dumpyara devon.zip
+fi
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
