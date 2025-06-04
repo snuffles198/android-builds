@@ -16,8 +16,6 @@ DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
 REPO_URL="--git-lfs -u https://gitlab.com/CalyxOS/platform_manifest -b android15-qpr2 --git-lfs"
-#OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
-#OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json"
 OTA_SED_STRING="https://release.calyxinstitute.org/"
 OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
 
@@ -147,10 +145,8 @@ rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
 rm -rf sign/
 
-if echo "$@" | grep resume; then
-   echo "resuming"
-else
-# Android auto prebuilts not included
+# Android auto prebuilts not included. Extract from official ota package.
+if ! ls vendor/google/gearhead/proprietary/; then
 DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
 curl -o devon.zip -L "$DEVON_URL"
 sudo apt update
@@ -186,8 +182,6 @@ mv lineage_chime.mk.1 lineage_chime.mk
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
 mv lineage_chime.mk calyx_chime.mk
 
-#cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
-#cat Android.bp | grep -v 'hardware/lineage/interfaces/power-libperfmgr' > Android.bp.1
 cat Android.bp | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > Android.bp.1
 mv Android.bp.1 Android.bp
 
@@ -195,7 +189,6 @@ cat device.mk | grep -v libstdc++_vendor > device.mk.1
 mv device.mk.1 device.mk
 cat device.mk | grep -v 'vendor/lineage-priv/keys/keys.mk' > device.mk.1
 mv device.mk.1 device.mk
-#cat device.mk | sed -e 's/android.hardware.power-service.lineage-libperfmgr/android.hardware.power-service.pixel-libperfmgr/g' > device.mk.1
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
 
@@ -225,34 +218,6 @@ bash KernelSU/kernel/setup.sh --cleanup
 curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 cd ../../../
 
-# Get dev secrets from bucket.
-#sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
-#rm -rf /home/admin/venv
-#virtualenv /home/admin/venv ; check_fail
-#set +v
-#source /home/admin/venv/bin/activate
-#set -v
-#pip install --upgrade b2 ; check_fail
-#b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
-#mkdir priv-keys
-#b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
-#b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
-#mkdir --parents vendor/lineage-priv/keys
-#mv priv-keys/* vendor/lineage-priv/keys
-#rm -rf priv-keys
-#rm -rf .config/b2/
-#rm -rf /home/admin/.config/b2/
-#deactivate
-#unset BUCKET_NAME
-#unset KEY_ENCRYPTION_PASSWORD
-#unset BKEY_ID
-#unset BAPP_KEY
-#unset KEY_PASSWORD
-#cat /tmp/crave_bashrc | grep -vE "BKEY_ID|BUCKET_NAME|KEY_ENCRYPTION_PASSWORD|BAPP_KEY|TG_CID|TG_TOKEN" > /tmp/crave_bashrc.1
-#mv /tmp/crave_bashrc.1 /tmp/crave_bashrc
-
-#sleep 10
-
 # Build it
 set +v
 
@@ -269,12 +234,13 @@ set -v
 rm -rf sign
 mkdir sign
 cd sign
-curl -o keys  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
-rm -f keys
+
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
-rm -f keys.1 keys.tar
+rm -f keys.1 keys.2 keys.tar
+
 cp ../out/target/product/chime/otatools.zip .
 unzip otatools.zip
 cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
@@ -297,8 +263,6 @@ echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
 # Upload output to gofile
-#cp out/target/product/chime/$PACKAGE_NAME*.zip .
-#GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "CalyxOS-chime-$BUILD_NUMBER.zip"`
 GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
 curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
@@ -319,12 +283,11 @@ if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
 cd /home/admin
-curl -o keys  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys > keys.1
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.1 > keys.tar
-rm -f keys
-tar xf keys.tar
-rm -f keys.tar keys.1
+curl -o tdl.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
+tar xf tdl.tar
+rm -f tdl.1 tdl.2 tdl.tar
 unzip -o -P $TDL_ZIP_PASSWD tdl.zip
 rm -f tdl.zip
 VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
@@ -341,26 +304,6 @@ cd /tmp/src/android/
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
-
-if [ "$BUILD_TYPE" == "vanilla" ]; then
-   cleanup_self
-   exit 0
-fi
-
-# Do gapps dirty build
-#
-#
-#
-
-# Setup AOSP source
-
-# Setup device tree
-
-# Build it
-
-# Upload output to gofile
-
-# Upload output to telegram
 
 cleanup_self
 exit 0
