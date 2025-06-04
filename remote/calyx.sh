@@ -301,14 +301,14 @@ notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 #GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "CalyxOS-chime-$BUILD_NUMBER.zip"`
 GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
 bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
 GO_FILE_MD5=`md5sum "CalyxOS-chime-factory-$BUILD_NUMBER.zip"`
 GO_FILE="CalyxOS-chime-factory-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/crave/gofile.sh
+curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
 bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
