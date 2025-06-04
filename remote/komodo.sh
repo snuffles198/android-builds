@@ -183,7 +183,7 @@ cd ../../../
 
 # KSU next susfs
 cd kernel/xiaomi/chime/
-curl -o 05-susfs.patch https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/05-susfs.patch || exit 1
+curl -o 05-susfs.patch https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/05-susfs.patch || exit 1
 patch -f -p 1 < 05-susfs.patch
 echo 'KSU_SUSFS_HAS_MAGIC_MOUNT=y' >> arch/arm64/configs/vendor/chime_defconfig
 echo 'CONFIG_KSU_SUSFS=y' >> arch/arm64/configs/vendor/chime_defconfig

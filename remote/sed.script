@@ -1,7 +1,7 @@
 
 
-SED_STRING='Joe7500/Builds/refs/heads/main/crave/gofile.sh'
-SED_REPLACE='Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh'
+SED_STRING='Joe7500/build-scripts/refs/heads/main/remote/05-susfs.patch'
+SED_REPLACE='Joe7500/build-scripts/refs/heads/main/remote/src/05-susfs.patch'
 
 
 for i in `ls -1 *.sh`; do
