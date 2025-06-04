@@ -152,7 +152,7 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 cd external/wpa_supplicant_8
 git reset --hard
-curl -o wpa.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/komodo_wpa_supplicant.patch
+curl -o wpa.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/komodo_wpa_supplicant.patch
 patch -f -p 1 < wpa.patch
 rm -f wpa.patch
 cd ../../
