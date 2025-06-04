@@ -1,0 +1,10 @@
+
+
+SED_STRING='Joe7500/Builds/refs/heads/main/crave/gofile.sh'
+SED_REPLACE='Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i 
+done
