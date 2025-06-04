@@ -139,7 +139,7 @@ cd external/tinyxml
 git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
 cd ../../
 
-curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/hardware_calyx_interfaces_power-libperfmgr.tgz
+curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
 tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
 rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 
@@ -205,7 +205,7 @@ cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#dev
 mv BoardConfig.mk.1 BoardConfig.mk
 
 rm -f releasetools.py
-curl -o releasetools.py -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/calyx_releasetools.py
+curl -o releasetools.py -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/calyx_releasetools.py
 
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
