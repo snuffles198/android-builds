@@ -135,7 +135,7 @@ cd ..
 cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen name="qs_media_seekbar_progress_amplitude">1.5dp</dimen>#<dimen name="qs_media_seekbar_progress_amplitude">0dp</dimen>#g' > frameworks/base/packages/SystemUI/res/values/dimens.xml.1
 mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
 
-curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/voltage_brightness_slider.patch
+curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/src/voltage_brightness_slider.patch
 cd packages/apps/Powerhub/
 git reset --hard
 patch -f -p 1 < ../../../voltage_brightness_slider.patch
