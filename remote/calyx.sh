@@ -63,6 +63,7 @@ cleanup_self () {
    rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
    rm -f tdl.sh
    cd /tmp/src/android/
+   rm -rf sign/keys
 }
 
 # Better than ' || exit 1 '
