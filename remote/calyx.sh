@@ -15,7 +15,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
-REPO_URL="--git-lfs -u https://gitlab.com/CalyxOS/platform_manifest -b android15-qpr2 --git-lfs"
+REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android15-qpr2 --git-lfs"
 OTA_SED_STRING="https://release.calyxinstitute.org/"
 OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
 
