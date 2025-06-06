@@ -147,18 +147,18 @@ rm -rf sign/
 
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
-DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-curl -o devon.zip -L "$DEVON_URL"
-sudo apt update
-sudo apt -y install 7zip
-sudo apt -y install erofs-utils
-virtualenv dumpyara
-dumpyara/bin/pip install dumpyara
-dumpyara/bin/dumpyara devon.zip
-cd device/google/gearhead/
-./extract-files.py /tmp/src/android/devon
-cd ../../../
-rm -rf devon dumpyara devon.zip
+   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
+   curl -o devon.zip -L "$DEVON_URL"
+   sudo apt update
+   sudo apt -y install 7zip
+   sudo apt -y install erofs-utils
+   virtualenv dumpyara
+   dumpyara/bin/pip install dumpyara
+   dumpyara/bin/dumpyara devon.zip
+   cd device/google/gearhead/
+   ./extract-files.py /tmp/src/android/devon
+   cd ../../../
+   rm -rf devon dumpyara devon.zip
 fi
 
 # Setup device tree
