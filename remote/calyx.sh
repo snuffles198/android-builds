@@ -208,6 +208,8 @@ echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
 cd ../../../
 
+echo 'allow platform_app ota_package_file:dir { add_name search write read };' > device/xiaomi/chime/sepolicy/private/platform_app.te
+
 # KSU next susfs
 cd kernel/xiaomi/chime/
 curl -o 05-susfs.patch https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/05-susfs.patch ; check_fail
