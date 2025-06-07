@@ -133,31 +133,37 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardCon
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
+tar xf keys.tar
+rm -f keys.1 keys.2 keys.tar
+
 # Get dev secrets from bucket.
-sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
-rm -rf /home/admin/venv
-virtualenv /home/admin/venv ; check_fail
-set +v
-source /home/admin/venv/bin/activate
-set -v
-pip install --upgrade b2 ; check_fail
-b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
-mkdir priv-keys
-b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
-b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
-mkdir --parents vendor/lineage-priv/keys
-mv priv-keys/* vendor/lineage-priv/keys
-rm -rf priv-keys
-rm -rf .config/b2/
-rm -rf /home/admin/.config/b2/
-deactivate
-unset BUCKET_NAME
-unset KEY_ENCRYPTION_PASSWORD
-unset BKEY_ID
-unset BAPP_KEY
-unset KEY_PASSWORD
-cat /tmp/crave_bashrc | grep -vE "BKEY_ID|BUCKET_NAME|KEY_ENCRYPTION_PASSWORD|BAPP_KEY|TG_CID|TG_TOKEN" > /tmp/crave_bashrc.1
-mv /tmp/crave_bashrc.1 /tmp/crave_bashrc
+#sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
+#rm -rf /home/admin/venv
+#virtualenv /home/admin/venv ; check_fail
+#set +v
+#source /home/admin/venv/bin/activate
+#set -v
+#pip install --upgrade b2 ; check_fail
+#b2 account authorize "$BKEY_ID" "$BAPP_KEY" > /dev/null 2>&1 ; check_fail
+#mkdir priv-keys
+#b2 sync "b2://$BUCKET_NAME/inline" "priv-keys" > /dev/null 2>&1 ; check_fail
+#b2 sync "b2://$BUCKET_NAME/tdl" "/home/admin" > /dev/null 2>&1 ; check_fail
+#mkdir --parents vendor/lineage-priv/keys
+#mv priv-keys/* vendor/lineage-priv/keys
+#rm -rf priv-keys
+#rm -rf .config/b2/
+#rm -rf /home/admin/.config/b2/
+#deactivate
+#unset BUCKET_NAME
+#unset KEY_ENCRYPTION_PASSWORD
+#unset BKEY_ID
+#unset BAPP_KEY
+#unset KEY_PASSWORD
+#cat /tmp/crave_bashrc | grep -vE "BKEY_ID|BUCKET_NAME|KEY_ENCRYPTION_PASSWORD|BAPP_KEY|TG_CID|TG_TOKEN" > /tmp/crave_bashrc.1
+#mv /tmp/crave_bashrc.1 /tmp/crave_bashrc
 
 sleep 10
 
