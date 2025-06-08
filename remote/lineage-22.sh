@@ -144,6 +144,7 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
 tar xf tdl.tar
 rm -f tdl.1 tdl.2 tdl.tar
+mv tdl.zip /home/admin/
 
 sleep 10
 
