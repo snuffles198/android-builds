@@ -12,22 +12,8 @@ set -v
 PACKAGE_NAME=RisingOS
 VARIANT_NAME=user
 
-###
-###
-###
-###
-###
-###
-
-BUILD_TYPE=gapps
-#BUILD_TYPE=vanilla
-
-###
-###
-###
-###
-###
-###
+#BUILD_TYPE=gapps
+BUILD_TYPE=vanilla
 
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
