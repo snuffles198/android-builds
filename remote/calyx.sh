@@ -206,6 +206,8 @@ echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
+git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
+
 cd ../../../
 
 echo 'allow platform_app ota_package_file:dir { add_name search write read };' > device/xiaomi/chime/sepolicy/private/platform_app.te
