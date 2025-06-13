@@ -163,13 +163,11 @@ if ! ls vendor/google/gearhead/proprietary/; then
 fi
 
 # Setup device tree
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
 cd device/xiaomi/chime/
+
+git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
 
 cat AndroidProducts.mk | sed -e s/lineage/calyx/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
@@ -209,6 +207,10 @@ echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
 
 cd ../../../
+
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'allow platform_app ota_package_file:dir { add_name search write read };' > device/xiaomi/chime/sepolicy/private/platform_app.te
 
