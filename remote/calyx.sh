@@ -204,8 +204,6 @@ echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
-git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
-
 cd ../../../
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
