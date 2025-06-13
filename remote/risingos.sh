@@ -13,13 +13,18 @@ PACKAGE_NAME=RisingOS
 VARIANT_NAME=user
 
 #BUILD_TYPE=gapps
-BUILD_TYPE=vanilla
+BUILD_TYPE=gapps
 
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
+#
+#
+# Still new?
 REPO_URL="-u https://github.com/RisingOS-Revived/android -b qpr2 --git-lfs"
-
+#
+#
+#
 # Random template helper stuff
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost 
