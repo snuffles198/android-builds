@@ -21,7 +21,7 @@ XIAOMI_BRANCH=lineage-22.2
 #
 #
 # Still new?
-REPO_URL="-u https://github.com/RisingOS-Revived/android -b new --git-lfs"
+REPO_URL="-u https://github.com/RisingOS-Revived/android -b qpr2 --git-lfs"
 #
 #
 #
