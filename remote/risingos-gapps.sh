@@ -146,28 +146,6 @@ cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
-# Setup vanilla device tree
-cd device/xiaomi/chime && git reset --hard ; check_fail
-export RISING_MAINTAINER="Joe"
-cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
-mv lineage_chime.mk.1 lineage_chime.mk
-echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
-echo 'RISING_MAINTAINER="Joe"' >> lineage_chime.mk
-echo 'RISING_MAINTAINER := Joe'  >> lineage_chime.mk
-echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
-    RisingChipset="Chime" \
-    RisingMaintainer="Joe"' >> lineage_chime.mk
-echo 'WITH_GMS := false' >> lineage_chime.mk
-echo 'PRODUCT_PACKAGES += \
-   Gallery2
-' >> device.mk
-cd ../../../
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-
-echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
-
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
@@ -183,58 +161,6 @@ mv tdl.zip /home/admin/
 
 cat /tmp/crave_bashrc | grep -vE "BKEY_ID|BUCKET_NAME|KEY_ENCRYPTION_PASSWORD|BAPP_KEY|TG_CID|TG_TOKEN" > /tmp/crave_bashrc.1
 mv /tmp/crave_bashrc.1 /tmp/crave_bashrc
-
-sleep 10
-
-# Build it
-set +v
-
-source build/envsetup.sh          ; check_fail
-#breakfast chime user              ; check_fail
-mka installclean
-#mka bacon                         ; check_fail
-riseup chime user                 ; check_fail
-rise b                            ; check_fail
-
-
-set -v
-
-echo success > result.txt
-notify_send "Build $PACKAGE_NAME VANILLA  on crave.io succeeded."
-
-# Upload output to gofile
-cp out/target/product/chime/$PACKAGE_NAME*VANILLA*.zip .
-GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*VANILLA*.zip | tail -1`
-GO_FILE_MD5=`md5sum "$GO_FILE"`
-GO_FILE=`pwd`/$GO_FILE
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
-bash goupload.sh $GO_FILE
-GO_LINK=`cat GOFILE.txt`
-notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-rm -f goupload.sh GOFILE.txt
-cp $GO_FILE $GO_FILE.new.zip
-
-# Upload output to telegram
-if [[ ! -f $GO_FILE ]]; then
-   GO_FILE=builder.sh
-fi
-cd /home/admin
-VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-tar xf tdl_Linux.tgz ; check_fail
-unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-cd /tmp/src/android/
-/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-cd /home/admin
-rm -rf .tdl
-rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-rm -f tdl.sh
-cd /tmp/src/android/
-
-if [ "$BUILD_TYPE" == "vanilla" ]; then
-   cleanup_self
-   exit 0
-fi
 
 # Do gapps dirty build
 #
