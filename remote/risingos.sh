@@ -146,9 +146,6 @@ check_fail
 
 # Setup vanilla device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
-
-git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
-
 export RISING_MAINTAINER="Joe"
 cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
