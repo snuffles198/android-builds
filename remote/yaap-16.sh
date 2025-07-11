@@ -124,6 +124,8 @@ bash KernelSU/kernel/setup.sh --cleanup
 curl -o KernelSU-Next.tar.xz -L https://github.com/Joe7500/Builds/releases/download/Stuff/KernelSU-Next.tar.xz
 tar xf KernelSU-Next.tar.xz
 rm -f KernelSU-Next.tar.xz
+bash KernelSU-Next/kernel/setup.sh --cleanup
+bash KernelSU/kernel/setup.sh --cleanup
 bash KernelSU-Next/kernel/setup.sh
 cd ../../../
 
