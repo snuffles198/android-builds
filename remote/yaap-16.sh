@@ -15,7 +15,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.0
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=sixteen
-REPO_URL="-u https://github.com/yaap/manifest.git -b fifteen --git-lfs"
+REPO_URL="-u https://github.com/yaap/manifest.git -b sixteen --git-lfs"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
