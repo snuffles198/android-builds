@@ -132,6 +132,11 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
+# Setup kernel
+cd kernel/xiaomi/chime
+patch -f -p 1 -R  < sched_param_perf.patch
+cd ../../../
+
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
 rm -rf /home/admin/venv
