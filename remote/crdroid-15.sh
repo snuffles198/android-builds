@@ -94,6 +94,8 @@ else
    done
    rm -rf prebuilts/clang
    /opt/crave/resync.sh
+   cat /tmp/output.txt >> output.txt
+   rm -rf prebuilts/clang-tools
    /opt/crave/resync.sh ; check_fail
 fi
 
