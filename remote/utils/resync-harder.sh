@@ -60,7 +60,7 @@ main() {
     echo "Re-syncing all repositories..."
     find .repo -name '*.lock' -delete
     cp /tmp/output.txt resync-`date +%d%m-%H%M`.log
-    repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune | tee /tmp/output.txt
+    repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune
 }
 
 main $*
