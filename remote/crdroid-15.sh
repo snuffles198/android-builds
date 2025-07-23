@@ -91,6 +91,7 @@ else
    cleanup_self
    /opt/crave/resync.sh
    if [ $? -ne 0 ] ; then
+      cat /tmp/output.txt >> resync_output.txt
       curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
       bash resync-harder.sh ; check_fail
    fi
