@@ -89,10 +89,6 @@ if echo "$@" | grep resume; then
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
-   for i in `find .repo/ | grep 'prebuilts/clang'`; do
-      rm -rf $i
-   done
-   rm -rf prebuilts/clang*
    /opt/crave/resync.sh
    if [ $? -ne 0 ] ; then
       curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
