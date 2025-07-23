@@ -34,8 +34,8 @@ main() {
             # Delete the repository
             rm -rf "$repo_path/$repo_name"
             rm -rf ".repo/project/$repo_path/$repo_name"/*.git
-        done <<< "$(cat /tmp/output.txt | awk '/Failing repos.*:/ {flag=1; next} /Try/ {flag=0} flag')"
-        # Use regex wildcard. example: 'Failing repos (checkout):'
+        done <<< "$(cat /tmp/output.txt | awk '/Failing repos.*:/ {flag=1; next} /Try/ {flag=0} flag' | sort -u)"
+        # Use regex wildcard. example: 'Failing repos (checkout):'. 
     fi
 
     # Check if there are any failing repositories due to uncommitted changes
