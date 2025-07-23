@@ -89,6 +89,10 @@ if echo "$@" | grep resume; then
 else
    repo init $REPO_URL  ; check_fail
    cleanup_self
+   for i in `find .repo/ | grep 'prebuilts/clang'`; do
+      rm -rf $i
+   done
+   /opt/crave/resync.sh
    /opt/crave/resync.sh ; check_fail
 fi
 
