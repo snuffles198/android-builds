@@ -92,6 +92,7 @@ else
    /opt/crave/resync.sh
    if [ $? -ne 0 ] ; then
       cat /tmp/output.txt >> resync_output.txt
+      curl -L -F document=@"resync_output.txt" -F caption="resync_output.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
       curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
       bash resync-harder.sh ; check_fail
    fi
