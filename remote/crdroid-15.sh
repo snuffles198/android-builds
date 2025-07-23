@@ -95,8 +95,8 @@ else
    rm -rf prebuilts/clang*
    /opt/crave/resync.sh
    if [ $? -ne 0 ] ; then
-      cat /tmp/output.txt >> output.txt
-      /opt/crave/resync.sh ; check_fail
+      curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
+      bash resync-harder.sh ; check_fail
    fi
 fi
 
