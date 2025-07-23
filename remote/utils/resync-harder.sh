@@ -67,10 +67,6 @@ main() {
             echo "Deleted repository: $repo_info" | tee -a deleted_repositories.txt
             # Delete the repository
             rm -rf "$repo_path/$repo_name"
-            #rm -rf ".repo/project/$repo_path/$repo_name"/*.git
-            #for i in $(find .repo/project/ | grep "$repo_info"); do
-            #   rm -rf $i
-            #done
         done <<< "$(cat /tmp/output.txt | grep 'does not track upstream' | sort -u)"
     fi
 
