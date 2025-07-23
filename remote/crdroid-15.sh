@@ -92,6 +92,7 @@ else
    for i in `find .repo/ | grep 'prebuilts/clang'`; do
       rm -rf $i
    done
+   rm -rf prebuilts/clang
    /opt/crave/resync.sh
    /opt/crave/resync.sh ; check_fail
 fi
