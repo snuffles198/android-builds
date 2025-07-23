@@ -59,7 +59,13 @@ main() {
     # Re-sync all repositories after deletion
     echo "Re-syncing all repositories..."
     find .repo -name '*.lock' -delete
-    repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune
+    mv /tmp/output.txt /tmp/output-1.txt
+    repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune | tee /tmp/output.txt
 }
 
 main $*
+
+if [ $? -ne 0 ]; then
+    main $*
+fi
+
