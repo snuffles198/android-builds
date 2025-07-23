@@ -92,11 +92,12 @@ else
    for i in `find .repo/ | grep 'prebuilts/clang'`; do
       rm -rf $i
    done
-   rm -rf prebuilts/clang
+   rm -rf prebuilts/clang*
    /opt/crave/resync.sh
-   cat /tmp/output.txt >> output.txt
-   rm -rf prebuilts/clang-tools
-   /opt/crave/resync.sh ; check_fail
+   if [ $? -ne 0 ] ; then
+      cat /tmp/output.txt >> output.txt
+      /opt/crave/resync.sh ; check_fail
+   fi
 fi
 
 # Download trees
