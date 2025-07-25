@@ -18,14 +18,8 @@ BUILD_TYPE=gapps
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
-#
-#
-# Still new?
+
 REPO_URL="-u https://github.com/RisingOS-Revived/android -b qpr2 --git-lfs"
-#
-#
-#
-# Random template helper stuff
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost 
 export KBUILD_BUILD_USER=user
@@ -97,7 +91,13 @@ else
    repo init $REPO_URL  ; check_fail
 #cd .repo/manifests && git revert --no-edit 7199a38 && cd ../../
    cleanup_self
-   /opt/crave/resync.sh ; check_fail
+   /opt/crave/resync.sh
+   if [ $? -ne 0 ] ; then
+      cat /tmp/output.txt >> resync_output.txt
+      curl -L -F document=@"resync_output.txt" -F caption="resync_output.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+      curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
+      bash resync-harder.sh ; check_fail
+   fi
 fi
 
 # Download trees
