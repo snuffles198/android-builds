@@ -107,7 +107,7 @@ rm -rf device/xiaomi/chime/
 rm -rf hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
 
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-new.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-alt.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 
@@ -167,6 +167,11 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+
+# Setup kernel
+cd kernel/xiaomi/chime/
+bash do_ksun-susfs.sh ; check_fail
+cd ../../../
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
