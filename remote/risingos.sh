@@ -254,7 +254,7 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
     RisingChipset="Chime" \
     RisingMaintainer="Joe"' >> lineage_chime.mk
 echo 'WITH_GMS := true
-TARGET_DEFAULT_PIXEL_LAUNCHER := true
+TARGET_DEFAULT_PIXEL_LAUNCHER := false
 ' >> lineage_chime.mk
 cd ../../../
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
