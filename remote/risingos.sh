@@ -146,6 +146,11 @@ cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
+# Setup kernel
+cd kernel/xiaomi/chime/
+bash do_ksun-susfs.sh ; check_fail
+cd ../../../
+
 # Setup vanilla device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 export RISING_MAINTAINER="Joe"
@@ -167,11 +172,6 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
-
-# Setup kernel
-cd kernel/xiaomi/chime/
-bash do_ksun-susfs.sh ; check_fail
-cd ../../../
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
