@@ -177,6 +177,21 @@ mv tdl.zip /home/admin/
 
 sleep 10
 
+
+
+
+
+
+
+if false ; then
+
+
+
+
+
+
+
+
 # Build it
 set +v
 
@@ -188,9 +203,7 @@ mist b
 if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    echo F... kernel sched_param
    notify_send "Build $PACKAGE_NAME on crave.io kernel sched_param."
-   cd kernel/xiaomi/chime
-   patch -p 1 -t < sched_param.patch
-   cd -
+   cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
 else
    check_fail
@@ -199,9 +212,7 @@ fi
 if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    echo F... kernel sched_param
    notify_send "Build $PACKAGE_NAME on crave.io kernel sched_param again."
-   cd kernel/xiaomi/chime
-   patch -p 1 -t < sched_param.patch
-   cd -
+   cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
 else
    check_fail
@@ -247,6 +258,27 @@ if [ "$BUILD_TYPE" == "vanilla" ]; then
    cleanup_self
    exit 0
 fi
+
+
+
+
+
+
+
+
+
+# End if false ; then
+fi
+
+
+
+
+
+
+
+
+
+
 
 # Do gapps dirty build
 #
@@ -294,9 +326,7 @@ mist b
 if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    echo F... kernel sched_param
    notify_send "Build $PACKAGE_NAME GAPPS on crave.io kernel sched_param."
-   cd kernel/xiaomi/chime
-   patch -p 1 -t < sched_param.patch
-   cd -
+   cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
 else
    check_fail
@@ -305,9 +335,7 @@ fi
 if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    echo F... kernel sched_param
    notify_send "Build $PACKAGE_NAME GAPPS on crave.io kernel sched_param again."
-   cd kernel/xiaomi/chime
-   patch -p 1 -t < sched_param.patch
-   cd -
+   cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
 else
    check_fail
