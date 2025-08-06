@@ -146,11 +146,6 @@ cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
-# Setup kernel
-cd kernel/xiaomi/chime/
-bash do_ksun-susfs.sh ; check_fail
-cd ../../../
-
 # Setup vanilla device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 export RISING_MAINTAINER="Joe"
