@@ -178,18 +178,7 @@ mv tdl.zip /home/admin/
 sleep 10
 
 
-
-
-
-
-
-if false ; then
-
-
-
-
-
-
+if [ "$BUILD_TYPE" == "vanilla" ]; then
 
 
 # Build it
@@ -264,24 +253,8 @@ if [ "$BUILD_TYPE" == "vanilla" ]; then
 fi
 
 
-
-
-
-
-
-
-
-# End if false ; then
+# End if [ "$BUILD_TYPE" == "vanilla" ]; then
 fi
-
-
-
-
-
-
-
-
-
 
 
 # Do gapps dirty build
