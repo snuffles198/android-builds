@@ -205,6 +205,8 @@ if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    notify_send "Build $PACKAGE_NAME on crave.io kernel sched_param."
    cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
+elif ls out/target/product/chime/$PACKAGE_NAME*.zip ; then
+   echo success
 else
    check_fail
 fi
@@ -214,6 +216,8 @@ if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    notify_send "Build $PACKAGE_NAME on crave.io kernel sched_param again."
    cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
+elif ls out/target/product/chime/$PACKAGE_NAME*.zip ; then
+   echo success
 else
    check_fail
 fi
@@ -328,6 +332,8 @@ if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    notify_send "Build $PACKAGE_NAME GAPPS on crave.io kernel sched_param."
    cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
+elif ls out/target/product/chime/$PACKAGE_NAME*.zip ; then
+   echo success
 else
    check_fail
 fi
@@ -337,6 +343,8 @@ if [ $? -ne 0 ] && grep sched_param out/error.log ; then
    notify_send "Build $PACKAGE_NAME GAPPS on crave.io kernel sched_param again."
    cd kernel/xiaomi/chime ; patch -p 1 -t < sched_param.patch ; cd -
    mist b
+elif ls out/target/product/chime/$PACKAGE_NAME*.zip ; then
+   echo success
 else
    check_fail
 fi
