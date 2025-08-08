@@ -208,6 +208,11 @@ fi
 #if [ "$BUILD_TYPE" == "gapps" ]; then
 
 # Setup AOSP source
+   #cd packages/apps/Updater/ && git reset --hard && cd -
+   #cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
+   #cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
+   #cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+   #check_fail
 
 # Setup device tree
    #cd device/xiaomi/chime
