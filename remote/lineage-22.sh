@@ -48,16 +48,12 @@ cleanup_self () {
    rm -rf priv-keys .config/b2/ /home/admin/.config/b2/
    rm -rf device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/ hardware/xiaomi/
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/ prebuilts/clang/host/linux-x86/clang-stablekern/
-   cd packages/apps/Updater/ && git reset --hard && cd ../../../
-   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+   cd packages/apps/Updater/ && git reset --hard && cd -
+   cd packages/modules/Connectivity/ && git reset --hard && cd -
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
-   rm -rf /tmp/android-certs*
-   rm -rf /home/admin/venv/
-   rm -rf custom_scripts/
+   rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
-   rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
-   rm -f tdl.sh
+   rm -rf .tdl LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
    cd /tmp/src/android/
 }
 
@@ -183,9 +179,7 @@ if [ "$BUILD_TYPE" == "vanilla" ]; then
    cd /tmp/src/android/
    /home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
    cd /home/admin
-   rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-   rm -f tdl.sh
+   rm -rf .tdl LICENSE  README.md README_zh.md tdl tdl_key tdl_Linux_64bit.tar.gz* venv tdl.sh
    cd /tmp/src/android/
 
    # Generate and send OTA json file
@@ -215,6 +209,15 @@ fi
 # Setup AOSP source
 
 # Setup device tree
+   #cd device/xiaomi/chime
+   #rm -rf *
+   #git reset --hard ; check_fail
+
+   #cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
+   #mv BoardConfig.mk.1 BoardConfig.mk
+   #echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+   #echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
+   #cd -
 
 # Build it
 
