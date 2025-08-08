@@ -18,7 +18,8 @@ fi
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs"
+REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 
@@ -35,8 +36,8 @@ TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 notify_send() {
    local MSG
    MSG="$@"
-   curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="$MSG `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
-   curl -s -d "$MSG `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
+   curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="$MSG - $BUILD_TYPE `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
+   curl -s -d "$MSG - $BUILD_TYPE `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
 }
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
@@ -204,8 +205,10 @@ fi
 #
 #
 #
-
+#
 #if [ "$BUILD_TYPE" == "gapps" ]; then
+
+#  notify_send "Build $PACKAGE_NAME GAPPS on crave.io started."
 
 # Setup AOSP source
    #cd packages/apps/Updater/ && git reset --hard && cd -
@@ -227,6 +230,8 @@ fi
 
 # Build it
 
+   #notify_send "Build $PACKAGE_NAME on crave.io succeeded."
+
 # Upload output to gofile
    #cp out/target/product/chime/$PACKAGE_NAME*GAPPS*.zip .
    #GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*GAPPS*.zip | tail -1`
@@ -240,10 +245,11 @@ fi
 
 # Upload output to telegram
 
+# Notify
    #TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
    #notify_send "Build $PACKAGE_NAME GAPPS on crave.io completed. $TIME_TAKEN."
 
-#fi
+#fi # Endif if [ "$BUILD_TYPE" == "gapps" ]; then. Dont forget to uncomment here
 
 cleanup_self
 exit 0
