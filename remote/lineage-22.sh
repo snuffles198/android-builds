@@ -45,7 +45,7 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 # Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
-   rm -rf keys.1 keys.2 keys.tar tdl.1 tdl.2 tdl.tar
+   rm -rf keys.1 keys.2 keys.tar tdl.1 tdl.2 tdl.tar tdl.zip
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv
    rm -rf priv-keys .config/b2/ /home/admin/.config/b2/
    rm -rf device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/ hardware/xiaomi/
