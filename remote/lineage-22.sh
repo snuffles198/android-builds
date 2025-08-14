@@ -63,17 +63,17 @@ cleanup_self () {
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-   	  notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+   	      notify_send "Build $PACKAGE_NAME on crave.io softfailed."
           echo weird. build failed but OTA package exists.
           echo softfail > result.txt
-	  cleanup_self
+	      cleanup_self
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
-	  echo "oh no. script failed"
-	  curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+	      echo "oh no. script failed"
+	      curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
-	  echo fail > result.txt
+	      echo fail > result.txt
           exit 1 
        fi
    fi
@@ -93,14 +93,11 @@ fi
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
 curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz" ; check_fail
-tar xf kernel.tar.xz ; check_fail
-rm -f kernel.tar.xz
+tar xf kernel.tar.xz ; check_fail ; rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
-tar xf lineage-22.1.tar.xz ; check_fail
-rm -f lineage-22.1.tar.xz
+tar xf lineage-22.1.tar.xz ; check_fail ; rm -f lineage-22.1.tar.xz
 curl -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
-tar xf toolchain.tar.xz ; check_fail
-rm -f toolchain.tar.xz
+tar xf toolchain.tar.xz ; check_fail ; rm -f toolchain.tar.xz
 git clone https://github.com/Joe7500/device_xiaomi_chime.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
