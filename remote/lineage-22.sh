@@ -71,6 +71,7 @@ check_fail () {
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
 	  echo "oh no. script failed"
+	  curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
 	  echo fail > result.txt
           exit 1 
@@ -194,7 +195,7 @@ if [ "$BUILD_TYPE" == "vanilla" ]; then
 
 fi
 
-# If time permits, do dirty GAPPS build. 
+# If time permits, do dirty GAPPS build.
 
 #if [ $SECONDS -le 12600 ] ; then
 #   BUILD_TYPE=gapps
