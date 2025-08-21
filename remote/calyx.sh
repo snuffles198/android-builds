@@ -213,9 +213,9 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardCon
 echo 'allow platform_app ota_package_file:dir { add_name search write read };' > device/xiaomi/chime/sepolicy/private/platform_app.te
 
 # Kernel setup
-cd kernel/xiaomi/chime/
-bash do_ksun-susfs.sh ; check_fail
-cd ../../../
+#cd kernel/xiaomi/chime/
+#bash do_ksun-susfs.sh ; check_fail
+#cd ../../../
 
 # Build it
 set +v
