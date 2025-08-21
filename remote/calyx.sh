@@ -106,7 +106,7 @@ rm -rf vendor/xiaomi/chime/
 rm -rf device/xiaomi/chime/
 rm -rf hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-hanikrnl-susfs.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
