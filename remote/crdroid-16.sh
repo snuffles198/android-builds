@@ -132,6 +132,7 @@ cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
 cd vendor/lineage
+git reset --hard
 curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/16-vendor-rom-kernel.patch
 patch -p 1 -f < 1.patch
 cd ../../
@@ -157,6 +158,9 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c
 cd ../../../
+
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
