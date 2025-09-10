@@ -147,6 +147,9 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 cd device/xiaomi/chime/
+
+git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c
+
 cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/keys/keys.mk#g' > device.mk.1
 mv device.mk.1 device.mk
 cat AndroidProducts.mk | sed -e s/lineage/voltage/g > AndroidProducts.mk.1
