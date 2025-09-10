@@ -12,9 +12,6 @@ set -v
 PACKAGE_NAME=lineage-22
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-if echo $@ | grep BUILD_GAPPS; then
-   BUILD_TYPE=gapps
-fi
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
@@ -22,13 +19,8 @@ REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
-
-# Random template helper stuff
-export BUILD_USERNAME=user
-export BUILD_HOSTNAME=localhost 
-export KBUILD_BUILD_USER=user
-export KBUILD_BUILD_HOST=localhost
 SECONDS=0
+export TZ=Africa/Harare
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 
@@ -36,8 +28,8 @@ TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 notify_send() {
    local MSG
    MSG="$@"
-   curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="$MSG - $BUILD_TYPE `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
-   curl -s -d "$MSG - $BUILD_TYPE `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
+   curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="$MSG - $BUILD_TYPE `date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
+   curl -s -d "$MSG - $BUILD_TYPE `date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
 }
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
@@ -45,7 +37,7 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 # Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
-   rm -rf keys.1 keys.2 keys.tar tdl.1 tdl.2 tdl.tar tdl.zip
+   rm -rf keys.1 keys.2 keys.tar tdl.1 tdl.2 tdl.tar tdl.zip sf
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv
    rm -rf priv-keys .config/b2/ /home/admin/.config/b2/
    rm -rf device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/ hardware/xiaomi/
@@ -63,17 +55,17 @@ cleanup_self () {
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-   	      notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+          notify_send "Build $PACKAGE_NAME on crave.io softfailed."
           echo weird. build failed but OTA package exists.
-          echo softfail > result.txt
-	      cleanup_self
+          cleanup_self
+	  echo softfail > result.txt
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
-	      echo "oh no. script failed"
-	      curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+	  echo "oh no. script failed"
+	  curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
-	      echo fail > result.txt
+	  echo fail > result.txt
           exit 1 
        fi
    fi
@@ -119,7 +111,6 @@ check_fail
 # Setup device tree
 cd device/xiaomi/chime
 git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
-#bash ../../../kernel/xiaomi/chime/setup-devicetree.sh # Using a prebuilt kernel to save some build time.
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
@@ -134,120 +125,55 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
 rm -f keys.1 keys.2 keys.tar
-curl -o tdl.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
-tar xf tdl.tar
-rm -f tdl.1 tdl.2 tdl.tar
-mv tdl.zip /home/admin/
-
-# Build it
-if [ "$BUILD_TYPE" == "vanilla" ]; then
-
-   set +v
-
-   source build/envsetup.sh          ; check_fail
-   breakfast chime user              ; check_fail
-   mka installclean
-   mka bacon                         ; check_fail
-
-   set -v
-
-   echo success > result.txt
-   notify_send "Build $PACKAGE_NAME on crave.io succeeded."
-
-   # Upload output to gofile
-   cp out/target/product/chime/$PACKAGE_NAME*.zip .
-   GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
-   GO_FILE_MD5=`md5sum "$GO_FILE"`
-   GO_FILE=`pwd`/$GO_FILE
-   curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
-   bash goupload.sh $GO_FILE
-   GO_LINK=`cat GOFILE.txt`
-   notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-   rm -f goupload.sh GOFILE.txt
-
-   # Upload output to telegram
-   if [[ ! -f $GO_FILE ]]; then
-      GO_FILE=builder.sh
-   fi
-   cd /home/admin
-   VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-   wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-   tar xf tdl_Linux.tgz ; check_fail
-   unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-   cd /tmp/src/android/
-   /home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-   cd /home/admin
-   rm -rf .tdl LICENSE  README.md README_zh.md tdl tdl_key tdl_Linux_64bit.tar.gz* venv tdl.sh
-   cd /tmp/src/android/
-
-   # Generate and send OTA json file
-   curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
-   bash genota.sh lineage 22 "$GO_FILE"
-   curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
-   rm -f genota.sh
-
-   TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
-   notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
-
-fi
-
-# If time permits, do dirty GAPPS build.
-
-#if [ $SECONDS -le 12600 ] ; then
-#   BUILD_TYPE=gapps
-#fi
-
-# Do GAPPS build
-#
-#
-#
-#
-#if [ "$BUILD_TYPE" == "gapps" ]; then
-
-#  notify_send "Build $PACKAGE_NAME GAPPS on crave.io started."
-
-# Setup AOSP source
-   #cd packages/apps/Updater/ && git reset --hard && cd -
-   #cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-   #cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
-   #cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
-   #check_fail
-
-# Setup device tree
-   #cd device/xiaomi/chime
-   #rm -rf *
-   #git reset --hard ; check_fail
-   #git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
-   #cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
-   #mv BoardConfig.mk.1 BoardConfig.mk
-   #echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
-   #echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
-   #cd -
 
 # Build it
 
-   #notify_send "Build $PACKAGE_NAME on crave.io succeeded."
+set +v
+
+source build/envsetup.sh          ; check_fail
+export BUILD_USERNAME=user
+export BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+breakfast chime user              ; check_fail
+mka installclean
+mka bacon                         ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
 # Upload output to gofile
-   #cp out/target/product/chime/$PACKAGE_NAME*GAPPS*.zip .
-   #GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*GAPPS*.zip | tail -1`
-   #GO_FILE_MD5=`md5sum "$GO_FILE"`
-   #GO_FILE=`pwd`/$GO_FILE
-   #curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
-   #bash goupload.sh $GO_FILE
-   #GO_LINK=`cat GOFILE.txt`
-   #notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-   #rm -f goupload.sh GOFILE.txt
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
+if [[ ! -f $GO_FILE ]]; then
+   GO_FILE=builder.sh
+fi
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
 
-# Upload output to telegram
+# Upload file to SF
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
+chmod a-x sf
+chmod go-rwx sf
+rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rm -f keys.1 keys.2 sf
 
-# Notify
-   #TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
-   #notify_send "Build $PACKAGE_NAME GAPPS on crave.io completed. $TIME_TAKEN."
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh lineage 22 "$GO_FILE"
+curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
 
-#fi # Endif if [ "$BUILD_TYPE" == "gapps" ]; then. Dont forget to uncomment here
+TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
+notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
 cleanup_self
 exit 0
