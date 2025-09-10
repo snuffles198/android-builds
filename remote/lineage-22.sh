@@ -15,6 +15,8 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
+GENOTA_ARG_1="lineage"
+GENOTA_ARG_2="22"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
@@ -144,7 +146,7 @@ set -v
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
-# Upload output to gofile
+# Upload output to pixeldrain
 cp out/target/product/chime/$PACKAGE_NAME*.zip .
 GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
@@ -168,7 +170,7 @@ rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
 curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
-bash genota.sh lineage 22 "$GO_FILE"
+bash genota.sh "$GENOTA_ARG_1" "$GENOTA_ARG_2" "$GO_FILE"
 curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 rm -f genota.sh
 
