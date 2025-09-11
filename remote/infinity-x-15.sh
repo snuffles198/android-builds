@@ -18,7 +18,6 @@ if echo $@ | grep BUILD_GAPPS; then
 else
    PACKAGE_NAME_TYPE="$PACKAGE_NAME"
 fi
-
 DEVICE_BRANCH=lineage-22.2
 VENDOR_BRANCH=lineage-22.2
 XIAOMI_BRANCH=lineage-22.2
