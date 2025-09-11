@@ -68,16 +68,16 @@ cleanup_self () {
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-   	  notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+   	      notify_send "Build $PACKAGE_NAME on crave.io softfailed."
           echo weird. build failed but OTA package exists.
           echo softfail > result.txt
-	  cleanup_self
+	      cleanup_self
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
-	  echo "oh no. script failed"
+	      echo "oh no. script failed"
           cleanup_self
-	  echo fail > result.txt
+	      echo fail > result.txt
           exit 1 
        fi
    fi
