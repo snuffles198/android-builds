@@ -160,17 +160,17 @@ echo "$GO_FILE"
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
-curl -L -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+curl -s -L -T "$GO_FILE" -u ":$PDAPIKEY" https://pixeldrain.com/api/file/ > out.json
 PD_ID=`cat out.json | cut -d '"' -f 4`
 notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
 
 # Upload file to SF
-curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+curl -s -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
 chmod a-x sf
 chmod go-rwx sf
-rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rsync --log-file=rsync.log -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
 rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
