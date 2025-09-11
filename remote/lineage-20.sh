@@ -156,14 +156,13 @@ notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 cp out/target/product/chime/$PACKAGE_NAME*.zip .
 GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
-GO_FILE=`pwd`/$GO_FILE
+echo "$GO_FILE"
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
-curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+curl -L -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
 PD_ID=`cat out.json | cut -d '"' -f 4`
 notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
-rm -f out.json
 
 # Upload file to SF
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
