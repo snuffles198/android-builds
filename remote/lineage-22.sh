@@ -101,13 +101,12 @@ patch -f -p 1 < wfdservice.rc.patch ; check_fail
 cd packages/modules/Connectivity/ && git reset --hard && cd -
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
-rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
-rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
 cd packages/apps/Updater/ && git reset --hard && cd -
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+rm -f strings.xml.1
 check_fail
 
 # Setup device tree
