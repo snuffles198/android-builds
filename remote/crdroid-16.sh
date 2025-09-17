@@ -15,14 +15,12 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.0
 VENDOR_BRANCH=lineage-23.0
 XIAOMI_BRANCH=lineage-23.0
-REPO_URL="-u https://github.com/crdroidandroid/android.git -b 16.0 --git-lfs"
+GENOTA_ARG_1="crdroid"
+GENOTA_ARG_2="12"
+REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
+REPO_URL="-u https://github.com/crdroidandroid/android.git -b 16.0 $REPO_PARAMS"
 OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/16.0/{device}.json"
-
-# Random template helper stuff
-export BUILD_USERNAME=user
-export BUILD_HOSTNAME=localhost 
-export KBUILD_BUILD_USER=user
-export KBUILD_BUILD_HOST=localhost
+OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -40,27 +38,15 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 # Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
-   rm -rf vendor/lineage-priv/keys
-   rm -rf vendor/lineage-priv
-   rm -rf priv-keys
-   rm -rf .config/b2/
-   rm -rf /home/admin/.config/b2/
+   rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys .config/b2/ /home/admin/.config/b2/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
-   rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-   rm -rf hardware/xiaomi/
-   rm -rf device/xiaomi/chime/
-   rm -rf vendor/xiaomi/chime/
-   rm -rf kernel/xiaomi/chime/
+   rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
-   rm -rf /tmp/android-certs*
-   rm -rf /home/admin/venv/
-   rm -rf custom_scripts/
+   rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
-   rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
-   rm -f tdl.sh
+   rm -rf .tdl LICENSE README.md README_zh.md tdl tdl_key tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
    cd /tmp/src/android/
 }
 
@@ -76,6 +62,7 @@ check_fail () {
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
 	  echo "oh no. script failed"
+          curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
 	  echo fail > result.txt
           exit 1 
@@ -87,24 +74,16 @@ check_fail () {
 if echo "$@" | grep resume; then
    echo "resuming"
 else
+   rm -rf .repo/manifests*
    repo init $REPO_URL  ; check_fail
    cleanup_self
    /opt/crave/resync.sh
-   if [ $? -ne 0 ] ; then
-      cat /tmp/output.txt >> resync_output.txt
-      curl -L -F document=@"resync_output.txt" -F caption="resync_output.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
-      curl -o resync-harder.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/resync-harder.sh
-      bash resync-harder.sh ; check_fail
-   fi
 fi
 
 # Download trees
-rm -rf kernel/xiaomi/chime/
-rm -rf vendor/xiaomi/chime/
-rm -rf device/xiaomi/chime/
-rm -rf hardware/xiaomi/
+rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-lilium-ksun.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
@@ -133,7 +112,24 @@ check_fail
 
 cd vendor/lineage
 git reset --hard
-curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/16-vendor-rom-kernel.patch
+echo 'diff --git a/build/tasks/kernel.mk b/build/tasks/kernel.mk
+index 62b3dfa..b6ca5d5 100644
+--- a/build/tasks/kernel.mk
++++ b/build/tasks/kernel.mk
+@@ -118,13 +118,6 @@ DTBS_OUT := $(DTB_OUT)/out
+ endif
+ KERNEL_CONFIG := $(KERNEL_OUT)/.config
+ KERNEL_RELEASE := $(KERNEL_OUT)/include/config/kernel.release
+-ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+-ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)
+-ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)
+-GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))
+-endif
+-endif
+-endif
+
+ ifeq ($(KERNEL_ARCH),x86_64)
+ KERNEL_DEFCONFIG_ARCH := x86' > 1.patch
 patch -p 1 -f < 1.patch
 cd ../../
 
@@ -146,7 +142,6 @@ if [ $? -ne 0 ] ; then
    patch -p 1 -f < 2.patch
    cd ../../
 fi
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
 
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
@@ -154,10 +149,11 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
-# squiggly
 cd device/xiaomi/chime
-git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c
+git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 cd ../../../
+
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
 
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
@@ -168,19 +164,15 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
 rm -f keys.1 keys.2 keys.tar
-curl -o tdl.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
-tar xf tdl.tar
-rm -f tdl.1 tdl.2 tdl.tar
-mv tdl.zip /home/admin/
-
-sleep 10
 
 # Build it
 set +v
 
 source build/envsetup.sh          ; check_fail
+export BUILD_USERNAME=user
+export BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
 breakfast chime user              ; check_fail
 mka installclean
 mka bacon                         ; check_fail
@@ -190,62 +182,36 @@ set -v
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
-# Upload output to gofile
+# Upload output to pixeldrain
 cp out/target/product/chime/$PACKAGE_NAME*.zip .
 GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
-bash goupload.sh $GO_FILE
-GO_LINK=`cat GOFILE.txt`
-notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-rm -f goupload.sh GOFILE.txt
-
-# Upload output to telegram
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
-cd /home/admin
-VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-tar xf tdl_Linux.tgz ; check_fail
-unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-cd /tmp/src/android/
-/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-cd /home/admin
-rm -rf .tdl
-rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-rm -f tdl.sh
-cd /tmp/src/android/
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Upload file to SF
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
+chmod a-x sf
+chmod go-rwx sf
+rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
 curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
-bash genota.sh crdroid 11 "$GO_FILE"
+bash genota.sh "$GENOTA_ARG_1" "$GENOTA_ARG_2" "$GO_FILE"
 curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 rm -f genota.sh
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
-
-if [ "$BUILD_TYPE" == "vanilla" ]; then
-   cleanup_self
-   exit 0
-fi
-
-# Do gapps dirty build
-#
-#
-#
-
-# Setup AOSP source
-
-# Setup device tree
-
-# Build it
-
-# Upload output to gofile
-
-# Upload output to telegram
 
 cleanup_self
 exit 0
