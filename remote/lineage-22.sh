@@ -130,6 +130,8 @@ index 3f67902..db756d0 100644
  ifeq ($(KERNEL_ARCH),x86_64)
  KERNEL_DEFCONFIG_ARCH := x86' > 1.patch
 patch -f -p 1 < 1.patch 
+#Try this instead:
+#sed -ie 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
 # Setup device tree
 cd device/xiaomi/chime
