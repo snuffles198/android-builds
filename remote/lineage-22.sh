@@ -109,6 +109,28 @@ cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 rm -f strings.xml.1
 check_fail
 
+cd vendor/lineage
+git reset --hard
+echo 'diff --git a/build/tasks/kernel.mk b/build/tasks/kernel.mk
+index 3f67902..db756d0 100644
+--- a/build/tasks/kernel.mk
++++ b/build/tasks/kernel.mk
+@@ -106,13 +106,6 @@ KERNEL_CONFIG := $(KERNEL_OUT)/.config
+ KERNEL_RELEASE := $(KERNEL_OUT)/include/config/kernel.release
+ RECOVERY_KERNEL_CONFIG := $(RECOVERY_KERNEL_OUT)/.config
+ RECOVERY_KERNEL_RELEASE := $(RECOVERY_KERNEL_OUT)/include/config/kernel.release
+-ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+-ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)
+-ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)
+-GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))
+-endif
+-endif
+-endif
+
+ ifeq ($(KERNEL_ARCH),x86_64)
+ KERNEL_DEFCONFIG_ARCH := x86' > 1.patch
+patch -f -p 1 < 1.patch 
+
 # Setup device tree
 cd device/xiaomi/chime
 git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
