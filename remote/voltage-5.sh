@@ -61,7 +61,7 @@ check_fail () {
           notify_send "Build $PACKAGE_NAME on crave.io softfailed."
           echo weird. build failed but OTA package exists.
           cleanup_self
-	      echo softfail > result.txt
+          echo softfail > result.txt
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
@@ -117,7 +117,6 @@ cat config/version.mk | sed -e 's/UNOFFICIAL/COMMUNITY/g' > config/version.mk.1
 mv config/version.mk.1 config/version.mk
 cd ../..
 
-# Setup device tree
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
