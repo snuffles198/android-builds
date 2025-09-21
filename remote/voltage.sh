@@ -141,6 +141,10 @@ git reset --hard
 patch -f -p 1 < ../../../voltage_brightness_slider.patch
 cd ../../../
 
+rm -f hardware/qcom/sm7250/Android.bp hardware/qcom/sm7250/Android.mk
+rm -f hardware/qcom/sdm845/Android.bp hardware/qcom/sdm845/Android.mk
+rm -f hardware/qcom/sm8150/Android.bp hardware/qcom/sm8150/Android.mk
+
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
