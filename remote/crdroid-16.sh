@@ -110,28 +110,7 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$V
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
-cd vendor/lineage
-git reset --hard
-echo 'diff --git a/build/tasks/kernel.mk b/build/tasks/kernel.mk
-index 62b3dfa..b6ca5d5 100644
---- a/build/tasks/kernel.mk
-+++ b/build/tasks/kernel.mk
-@@ -118,13 +118,6 @@ DTBS_OUT := $(DTB_OUT)/out
- endif
- KERNEL_CONFIG := $(KERNEL_OUT)/.config
- KERNEL_RELEASE := $(KERNEL_OUT)/include/config/kernel.release
--ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
--ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)
--ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)
--GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))
--endif
--endif
--endif
-
- ifeq ($(KERNEL_ARCH),x86_64)
- KERNEL_DEFCONFIG_ARCH := x86' > 1.patch
-patch -p 1 -f < 1.patch
-cd ../../
+sed -ie 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
