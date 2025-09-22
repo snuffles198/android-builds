@@ -113,9 +113,9 @@ mv strings.xml.new.txt strings.xml.backup.orig.txt
 cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 
-sed -ie 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
-sed -ie 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
-sed -ie 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
+sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
 #cd frameworks/base
 #echo 'diff --git a/core/java/android/view/animation/AnimationUtils.java b/core/java/android/view/animation/AnimationUtils.java
@@ -172,7 +172,7 @@ if echo $@ | grep GAPPS ; then
    echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
    cd -
-   sed -ie 's/persist.sys.quickswitch_pixel_shipped=1/persist.sys.quickswitch_pixel_shipped=0/g' vendor/rising/config/properties.mk
+   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=1/persist.sys.quickswitch_pixel_shipped=0/g' vendor/rising/config/properties.mk
    cd -
 else
 # VANILLA
