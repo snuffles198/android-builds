@@ -176,6 +176,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
 # Setup kernel
 
