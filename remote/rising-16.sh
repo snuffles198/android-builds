@@ -199,7 +199,8 @@ echo '   <hal format="hidl">
    </hal>
 </manifest>' >> device/xiaomi/chime/configs/vintf/manifest.xml
 
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
