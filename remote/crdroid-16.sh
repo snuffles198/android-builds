@@ -19,7 +19,7 @@ GENOTA_ARG_1="crdroid"
 GENOTA_ARG_2="12"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/crdroidandroid/android.git -b 16.0 $REPO_PARAMS"
-OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/16.0/{device}.json"
+OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/.*json"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
