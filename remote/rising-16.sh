@@ -171,10 +171,9 @@ if echo $@ | grep GAPPS ; then
    echo 'WITH_GMS := true' >> lineage_chime.mk
 #   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
 #   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
-   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := true' >> lineage_chime.mk
-   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
-   cd -
-   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=1/persist.sys.quickswitch_pixel_shipped=0/g' vendor/rising/config/properties.mk
+   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
+   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
    cd -
 else
 # VANILLA
