@@ -104,9 +104,9 @@ rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/uti
 
 cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml.backup.orig.txt
-cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/sixteen/OTA/device/GAPPS/{device}.json#Joe7500/Builds/main/rising-rev-8-gapps-chime.json#g' > strings.xml.new.txt
+cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/.*GAPPS/.*json#Joe7500/Builds/main/rising-rev-8-gapps-chime.json#g' > strings.xml.new.txt
 mv strings.xml.new.txt strings.xml.backup.orig.txt
-cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/sixteen/OTA/device/VANILLA/{device}.json#Joe7500/Builds/main/rising-8-rev-vanilla-chime.json#g' > strings.xml.new.txt
+cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/.*VANILLA/.*json#Joe7500/Builds/main/rising-8-rev-vanilla-chime.json#g' > strings.xml.new.txt
 mv strings.xml.new.txt strings.xml.backup.orig.txt
 cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/sixteen/OTA/device/CORE/{device}.json#Joe7500/Builds/main/rising-8-rev-core-chime.json#g' > strings.xml.new.txt
 mv strings.xml.new.txt strings.xml.backup.orig.txt
