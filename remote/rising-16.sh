@@ -226,7 +226,6 @@ source build/envsetup.sh
 source build/make/envsetup.sh
 source build/envsetup.sh
 source build/make/envsetup.sh
-source build/envsetup.sh          ; check_fail
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user
