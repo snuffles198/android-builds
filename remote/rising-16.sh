@@ -180,8 +180,9 @@ else
 # VANILLA
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
    echo 'WITH_GMS := false' >> lineage_chime.mk
-   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.m
    echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
 fi
 
