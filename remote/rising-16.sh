@@ -169,8 +169,10 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
 if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
    echo 'WITH_GMS := true' >> lineage_chime.mk
-   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := true' >> lineage_chime.mk
+   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
    cd -
    sed -i -e 's/persist.sys.quickswitch_pixel_shipped=1/persist.sys.quickswitch_pixel_shipped=0/g' vendor/rising/config/properties.mk
    cd -
@@ -219,6 +221,10 @@ rm -f keys.1 keys.2 keys.tar
 # Build it
 set +v
 
+source build/envsetup.sh
+source build/make/envsetup.sh
+source build/envsetup.sh
+source build/make/envsetup.sh
 source build/envsetup.sh          ; check_fail
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost
