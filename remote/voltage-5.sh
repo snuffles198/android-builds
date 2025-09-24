@@ -19,7 +19,7 @@ GENOTA_ARG_1="voltage"
 GENOTA_ARG_2="23"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/VoltageOS/manifest.git -b 16 $REPO_PARAMS"
-OTA_SED_STRING="VoltageOS/android_vendor_voltageota/16/{device}.json"
+OTA_SED_STRING="VoltageOS/android_vendor_voltageota/.*json"
 OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 export TZ=Africa/Harare
