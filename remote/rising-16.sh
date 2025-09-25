@@ -153,12 +153,12 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 
-export RISING_MAINTAINER="Joe"
 cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 cat lineage_chime.mk | grep -v "WITH_GMS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 
+export RISING_MAINTAINER="Joe"
 echo 'RISING_MAINTAINER="Joe"' >> lineage_chime.mk
 echo 'RISING_MAINTAINER := Joe'  >> lineage_chime.mk
 echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
