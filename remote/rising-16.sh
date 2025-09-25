@@ -174,7 +174,6 @@ if echo $@ | grep GAPPS ; then
    echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
    echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
    echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
-   cd -
 else
 # VANILLA
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
