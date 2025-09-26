@@ -69,22 +69,7 @@ check_fail () {
 }
 
 # repo sync. or not.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if echo "$@" | grep resume-ignore-this; then
+if echo "$@" | grep resume; then
    echo "resuming"
 else
    rm -rf .repo/manifests*
