@@ -169,19 +169,17 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
 if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
    echo 'WITH_GMS := true' >> lineage_chime.mk
-#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
    echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
-   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
-   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=0/persist.sys.quickswitch_pixel_shipped=1/g' vendor/rising/config/properties.mk
+#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
+#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
+#   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=0/persist.sys.quickswitch_pixel_shipped=1/g' vendor/rising/config/properties.mk
 else
 # VANILLA
    cd vendor/rising ; git reset --hard ; cd -
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
    echo 'WITH_GMS := false' >> lineage_chime.mk
 #   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.m
    echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
 fi
@@ -300,25 +298,12 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
     RisingMaintainer="Joe"' >> lineage_chime.mk
 
 # GAPPS
-if echo GAPPS | grep GAPPS ; then
+#if echo GAPPS | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
    echo 'WITH_GMS := true' >> lineage_chime.mk
-#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
    echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
-#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
-#   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=0/persist.sys.quickswitch_pixel_shipped=1/g' vendor/rising/config/properties.mk
-else
-# VANILLA
-   cd vendor/rising ; git reset --hard ; cd -
-   echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
-   echo 'WITH_GMS := false' >> lineage_chime.mk
-#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
-#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
-   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.m
-   echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
-fi
+#else
 
 cd ../../../
 
