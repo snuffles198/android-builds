@@ -184,6 +184,11 @@ else
    echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
 fi
 
+cat lineage_chime.mk | grep -v "TARGET_ENABLE_BLUR" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo 'TARGET_ENABLE_BLUR := true'  >> lineage_chime.mk
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+
 cd ../../../
 
 cat device/xiaomi/chime/configs/vintf/manifest.xml | grep -v '</manifest>' > device/xiaomi/chime/configs/vintf/manifest.xml.1
@@ -304,6 +309,11 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
    echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
 #else
+
+cat lineage_chime.mk | grep -v "TARGET_ENABLE_BLUR" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo 'TARGET_ENABLE_BLUR := true'  >> lineage_chime.mk
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 
 cd ../../../
 
