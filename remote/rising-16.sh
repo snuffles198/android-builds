@@ -176,7 +176,7 @@ if echo $@ | grep GAPPS ; then
 #   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=0/persist.sys.quickswitch_pixel_shipped=1/g' vendor/rising/config/properties.mk
 else
 # VANILLA
-   cd vendor/rising ; git reset --hard ; cd -
+   cd ../../../vendor/rising ; git reset --hard ; cd -
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
    echo 'WITH_GMS := false' >> lineage_chime.mk
 #   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
