@@ -18,7 +18,7 @@ XIAOMI_BRANCH=lineage-23.0
 GENOTA_ARG_1="rising"
 GENOTA_ARG_2="8"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/RisingOS-Revived/android -b sixteen-los $REPO_PARAMS"
+REPO_URL="-u https://github.com/RisingOS-Revived/android -b sixteen $REPO_PARAMS"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -212,6 +212,11 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
+curl -o default_wallpaper.webp -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/default_wallpaper.webp
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-nodpi
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw600dp-nodpi
+
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
@@ -271,6 +276,134 @@ rm -f genota.sh
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
+
+
+#cleanup_self
+#exit 0
+
+# setup dev tree for gapps
+cd device/xiaomi/chime
+rm -rf *
+git reset --hard
+git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+
+cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+cat lineage_chime.mk | grep -v "WITH_GMS" > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+
+export RISING_MAINTAINER="Joe"
+echo 'RISING_MAINTAINER="Joe"' >> lineage_chime.mk
+echo 'RISING_MAINTAINER := Joe'  >> lineage_chime.mk
+echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
+    RisingChipset="Chime" \
+    RisingMaintainer="Joe"' >> lineage_chime.mk
+
+# GAPPS
+if echo GAPPS | grep GAPPS ; then
+   echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+   echo 'WITH_GMS := true' >> lineage_chime.mk
+#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
+   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.default_launcher=0' >> lineage_chime.mk
+#   echo 'PRODUCT_SYSTEM_PROPERTIES += persist.sys.quickswitch_pixel_shipped=1' >> lineage_chime.mk
+#   sed -i -e 's/persist.sys.quickswitch_pixel_shipped=0/persist.sys.quickswitch_pixel_shipped=1/g' vendor/rising/config/properties.mk
+else
+# VANILLA
+   cd vendor/rising ; git reset --hard ; cd -
+   echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
+   echo 'WITH_GMS := false' >> lineage_chime.mk
+#   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+#   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.m
+   echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
+fi
+
+cd ../../../
+
+cat device/xiaomi/chime/configs/vintf/manifest.xml | grep -v '</manifest>' > device/xiaomi/chime/configs/vintf/manifest.xml.1
+mv device/xiaomi/chime/configs/vintf/manifest.xml.1 device/xiaomi/chime/configs/vintf/manifest.xml
+echo '   <hal format="hidl">
+        <name>vendor.qti.hardware.servicetracker</name>
+        <transport>hwbinder</transport>
+        <version>1.2</version>
+        <interface>
+            <name>IServicetracker</name>
+            <instance>default</instance>
+        </interface>
+        <fqname>@1.2::IServicetracker/default</fqname>
+   </hal>
+</manifest>' >> device/xiaomi/chime/configs/vintf/manifest.xml
+
+#echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+curl -o default_wallpaper.webp -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/default_wallpaper.webp
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-nodpi
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
+cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw600dp-nodpi
+
+# Build it
+set +v
+
+source build/envsetup.sh
+source build/make/envsetup.sh
+source build/envsetup.sh
+source build/make/envsetup.sh
+source build/envsetup.sh
+source build/envsetup.sh
+export BUILD_USERNAME=user
+export BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+riseup chime user                 ; check_fail
+mka installclean
+rise b                           ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "Build $PACKAGE_NAME on crave.io succeeded."
+
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
+if [[ ! -f $GO_FILE ]]; then
+   GO_FILE=builder.sh
+fi
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Upload file to SF
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
+chmod a-x sf
+chmod go-rwx sf
+rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rm -f keys.1 keys.2 sf
+
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh "$GENOTA_ARG_1" "$GENOTA_ARG_2" "$GO_FILE"
+curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
+
+TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
+notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
+
 
 cleanup_self
 exit 0
