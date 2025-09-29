@@ -72,10 +72,11 @@ check_fail () {
 if echo "$@" | grep resume; then
    echo "resuming"
 else
-   rm -rf .repo/manifests*
-   repo init $REPO_URL  ; check_fail
-   cleanup_self
-   /opt/crave/resync.sh
+#   rm -rf .repo/manifests*
+#   repo init $REPO_URL  ; check_fail
+#   cleanup_self
+#   /opt/crave/resync.sh
+echo nope
 fi
 
 # Download trees
