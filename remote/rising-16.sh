@@ -51,18 +51,18 @@ cleanup_self () {
 # Better than ' || exit 1 '
 check_fail () {
    if [ $? -ne 0 ]; then 
-       if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-   	  notify_send "Build $PACKAGE_NAME on crave.io softfailed."
-          echo weird. build failed but OTA package exists.
-          echo softfail > result.txt
-	  cleanup_self
-          exit 1
-       else
+      if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
+   	     notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+	     echo weird. build failed but OTA package exists.
+	     echo softfail > result.txt
+	     cleanup_self
+	     exit 1
+      else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
-	  echo "oh no. script failed"
+	      echo "oh no. script failed"
           curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
-	  echo fail > result.txt
+	      echo fail > result.txt
           exit 1 
        fi
    fi
@@ -76,7 +76,6 @@ else
    repo init $REPO_URL  ; check_fail
    cleanup_self
    /opt/crave/resync.sh
-echo hello
 fi
 
 # Download trees
@@ -144,7 +143,6 @@ if echo $@ | grep GAPPS ; then
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
 else
 # VANILLA
-   cd ../../../vendor/rising ; git reset --hard ; cd -
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
    echo 'WITH_GMS := false' >> lineage_chime.mk
    echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
