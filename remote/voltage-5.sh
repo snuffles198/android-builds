@@ -87,7 +87,7 @@ fi
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-lilium-ksun.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail ; rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail ; rm -f lineage-22.1.tar.xz
@@ -192,6 +192,9 @@ rm -f keys.1 keys.2 keys.tar
 set +v
 
 source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+source build/envsetup.sh
+source build/envsetup.sh
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user
