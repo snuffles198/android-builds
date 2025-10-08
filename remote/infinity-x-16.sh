@@ -155,6 +155,10 @@ echo 'ro.infinity.battery=6000 mAh' >> configs/props/system.prop
 echo 'ro.infinity.display=1080 x 2340' >> configs/props/system.prop
 echo 'ro.infinity.camera=48MP + 8MP' >> configs/props/system.prop
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 cd -
 
 cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
