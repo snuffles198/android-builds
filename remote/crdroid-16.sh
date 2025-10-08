@@ -132,6 +132,10 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
