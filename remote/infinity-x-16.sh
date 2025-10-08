@@ -197,6 +197,7 @@ rm -f keys.1 keys.2 keys.tar
 set +v
 
 source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user
