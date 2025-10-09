@@ -113,19 +113,18 @@ sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gap
 cd vendor/infinity/ && git add . && git commit -m update ; cd -
 #(sleep 600 ; sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml)&
 
-sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
-sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
-sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/infinity/build/tasks/kernel.mk
-
 for i in `grep -R '<string name="unofficial_build_suffix">' packages/apps/Settings/res | cut -d ':' -f 1` ; do
   cat $i | sed -e 's#<string name="unofficial_build_suffix">.*string>#<string name="unofficial_build_suffix">- Community</string>#g' > $i.1
   mv $i.1 $i
 done
 cd vendor/infinity/
-git reset --hard
 cat config/version.mk | sed -e 's/INFINITY_BUILD_TYPE ?= UNOFFICIAL/INFINITY_BUILD_TYPE := COMMUNITY/g' > config/version.mk.1
 mv config/version.mk.1 config/version.mk
 cd ../..
+
+sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
+sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/infinity/build/tasks/kernel.mk
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
