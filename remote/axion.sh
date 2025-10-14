@@ -98,7 +98,7 @@ rm -rf vendor/xiaomi/chime/
 rm -rf device/xiaomi/chime/
 rm -rf hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
@@ -139,6 +139,8 @@ echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
 echo 'AXION_CPU_BIG_CORES := 4,5,6,7' >> lineage_chime.mk
 echo 'AXION_CAMERA_REAR_INFO := 48' >> lineage_chime.mk
 echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk
+echo 'GPU_FREQS_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/devfreq/5900000.qcom,kgsl-3d0/available_frequencies' >> lineage_chime.mk
+echo 'GPU_MIN_FREQ_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/devfreq/5900000.qcom,kgsl-3d0/min_freq' >> lineage_chime.mk
 echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
@@ -146,16 +148,30 @@ echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 cd ../../../
-echo 'CONFIG_SCHED_DEBUG=y' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+
+#echo 'CONFIG_SCHED_DEBUG=n' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
+
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.perf.scroll_opt=true'  >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> device/xiaomi/chime/configs/props/system.prop
 
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+cd vendor/xiaomi/chime
+curl -o rising.tar.xz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/rising-vendor.tar.xz
+tar xf rising.tar.xz ; check_fail
+rm rising.tar.xz
+cd -
 
 # Setup kernel
 cd kernel/xiaomi/chime
