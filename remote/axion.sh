@@ -145,8 +145,8 @@ echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
 echo 'AXION_CPU_BIG_CORES := 4,5,6,7' >> lineage_chime.mk
 echo 'AXION_CAMERA_REAR_INFO := 48' >> lineage_chime.mk
 echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk
-echo 'GPU_FREQS_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/devfreq/5900000.qcom,kgsl-3d0/available_frequencies' >> lineage_chime.mk
-echo 'GPU_MIN_FREQ_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/devfreq/5900000.qcom,kgsl-3d0/min_freq' >> lineage_chime.mk
+echo 'GPU_FREQS_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/available_frequencies' >> lineage_chime.mk
+echo 'GPU_MIN_FREQ_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/min_freq' >> lineage_chime.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> lineage_chime.mk
 echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0' >> sepolicy/vendor/genfs_contexts
