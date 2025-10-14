@@ -151,9 +151,12 @@ echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
-echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
-echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
+#echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+#echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 cd ../../../
 
