@@ -126,6 +126,10 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.VA
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
+sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
+sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
+
 #cd vendor/lineage && git reset --hard && cd ../..
 #cp vendor/lineage/prebuilt/common/bin/backuptool.sh backuptool.sh
 #cat backuptool.sh | sed -e 's#export V=22#export V=2# g' > backuptool.sh.1
