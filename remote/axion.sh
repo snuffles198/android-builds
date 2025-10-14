@@ -202,6 +202,8 @@ set +v
 # ax usage: ax [-b|-fb|-br] [-j<num>] [user|eng|userdebug]
 # Build Types: -b Bacon -fb Fastboot -br Brunch
 source build/envsetup.sh               ; check_fail
+source build/envsetup.sh 
+source build/envsetup.sh 
 axion chime user vanilla               ; check_fail
 mka installclean
 ax -b user                             ; check_fail
