@@ -12,11 +12,11 @@ set -v
 PACKAGE_NAME=axion
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-22.2
-VENDOR_BRANCH=lineage-22.2
-XIAOMI_BRANCH=lineage-22.2
+DEVICE_BRANCH=lineage-23.0
+VENDOR_BRANCH=lineage-23.0
+XIAOMI_BRANCH=lineage-23.0
 REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-22.2 --git-lfs"
-OTA_SED_STRING="AxionAOSP/official_devices/refs/heads/main/OTA/{variant}/{device}.json"
+OTA_SED_STRING="AxionAOSP/official_devices/.*json"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -125,14 +125,15 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.VA
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
-cd vendor/lineage && git reset --hard && cd ../..
-cp vendor/lineage/prebuilt/common/bin/backuptool.sh backuptool.sh
-cat backuptool.sh | sed -e 's#export V=22#export V=1# g' > backuptool.sh.1
-cp backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
-rm backuptool.sh
+#cd vendor/lineage && git reset --hard && cd ../..
+#cp vendor/lineage/prebuilt/common/bin/backuptool.sh backuptool.sh
+#cat backuptool.sh | sed -e 's#export V=22#export V=2# g' > backuptool.sh.1
+#cp backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
+#rm backuptool.sh
 
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
+git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 echo 'AXION_MAINTAINER := Joe' >> lineage_chime.mk
 echo 'AXION_PROCESSOR := Snapdragon_662' >> lineage_chime.mk
 echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
@@ -174,9 +175,9 @@ rm rising.tar.xz
 cd -
 
 # Setup kernel
-cd kernel/xiaomi/chime
-patch -f -p 1 -R  < sched_param_perf.patch
-cd ../../../
+#cd kernel/xiaomi/chime
+#patch -f -p 1 -R  < sched_param_perf.patch
+#cd ../../../
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
