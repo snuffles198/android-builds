@@ -152,6 +152,11 @@ echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chim
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
 # Setup kernel
 cd kernel/xiaomi/chime
 patch -f -p 1 -R  < sched_param_perf.patch
