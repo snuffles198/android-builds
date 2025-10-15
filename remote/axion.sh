@@ -162,6 +162,12 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
 #echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 #echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+#echo '    wait 15' >> rootdir/etc/init.target.rc
+echo '    exec -- /system/bin/sleep 10' >> rootdir/etc/init.target.rc
+echo '    stop statsd' >> rootdir/etc/init.target.rc
+#echo '    wait 5' >> rootdir/etc/init.target.rc
+echo '    exec -- /system/bin/sleep 5' >> rootdir/etc/init.target.rc
+echo '    exec_start statsd' >> rootdir/etc/init.target.rc
 cd ../../../
 
 #echo 'CONFIG_SCHED_DEBUG=n' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
