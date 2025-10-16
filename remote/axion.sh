@@ -68,17 +68,17 @@ cleanup_self () {
 check_fail () {
    if [ $? -ne 0 ]; then 
        if ls out/target/product/chime/$PACKAGE_NAME*.zip; then
-   	      notify_send "Build $PACKAGE_NAME on crave.io softfailed."
+          notify_send "Build $PACKAGE_NAME on crave.io softfailed."
           echo weird. build failed but OTA package exists.
           echo softfail > result.txt
-	      cleanup_self
+          cleanup_self
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
-	      echo "oh no. script failed"
-		  curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+          echo "oh no. script failed"
+          curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
           cleanup_self
-	      echo fail > result.txt
+          echo fail > result.txt
           exit 1 
        fi
    fi
@@ -158,19 +158,16 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
-echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
-#echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
-#echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
-echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
-#echo '    wait 15' >> rootdir/etc/init.target.rc
+#echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
+##echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+##echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
+#echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+echo 'on property:sys.boot_completed=1' >> rootdir/etc/init.target.rc
 echo '    exec -- /system/bin/sleep 10' >> rootdir/etc/init.target.rc
 echo '    stop statsd' >> rootdir/etc/init.target.rc
-#echo '    wait 5' >> rootdir/etc/init.target.rc
 echo '    exec -- /system/bin/sleep 5' >> rootdir/etc/init.target.rc
 echo '    exec_start statsd' >> rootdir/etc/init.target.rc
 cd ../../../
-
-#echo 'CONFIG_SCHED_DEBUG=n' >> kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig
 
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
 
@@ -182,16 +179,15 @@ echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> device/xiaomi/chime/configs/p
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-cd vendor/xiaomi/chime
-curl -o rising.tar.xz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/rising-vendor.tar.xz
-tar xf rising.tar.xz ; check_fail
-rm rising.tar.xz
-cd -
+#cd vendor/xiaomi/chime
+#curl -o rising.tar.xz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/rising-vendor.tar.xz
+#tar xf rising.tar.xz ; check_fail
+#rm rising.tar.xz
+#cd -
 
-# Setup kernel
-#cd kernel/xiaomi/chime
-#patch -f -p 1 -R  < sched_param_perf.patch
-#cd ../../../
+curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
+mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
+echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
@@ -226,33 +222,27 @@ set -v
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
-# Upload output to gofile
+# Upload output to pixeldrain
 cp out/target/product/chime/$PACKAGE_NAME*.zip .
 GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
-bash goupload.sh $GO_FILE
-GO_LINK=`cat GOFILE.txt`
-notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-rm -f goupload.sh GOFILE.txt
-
-# Upload output to telegram
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
-cd /home/admin
-VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-tar xf tdl_Linux.tgz ; check_fail
-unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-cd /tmp/src/android/
-/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-cd /home/admin
-rm -rf .tdl
-rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-rm -f tdl.sh
-cd /tmp/src/android/
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Upload file to SF
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
+chmod a-x sf
+chmod go-rwx sf
+rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
 curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
