@@ -1,0 +1,12 @@
+diff --git a/libs/binder/IServiceManager.cpp b/libs/binder/IServiceManager.cpp
+index c9ca646..5d13e18 100644
+--- a/libs/binder/IServiceManager.cpp
++++ b/libs/binder/IServiceManager.cpp
+@@ -724,6 +724,7 @@ sp<IBinder> CppBackendShim::waitForService(const String16& name16) {
+         }
+ 
+         sp<ProcessState> self = ProcessState::selfOrNull();
++	if (name == "stats") return nullptr;
+         ALOGW("Waited one second for %s (is service started? Number of threads started in the "
+               "threadpool: %zu. Are binder threads started and available?)",
+               name.c_str(), self ? self->getThreadPoolMaxTotalThreadCount() : 0);

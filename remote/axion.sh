@@ -162,11 +162,14 @@ echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 ##echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 ##echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 #echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
-echo 'on property:sys.boot_completed=1' >> rootdir/etc/init.target.rc
-echo '    exec -- /system/bin/sleep 10' >> rootdir/etc/init.target.rc
-echo '    stop statsd' >> rootdir/etc/init.target.rc
-echo '    exec -- /system/bin/sleep 5' >> rootdir/etc/init.target.rc
-echo '    exec_start statsd' >> rootdir/etc/init.target.rc
+#echo 'on property:sys.boot_completed=1' >> rootdir/etc/init.target.rc
+#echo '    exec -- /system/bin/sleep 10' >> rootdir/etc/init.target.rc
+#echo '    stop statsd' >> rootdir/etc/init.target.rc
+#echo '    exec -- /system/bin/sleep 5' >> rootdir/etc/init.target.rc
+#echo '    exec_start statsd' >> rootdir/etc/init.target.rc
+# frameworks/native/libs/binder/IServiceManager.cpp:727
+# if (name == "stats") return nullptr;
+#remote/src/axion-frameworks_native-stats.patch
 cd ../../../
 
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
