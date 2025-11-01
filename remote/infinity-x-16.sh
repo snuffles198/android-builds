@@ -139,7 +139,7 @@ fi
 # Setup device tree
 
 cd device/xiaomi/chime
-git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+#git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 cat AndroidProducts.mk | sed -e s/lineage/infinity/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
 cat lineage_chime.mk | sed -e s/lineage/infinity/g > lineage_chime.mk.1
