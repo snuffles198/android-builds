@@ -136,6 +136,9 @@ if [ $? -ne 0 ] ; then
    cd ../../
 fi
 
+cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
+mv vendor/infinity/prebuilt/common/bin/backuptool.sh.1 vendor/infinity/prebuilt/common/bin/backuptool
+
 # Setup device tree
 
 cd device/xiaomi/chime
@@ -241,5 +244,76 @@ rm -f genota.sh
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
+
+
+CONTINUE=1
+if [ $CONTINUE -eq 1 ] ; then
+
+cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
+mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
+cat device/xiaomi/chime/infinity_chime.mk | grep -v WITH_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
+mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
+
+# GAPPS
+   echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+
+# Build it
+set +v
+
+source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+export BUILD_USERNAME=user
+export BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+lunch infinity_chime-user         ; check_fail
+mka installclean
+mka bacon                         ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "Build $PACKAGE_NAME on crave.io succeeded."
+
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
+if [[ ! -f $GO_FILE ]]; then
+   GO_FILE=builder.sh
+fi
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Upload file to SF
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
+chmod a-x sf
+chmod go-rwx sf
+rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rm -f keys.1 keys.2 sf
+
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh "$GENOTA_ARG_1" "$GENOTA_ARG_2" "$GO_FILE"
+curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
+
+TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
+notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
+
+fi
+
+
+
+
+
 cleanup_self
 exit 0
+
+
