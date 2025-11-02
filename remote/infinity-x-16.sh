@@ -136,7 +136,7 @@ if [ $? -ne 0 ] ; then
    cd ../../
 fi
 
-cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
+cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e 's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
 mv vendor/infinity/prebuilt/common/bin/backuptool.sh.1 vendor/infinity/prebuilt/common/bin/backuptool
 
 # Setup device tree
