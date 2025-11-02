@@ -109,7 +109,7 @@ cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
-sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml
+sed -i "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml
 cd vendor/infinity/ && git add . && git commit -m update ; cd -
 #(sleep 600 ; sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml)&
 
