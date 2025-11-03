@@ -246,7 +246,7 @@ notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
 
 
 
-CONTINUE=1
+CONTINUE=0
 if [ $CONTINUE -eq 1 ] ; then
 
 cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
