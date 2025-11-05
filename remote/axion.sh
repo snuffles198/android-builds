@@ -192,6 +192,9 @@ curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scr
 mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
 echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
 
+cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
+mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
+
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
