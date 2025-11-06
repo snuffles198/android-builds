@@ -40,27 +40,17 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 # Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
-   rm -rf vendor/lineage-priv/keys
-   rm -rf vendor/lineage-priv
-   rm -rf priv-keys
-   rm -rf .config/b2/
-   rm -rf /home/admin/.config/b2/
+   rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys .config/b2/ /home/admin/.config/b2/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
-   rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
-   rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-   rm -rf hardware/xiaomi/
-   rm -rf device/xiaomi/chime/
-   rm -rf vendor/xiaomi/chime/
-   rm -rf kernel/xiaomi/chime/
+   rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/ prebuilts/clang/host/linux-x86/clang-stablekern/
+   rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
-   rm -rf /tmp/android-certs*
-   rm -rf /home/admin/venv/
+   rm -rf /tmp/android-certs* /home/admin/venv/
    rm -rf custom_scripts/
    cd /home/admin
    rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
-   rm -f tdl.sh
+   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
    cd /tmp/src/android/
 }
 
@@ -130,11 +120,8 @@ sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
-#cd vendor/lineage && git reset --hard && cd ../..
-#cp vendor/lineage/prebuilt/common/bin/backuptool.sh backuptool.sh
-#cat backuptool.sh | sed -e 's#export V=22#export V=2# g' > backuptool.sh.1
-#cp backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
-#rm backuptool.sh
+cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
+mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
@@ -158,18 +145,6 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
-#echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
-##echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
-##echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
-#echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
-#echo 'on property:sys.boot_completed=1' >> rootdir/etc/init.target.rc
-#echo '    exec -- /system/bin/sleep 10' >> rootdir/etc/init.target.rc
-#echo '    stop statsd' >> rootdir/etc/init.target.rc
-#echo '    exec -- /system/bin/sleep 5' >> rootdir/etc/init.target.rc
-#echo '    exec_start statsd' >> rootdir/etc/init.target.rc
-# frameworks/native/libs/binder/IServiceManager.cpp:727
-# if (name == "stats") return nullptr;
-#remote/src/axion-frameworks_native-stats.patch
 cd ../../../
 
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
@@ -182,18 +157,9 @@ echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> device/xiaomi/chime/configs/p
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-#cd vendor/xiaomi/chime
-#curl -o rising.tar.xz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/rising-vendor.tar.xz
-#tar xf rising.tar.xz ; check_fail
-#rm rising.tar.xz
-#cd -
-
 curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
 mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
 echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
-
-cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
-mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
@@ -263,21 +229,6 @@ if [ "$BUILD_TYPE" == "vanilla" ]; then
    cleanup_self
    exit 0
 fi
-
-# Do gapps dirty build
-#
-#
-#
-
-# Setup AOSP source
-
-# Setup device tree
-
-# Build it
-
-# Upload output to gofile
-
-# Upload output to telegram
 
 cleanup_self
 exit 0
