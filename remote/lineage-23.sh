@@ -134,6 +134,9 @@ cd -
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
 
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
 # Setup kernel
 
 # Get and decrypt signing keys
