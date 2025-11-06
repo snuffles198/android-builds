@@ -125,7 +125,7 @@ fi
 
 # Setup device tree
 cd device/xiaomi/chime
-git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
+git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c # Squiggly media progress bar, depends on ROM
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
