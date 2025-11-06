@@ -18,7 +18,7 @@ XIAOMI_BRANCH=lineage-23.0
 GENOTA_ARG_1="lineage"
 GENOTA_ARG_2="23"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.3 $REPO_PARAMS"
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-23.0 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
