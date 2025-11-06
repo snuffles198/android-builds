@@ -252,7 +252,7 @@ rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
 curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
-bash genota.sh axion 1 "$GO_FILE"
+bash genota.sh axion 2 "$GO_FILE"
 curl -L -F document=@"$GO_FILE.json.txt" -F caption="OTA $GO_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 rm -f genota.sh
 
