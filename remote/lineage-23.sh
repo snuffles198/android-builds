@@ -9,16 +9,16 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=lineage-22
+PACKAGE_NAME=lineage-23
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-22.2
-VENDOR_BRANCH=lineage-22.2
-XIAOMI_BRANCH=lineage-22.2
+DEVICE_BRANCH=lineage-23.0
+VENDOR_BRANCH=lineage-23.0
+XIAOMI_BRANCH=lineage-23.0
 GENOTA_ARG_1="lineage"
-GENOTA_ARG_2="22"
+GENOTA_ARG_2="23"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.2 $REPO_PARAMS"
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-22.3 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
@@ -86,7 +86,7 @@ fi
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-lilium-ksu.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail ; rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail ; rm -f lineage-22.1.tar.xz
@@ -113,6 +113,16 @@ sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
+grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+if [ $? -ne 0 ] ; then
+   cd frameworks/base/
+   curl -o 1.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/f89e8fa592233d86ad2cabf81df245c4003587cb.patch
+   curl -o 2.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/6909a748157404e9150586b9c0860fdb81dd54cc.patch
+   patch -p 1 -f < 1.patch
+   patch -p 1 -f < 2.patch
+   cd ../../
+fi
+
 # Setup device tree
 cd device/xiaomi/chime
 git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
@@ -138,6 +148,8 @@ rm -f keys.1 keys.2 keys.tar
 set +v
 
 source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+source build/envsetup.sh
 export BUILD_USERNAME=user
 export BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user
