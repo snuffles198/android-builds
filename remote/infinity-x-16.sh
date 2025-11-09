@@ -107,6 +107,8 @@ rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/uti
 cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
+mv strings.xml.1 strings.xml
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/master/changelog/.*txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 sed -i "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml
