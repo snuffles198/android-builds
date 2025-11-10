@@ -131,7 +131,7 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardCon
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
 cd device/xiaomi/chime
-git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+#git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
