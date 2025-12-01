@@ -175,7 +175,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 
 cd ../../../
 
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
+
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
 curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
