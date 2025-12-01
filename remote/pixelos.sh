@@ -150,7 +150,9 @@ echo 'WITH_GAPPS := true' >> device/xiaomi/chime/lineage_chime.mk
 echo 'WITH_GMS := true' >> device/xiaomi/chime/lineage_chime.mk
 echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/lineage_chime.mk
 
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
 mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
