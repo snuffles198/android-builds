@@ -155,7 +155,9 @@ echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 
 cd ../../../
 
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
