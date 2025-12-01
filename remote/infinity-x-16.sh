@@ -151,7 +151,8 @@ cat lineage_chime.mk | sed -e s/lineage/infinity/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk infinity_chime.mk
 echo 'INFINITY_MAINTAINER := "Joe"' >> infinity_chime.mk
-cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/infinity/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+#cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/infinity/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+cat BoardConfig.mk | grep -v 'vendor/lineage/config/device_framework_matrix.xml' > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'ro.product.marketname=POCO M3 / Redmi 9T' >> configs/props/system.prop
 echo 'ro.infinity.soc=Qualcomm SM6115 Snapdragon 662' >> configs/props/system.prop
