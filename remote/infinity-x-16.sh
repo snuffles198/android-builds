@@ -198,6 +198,9 @@ if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
    check_fail
 fi
 
+echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
+echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
+
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
