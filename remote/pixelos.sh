@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=PixelOS
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.1
+VENDOR_BRANCH=lineage-23.1
+XIAOMI_BRANCH=lineage-23.1
 GENOTA_ARG_1="crdroid"
 GENOTA_ARG_2="16"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
@@ -119,8 +119,8 @@ if [ $? -ne 0 ] ; then
    cd frameworks/base/
    curl -o 1.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/f89e8fa592233d86ad2cabf81df245c4003587cb.patch
    curl -o 2.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/6909a748157404e9150586b9c0860fdb81dd54cc.patch
-   patch -p 1 -f < 1.patch
-   patch -p 1 -f < 2.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   patch -p 1 -f < 2.patch ; check_fail
    cd ../../
 fi
 
