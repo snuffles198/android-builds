@@ -101,8 +101,8 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 # prebuilts/clang/host/linux-x86/clang-3289846/bin/clang.real: error while loading shared libraries: libncurses.so.5: cannot open shared object file: No such file or directory
 curl -o libncurses-5.tar.xz -L https://github.com/Joe7500/build-scripts/raw/refs/heads/main/remote/utils/libncurses-5.tar.xz; check_fail
 tar xvf libncurses-5.tar.xz ; check_fail
-rm -f libncurses-5.tar.xz
-export LD_LIBRARY_PATH=`pwd`/libraries/:$LD_LIBRARY_PATH
+sudo dpkg -i --force-all libncurses5_6.3-2ubuntu0.1_amd64.deb libtinfo5_6.3-2ubuntu0.1_amd64.deb
+rm -f libncurses-5.tar.xz libncurses5_6.3-2ubuntu0.1_amd64.deb libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
 # Setup AOSP source 
 #patch -f -p 1 < wfdservice.rc.patch ; check_fail
