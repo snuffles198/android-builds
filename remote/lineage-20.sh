@@ -98,6 +98,7 @@ git clone https://github.com/crdroidandroid/android_device_xiaomi_chime.git -b $
 git clone https://github.com/crdroidandroid/android_vendor_xiaomi_chime.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
+# prebuilts/clang/host/linux-x86/clang-3289846/bin/clang.real: error while loading shared libraries: libncurses.so.5: cannot open shared object file: No such file or directory
 curl -o libncurses-5.tar.xz -L https://github.com/Joe7500/build-scripts/raw/refs/heads/main/remote/utils/libncurses-5.tar.xz; check_fail
 tar xvf libncurses-5.tar.xz ; check_fail
 rm -f libncurses-5.tar.xz
