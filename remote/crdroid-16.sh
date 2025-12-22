@@ -132,13 +132,13 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 
 cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
-echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
-echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
-echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
-echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/product.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 cd ../../../
 
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
 
 curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
 mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
@@ -150,6 +150,9 @@ fi
 
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
