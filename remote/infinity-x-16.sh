@@ -133,8 +133,8 @@ if [ $? -ne 0 ] ; then
    cd frameworks/base/
    curl -o 1.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/f89e8fa592233d86ad2cabf81df245c4003587cb.patch
    curl -o 2.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/6909a748157404e9150586b9c0860fdb81dd54cc.patch
-   patch -p 1 -f < 1.patch
-   patch -p 1 -f < 2.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   patch -p 1 -f < 2.patch ; check_fail
    cd ../../
 fi
 
@@ -160,10 +160,10 @@ echo 'ro.infinity.battery=6000 mAh' >> configs/props/system.prop
 echo 'ro.infinity.display=1080 x 2340' >> configs/props/system.prop
 echo 'ro.infinity.camera=48MP + 8MP' >> configs/props/system.prop
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
-echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
-echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
-echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
-echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/product.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 cd -
 
 cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
