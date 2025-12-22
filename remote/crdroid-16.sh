@@ -119,8 +119,8 @@ if [ $? -ne 0 ] ; then
    cd frameworks/base/
    curl -o 1.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/f89e8fa592233d86ad2cabf81df245c4003587cb.patch
    curl -o 2.patch -L https://github.com/AxionAOSP/android_frameworks_base/commit/6909a748157404e9150586b9c0860fdb81dd54cc.patch
-   patch -p 1 -f < 1.patch
-   patch -p 1 -f < 2.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   patch -p 1 -f < 2.patch ; check_fail
    cd ../../
 fi
 
