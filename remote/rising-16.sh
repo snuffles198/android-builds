@@ -180,13 +180,13 @@ tar xf rising.tar.xz ; check_fail
 rm rising.tar.xz
 cd -
 
-curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
-mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
-echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
-if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
-   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
-   check_fail
-fi
+#curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
+#mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
+#echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
+#if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
+#   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
+#   check_fail
+#fi
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
