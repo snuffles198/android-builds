@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=crDroidAndroid-16
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.1
+VENDOR_BRANCH=lineage-23.1
+XIAOMI_BRANCH=lineage-23.1
 GENOTA_ARG_1="crdroid"
 GENOTA_ARG_2="12"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
@@ -133,7 +133,7 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
-# PRODUCT_PRODUCT_PROPERTIES += ro.input.video_enabled=false
+# PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
