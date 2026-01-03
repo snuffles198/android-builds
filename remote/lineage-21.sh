@@ -117,15 +117,6 @@ cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
-
-# Error: packages/apps/CertInstaller/robotests/Android.bp:10:1: "CertInstallerRoboTests" depends on undefined module "Robolectric_all-target
-# This error occurs during LineageOS 21 (Android 14-based) builds because the Robolectric test module in packages/apps/CertInstaller/robotests/Android.bp depends on "Robolectric_all-target", which is no longer defined or available in newer Android/LineageOS versions
-# CertInstallerRoboTests is a minor Robolectric-based test suite for the certificate installer app most users building LineageOS for personal use don't need it.
-## According to Grok AI. Makes sense to me.
-echo 'PRODUCT_PACKAGES_EXCLUDE += CertInstallerRoboTests' >> device.mk
-echo 'DISABLE_ROBOLECTRIC_TESTS := true' >> device.mk
-export TARGET_EXCLUDE_ROBOLECTRIC_TESTS=true
-
 cd -
 
 # Setup kernel
