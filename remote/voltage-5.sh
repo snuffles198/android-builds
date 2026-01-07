@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=voltage-5
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.1
+VENDOR_BRANCH=lineage-23.1
+XIAOMI_BRANCH=lineage-23.1
 GENOTA_ARG_1="voltage"
 GENOTA_ARG_2="5"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"

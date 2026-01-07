@@ -12,13 +12,13 @@ set -v
 PACKAGE_NAME=lineage-23
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.1
+VENDOR_BRANCH=lineage-23.1
+XIAOMI_BRANCH=lineage-23.1
 GENOTA_ARG_1="lineage"
 GENOTA_ARG_2="23"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-23.0 $REPO_PARAMS"
+REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-23.1 $REPO_PARAMS"
 OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0

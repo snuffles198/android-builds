@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=axion
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.1
+VENDOR_BRANCH=lineage-23.1
+XIAOMI_BRANCH=lineage-23.1
 REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs"
 OTA_SED_STRING="AxionAOSP/official_devices/.*json"
 
