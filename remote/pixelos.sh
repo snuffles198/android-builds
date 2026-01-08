@@ -18,7 +18,7 @@ XIAOMI_BRANCH=lineage-23.1
 GENOTA_ARG_1="crdroid"
 GENOTA_ARG_2="16"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b sixteen $REPO_PARAMS"
+REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b sixteen-qpr1 $REPO_PARAMS"
 OTA_SED_STRING="PixelOS-AOSP/official_devices/.*json"
 OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
