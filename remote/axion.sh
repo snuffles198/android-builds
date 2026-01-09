@@ -126,6 +126,7 @@ mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/co
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+
 echo 'AXION_MAINTAINER := Joe' >> lineage_chime.mk
 echo 'AXION_PROCESSOR := Snapdragon_662' >> lineage_chime.mk
 echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
@@ -135,10 +136,14 @@ echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk
 echo 'GPU_FREQS_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/available_frequencies' >> lineage_chime.mk
 echo 'GPU_MIN_FREQ_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/min_freq' >> lineage_chime.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> lineage_chime.mk
+
 echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0' >> sepolicy/vendor/genfs_contexts
+echo 'allow init vendor_sysfs_kgsl:file setattr;' >> sepolicy/vendor/init.te
+
+
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
