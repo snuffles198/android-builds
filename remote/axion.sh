@@ -193,7 +193,16 @@ set +v
 # Build Types: -b Bacon -fb Fastboot -br Brunch
 source build/envsetup.sh               ; check_fail
 source build/envsetup.sh 
-source build/envsetup.sh 
+source build/envsetup.sh
+# Get and decrypt signing keys
+curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
+tar xf keys.tar
+rm -f keys.1 keys.2 keys.tar
+curl -o tdl.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
 axion chime user vanilla               ; check_fail
 mka installclean
 ax -b user                             ; check_fail
