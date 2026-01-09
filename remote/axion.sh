@@ -142,7 +142,10 @@ echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_c
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0' >> sepolicy/vendor/genfs_contexts
 echo 'allow init vendor_sysfs_kgsl:file setattr;' >> sepolicy/vendor/init.te
-
+#echo 'genfscon sysfs /devices/platform/1c500000.mali/available_frequencies u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
+#echo 'genfscon sysfs /devices/platform/1c500000.mali/hint_min_freq u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
+#echo 'allow init proc_vm_dirty:file rw_file_perms;' > sepolicy/vendor/axion.te
+#echo 'allow init proc_dirty_ratio:file rw_file_perms;' >>  sepolicy/vendor/axion.te
 
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
