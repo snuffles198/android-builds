@@ -80,6 +80,9 @@ else
    /opt/crave/resync.sh
 fi
 
+TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
+notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
+
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
