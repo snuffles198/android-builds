@@ -173,6 +173,14 @@ if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
    check_fail
 fi
 
+grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+if [ $? -ne 0 ] ; then
+   cd frameworks/base/
+   curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/AnimationUtils.java.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   cd ../../
+fi
+
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
