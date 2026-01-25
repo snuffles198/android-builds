@@ -123,6 +123,14 @@ rm -f hardware/qcom/sm7250/Android.bp hardware/qcom/sm7250/Android.mk
 rm -f hardware/qcom/sdm845/Android.bp hardware/qcom/sdm845/Android.mk
 rm -f hardware/qcom/sm8150/Android.bp hardware/qcom/sm8150/Android.mk
 
+grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+if [ $? -ne 0 ] ; then
+   cd frameworks/base/
+   curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/AnimationUtils.java.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   cd ../../
+fi
+
 # Setup device tree
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
