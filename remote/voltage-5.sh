@@ -18,7 +18,7 @@ XIAOMI_BRANCH=lineage-23.2
 GENOTA_ARG_1="voltage"
 GENOTA_ARG_2="5"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/VoltageOS/manifest.git -b 16 $REPO_PARAMS"
+REPO_URL="-u https://github.com/VoltageOS/manifest.git -b 16.2 $REPO_PARAMS"
 OTA_SED_STRING="VoltageOS/android_vendor_voltageota/.*json"
 OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
