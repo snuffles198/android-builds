@@ -128,6 +128,11 @@ cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+# PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 cd -
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
