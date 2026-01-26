@@ -169,6 +169,8 @@ echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 #echo 'BOARD_KERNEL_CONFIG_FILE := kernel/xiaomi/chime/arch/arm64/configs/vendor/chime_defconfig' >> device/xiaomi/chime/BoardConfig.mk
 #echo 'PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false' >> device/xiaomi/chime/lineage_chime.mk
 
+echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
+
 curl -o default_wallpaper.webp -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/default_wallpaper.webp
 cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-nodpi
 cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
