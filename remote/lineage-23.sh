@@ -113,13 +113,13 @@ sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
-grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
-if [ $? -ne 0 ] ; then
-   cd frameworks/base/
-   curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/AnimationUtils.java.patch
-   patch -p 1 -f < 1.patch ; check_fail
-   cd ../../
-fi
+#grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+#if [ $? -ne 0 ] ; then
+#   cd frameworks/base/
+#  curl -o 1.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/AnimationUtils.java.patch
+#  patch -p 1 -f < 1.patch ; check_fail
+#  cd ../../
+#fi
 
 # Setup device tree
 cd device/xiaomi/chime
@@ -144,6 +144,8 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 
 # Setup kernel
 
