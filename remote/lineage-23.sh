@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=lineage-23
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.1
-VENDOR_BRANCH=lineage-23.1
-XIAOMI_BRANCH=lineage-23.1
+DEVICE_BRANCH=lineage-23.2
+VENDOR_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-23.2
 GENOTA_ARG_1="lineage"
 GENOTA_ARG_2="23"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"

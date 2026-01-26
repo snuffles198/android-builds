@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=RisingOS_Revived-8
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.0
-VENDOR_BRANCH=lineage-23.0
-XIAOMI_BRANCH=lineage-23.0
+DEVICE_BRANCH=lineage-23.2
+VENDOR_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-23.2
 GENOTA_ARG_1="rising"
 GENOTA_ARG_2="8"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
