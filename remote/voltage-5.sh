@@ -201,6 +201,8 @@ echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 #   check_fail
 #fi
 
+echo 'user=bluetooth seinfo=default isPrivApp=true name=com.android.bluetooth domain=bluetooth type=bluetooth_data_file' >> device/xiaomi/chime/sepolicy/vendor/seapp_contexts
+
 # Setup kernel
 
 # Get and decrypt signing keys
