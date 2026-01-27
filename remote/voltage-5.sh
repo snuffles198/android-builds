@@ -201,6 +201,8 @@ echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 #   check_fail
 #fi
 
+cat device/xiaomi/chime/configs/props/system.prop | grep -v debug.sf.disable_client_composition_cache > device/xiaomi/chime/configs/props/system.prop.1
+mv device/xiaomi/chime/configs/props/system.prop.1 device/xiaomi/chime/configs/props/system.prop
 echo 'user=bluetooth seinfo=default isPrivApp=true name=com.android.bluetooth domain=bluetooth type=bluetooth_data_file' >> device/xiaomi/chime/sepolicy/vendor/seapp_contexts
 
 # Setup kernel
