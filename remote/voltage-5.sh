@@ -191,8 +191,6 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
-echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
-
 #curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
 #mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
 #echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
@@ -200,6 +198,8 @@ echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 #   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
 #   check_fail
 #fi
+
+echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 
 cat device/xiaomi/chime/configs/props/system.prop | grep -v debug.sf.disable_client_composition_cache > device/xiaomi/chime/configs/props/system.prop.1
 mv device/xiaomi/chime/configs/props/system.prop.1 device/xiaomi/chime/configs/props/system.prop
