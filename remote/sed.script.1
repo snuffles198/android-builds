@@ -1,0 +1,65 @@
+
+
+SED_STRING='source /tmp/crave_bashrc'
+SED_REPLACE='source /tmp/crave_bashrc ; source build/envsetup.sh'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i 
+done
+
+SED_STRING='cd /tmp/src/android/'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+
+SED_STRING='cd ../../../'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+
+SED_STRING='cd ../../..'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+
+SED_STRING='cd ../../'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+
+SED_STRING='cd ../..'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+
+SED_STRING='cd -'
+SED_REPLACE='croot'
+
+
+for i in `ls -1 *.sh`; do
+   cat $i | sed -e "s#$SED_STRING#$SED_REPLACE#g" > $i.1
+   mv $i.1 $i
+done
+

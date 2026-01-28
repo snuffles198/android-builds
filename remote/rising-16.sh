@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc
+source /tmp/crave_bashrc ; source build/envsetup.sh
 
-cd /tmp/src/android/
+croot
 
 set -v
 
@@ -35,17 +35,17 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   cd /tmp/src/android/
+   croot
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys .config/b2/ /home/admin/.config/b2/
-   cd packages/apps/Updater/ && git reset --hard && cd ../../../
-   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+   cd packages/apps/Updater/ && git reset --hard && croot
+   cd packages/modules/Connectivity/ && git reset --hard && croot
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
    rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
    rm -rf .tdl LICENSE README.md README_zh.md tdl tdl_key tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
-   cd /tmp/src/android/
+   croot
 }
 
 # Better than ' || exit 1 '
@@ -96,13 +96,13 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
-cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+cd packages/modules/Connectivity/ && git reset --hard && croot
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cd packages/apps/Updater/ && git reset --hard && croot
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml.backup.orig.txt
 cat strings.xml.backup.orig.txt | sed -e 's#RisingOS-Revived/official_devices/.*GAPPS.*json#Joe7500/Builds/main/rising-rev-8-gapps-chime.json#g' > strings.xml.new.txt
 mv strings.xml.new.txt strings.xml.backup.orig.txt
@@ -153,7 +153,7 @@ mv lineage_chime.mk.1 lineage_chime.mk
 echo 'TARGET_ENABLE_BLUR := true'  >> lineage_chime.mk
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 
-cd ../../../
+croot
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
@@ -180,7 +180,7 @@ cd vendor/xiaomi/chime
 curl -o rising.tar.xz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/rising-vendor.tar.xz
 tar xf rising.tar.xz ; check_fail
 rm rising.tar.xz
-cd -
+croot
 
 #curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
 #mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
