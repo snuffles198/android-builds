@@ -1,7 +1,7 @@
 
 
-SED_STRING='Joe7500/build-scripts/refs/heads/main/remote/05-susfs.patch'
-SED_REPLACE='Joe7500/build-scripts/refs/heads/main/remote/src/05-susfs.patch'
+SED_STRING='Joe7500/build-scripts/'
+SED_REPLACE='snuffles198/android-builds/'
 
 
 for i in `ls -1 *.sh`; do
