@@ -138,7 +138,7 @@ cd external/tinyxml
 git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
 cd ../../
 
-curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
+curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
 tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
 rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 
@@ -197,7 +197,7 @@ cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#dev
 mv BoardConfig.mk.1 BoardConfig.mk
 
 #rm -f releasetools.py
-#curl -o releasetools.py -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/calyx_releasetools.py
+#curl -o releasetools.py -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/calyx_releasetools.py
 
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
@@ -234,7 +234,7 @@ rm -rf sign
 mkdir sign
 cd sign
 
-curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
+curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
@@ -264,14 +264,14 @@ notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 # Upload output to gofile
 GO_FILE_MD5=`md5sum "CalyxOS-chime-$BUILD_NUMBER.zip"`
 GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
+curl -o goupload.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/gofile.sh
 bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
 rm -f goupload.sh GOFILE.txt
 GO_FILE_MD5=`md5sum "CalyxOS-chime-factory-$BUILD_NUMBER.zip"`
 GO_FILE="CalyxOS-chime-factory-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
+curl -o goupload.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/gofile.sh
 bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
@@ -282,7 +282,7 @@ if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
 cd /home/admin
-curl -o tdl.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
+curl -o tdl.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
 tar xf tdl.tar

@@ -135,7 +135,7 @@ cd ..
 cat frameworks/base/packages/SystemUI/res/values/dimens.xml | sed -e 's#<dimen name="qs_media_seekbar_progress_amplitude">1.5dp</dimen>#<dimen name="qs_media_seekbar_progress_amplitude">0dp</dimen>#g' > frameworks/base/packages/SystemUI/res/values/dimens.xml.1
 mv frameworks/base/packages/SystemUI/res/values/dimens.xml.1 frameworks/base/packages/SystemUI/res/values/dimens.xml
 
-curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/voltage_brightness_slider.patch
+curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/voltage_brightness_slider.patch
 cd packages/apps/Powerhub/
 git reset --hard
 patch -f -p 1 < ../../../voltage_brightness_slider.patch
@@ -242,7 +242,7 @@ cp out/target/product/chime/$PACKAGE_NAME*-chime*.zip .
 GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*-chime*.zip | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
-curl -o goupload.sh -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/utils/gofile.sh
+curl -o goupload.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/gofile.sh
 bash goupload.sh $GO_FILE
 GO_LINK=`cat GOFILE.txt`
 notify_send "MD5:$GO_FILE_MD5 $GO_LINK"

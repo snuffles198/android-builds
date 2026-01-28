@@ -193,7 +193,7 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
-#curl -o audio_effects.xml -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/src/audio_effects_viper.xml
+#curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
 #mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
 #echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
 #if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
@@ -210,7 +210,7 @@ echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 # Setup kernel
 
 # Get and decrypt signing keys
-curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/vvoloOqXuBFNu8wTDmPB8vbawCQzSEli
+curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/vvoloOqXuBFNu8wTDmPB8vbawCQzSEli
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
@@ -251,7 +251,7 @@ notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
 rm -f out.json
 
 # Upload file to SF
-curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
 chmod a-x sf
