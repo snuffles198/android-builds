@@ -1,59 +1,41 @@
+From 5857a851748407852b13c9d6d5e0ffd94e504d60 Mon Sep 17 00:00:00 2001
+From: rmp22 <195054967+rmp22@users.noreply.github.com>
+Date: Wed, 27 Aug 2025 18:26:05 +0800
+Subject: [PATCH] [bugfix] add perf activity anim override
+
+fix for mtk and low-end devices perf regression caused by fixed dp translate and fade animation
+
+Change-Id: Ifee7edcc1fecca034007e9afd9a9cf61704aa869
+Signed-off-by: rmp22 <195054967+rmp22@users.noreply.github.com>
+---
+ .../view/animation/AnimationUtils.java        | 114 ++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+
 diff --git a/core/java/android/view/animation/AnimationUtils.java b/core/java/android/view/animation/AnimationUtils.java
-index 8ecd57179b..66cc4ad65d 100644
+index 8a407c3252f0c..9189f8e65885b 100644
 --- a/core/java/android/view/animation/AnimationUtils.java
 +++ b/core/java/android/view/animation/AnimationUtils.java
-@@ -42,6 +42,11 @@ import org.xmlpull.v1.XmlPullParserException;
-
- import java.io.IOException;
-
+@@ -30,11 +30,15 @@
+ import android.content.res.Resources.Theme;
+ import android.content.res.XmlResourceParser;
+ import android.os.SystemClock;
 +import android.os.SystemProperties;
+ import android.util.AttributeSet;
 +import android.util.DisplayMetrics;
+ import android.util.TimeUtils;
+ import android.util.Xml;
+ import android.view.InflateException;
+ 
 +import com.android.internal.R;
-+import android.util.Log;
 +
- /**
-  * Defines common utilities for working with animations.
-  *
-@@ -226,6 +231,55 @@ public class AnimationUtils {
+ import org.xmlpull.v1.XmlPullParser;
+ import org.xmlpull.v1.XmlPullParserException;
+ 
+@@ -216,6 +220,20 @@ public static long getExpectedPresentationTimeMillis() {
      public static Animation loadAnimation(Context context, @AnimRes int id)
              throws NotFoundException {
-
-+    boolean overrideForward =
-+        SystemProperties.getBoolean("persist.sys.activity_anim_perf_override", false);
-+    boolean overrideBack = SystemProperties.getBoolean("persist.sys.activity_anim_perf_back", true);
-+
-+    if (overrideForward || overrideBack) {
-+      ActivityAnimations.maybeInit(context);
-+      switch (id) {
-+        case R.anim.activity_open_enter:
-+          if (overrideForward) {
-+            Log.d("AnimationUtils", "Override for anim id: " + id);
-+            return ActivityAnimations.getOpenEnter();
-+          }
-+          break;
-+        case R.anim.activity_open_exit:
-+          if (overrideForward) {
-+            Log.d("AnimationUtils", "Override for anim id: " + id);
-+            return ActivityAnimations.getOpenExit();
-+          }
-+          break;
-+        case R.anim.activity_close_enter:
-+          if (overrideBack) {
-+            Log.d("AnimationUtils", "Override for anim id: " + id);
-+            return ActivityAnimations.getCloseEnter();
-+          }
-+          break;
-+        case R.anim.activity_close_exit:
-+          if (overrideBack) {
-+            Log.d("AnimationUtils", "Override for anim id: " + id);
-+            return ActivityAnimations.getCloseExit();
-+          }
-+          break;
-+      }
-+    }
-+
-+
-+/*        if (SystemProperties.getBoolean("persist.sys.activity_anim_perf_override", false)) {
+ 
++        if (SystemProperties.getBoolean("persist.sys.activity_anim_perf_override", false)) {
 +            ActivityAnimations.maybeInit(context);
 +            switch (id) {
 +                case R.anim.activity_open_enter:
@@ -65,12 +47,12 @@ index 8ecd57179b..66cc4ad65d 100644
 +                case R.anim.activity_close_exit:
 +                    return ActivityAnimations.getCloseExit();
 +            }
-+        }*/
++        }
 +
          XmlResourceParser parser = null;
          try {
              parser = context.getResources().getAnimation(id);
-@@ -506,4 +560,100 @@ public class AnimationUtils {
+@@ -496,4 +514,100 @@ private static Interpolator createInterpolatorFromXml(
          }
          return interpolator;
      }
@@ -90,7 +72,6 @@ index 8ecd57179b..66cc4ad65d 100644
 +        private ActivityAnimations() {}
 +
 +        /** @hide */
-+        public static void maybeInit(Context context) {
 +        public static void maybeInit(Context context) {
 +            if (sFastOutExtraSlowInInterpolator == null) {
 +                sFastOutExtraSlowInInterpolator = AnimationUtils.loadInterpolator(
