@@ -70,18 +70,6 @@ if ! echo "$@" | grep START_GAPPS_BUILD ; then
 	screen -dmS check_progress bash check_progress.sh $JJ_SPEC $PACKAGE_NAME $DO_GAPPS_BUILD
 fi
 
-#curl -s -d "Build $PACKAGE_NAME on crave.io succeeded. `env TZ=Africa/Harare date`. $JJ_SPEC " $NTFY_URL
-#curl -s -d "Build $PACKAGE_NAME on crave.io completed. `env TZ=Africa/Harare date`. $JJ_SPEC " $NTFY_URL
-
-#if echo "$@" | grep START_GAPPS_BUILD ; then 
-#curl -s -d "Build $PACKAGE_NAME on crave.io succeeded. - gapps `env TZ=Africa/Harare date`. $JJ_SPEC " $NTFY_URL
-#curl -s -d "Build $PACKAGE_NAME on crave.io completed. - gapps `env TZ=Africa/Harare date`. $JJ_SPEC " $NTFY_URL
-#fi
-
-#sleep 1200
-
-#exit
-
 crave run $CLEAN --no-patch -- "/usr/bin/curl -o builder.sh -L https://raw.githubusercontent.com/Snuffles197/android-builds/refs/heads/main/remote/$CRAVE_SCRIPT; \
 /usr/bin/bash builder.sh $RESUME $START_GAPPS_BUILD $CONTINUE $JJ_SPEC "
 
