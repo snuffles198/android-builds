@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc
+source /tmp/crave_bashrc ; source build/envsetup.sh
 
-cd /tmp/src/android/
+croot
 
 set -v
 
@@ -36,18 +36,18 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   cd /tmp/src/android/
+   croot
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv  priv-keys
    rm -rf .config/b2/ /home/admin/.config/b2/
-   cd packages/apps/Updater/ && git reset --hard && cd ../../../
-   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+   cd packages/apps/Updater/ && git reset --hard && croot
+   cd packages/modules/Connectivity/ && git reset --hard && croot
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
    rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
    rm -rf .tdl LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
-   cd /tmp/src/android/
+   croot
 }
 
 # Better than ' || exit 1 '
@@ -106,13 +106,13 @@ rm -f libncurses-5.tar.xz libncurses5_6.3-2ubuntu0.1_amd64.deb libtinfo5_6.3-2ub
 
 # Setup AOSP source 
 #patch -f -p 1 < wfdservice.rc.patch ; check_fail
-#cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+#cd packages/modules/Connectivity/ && git reset --hard && croot
 #patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cd packages/apps/Updater/ && git reset --hard && croot
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
@@ -132,7 +132,7 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 # Setup kernel
 cd kernel/xiaomi/chime
 patch -f -p 1 -R  < sched_param_perf.patch
-cd ../../../
+croot
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
