@@ -155,9 +155,13 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 
-cat device/xiaomi/chime/configs/props/system.prop | grep -v debug.sf.disable_client_composition_cache > device/xiaomi/chime/configs/props/system.prop.1
-mv device/xiaomi/chime/configs/props/system.prop.1 device/xiaomi/chime/configs/props/system.prop
-echo 'user=bluetooth seinfo=default isPrivApp=true name=com.android.bluetooth domain=bluetooth type=bluetooth_data_file' >> device/xiaomi/chime/sepolicy/vendor/seapp_contexts
+#cat device/xiaomi/chime/configs/props/system.prop | grep -v debug.sf.disable_client_composition_cache > device/xiaomi/chime/configs/props/system.prop.1
+#mv device/xiaomi/chime/configs/props/system.prop.1 device/xiaomi/chime/configs/props/system.prop
+#echo 'user=bluetooth seinfo=default isPrivApp=true name=com.android.bluetooth domain=bluetooth type=bluetooth_data_file' >> device/xiaomi/chime/sepolicy/vendor/seapp_contexts
+
+#curl -o OpenCamera.tar.xz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/OpenCamera.tar.xz
+#tar xf OpenCamera.tar.xz ; rm OpenCamera.tar.xz
+#bash vendor/xiaomi/chime/OpenCamera/do.sh
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
