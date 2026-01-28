@@ -99,7 +99,7 @@ git clone https://github.com/crdroidandroid/android_vendor_xiaomi_chime.git -b $
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
 # prebuilts/clang/host/linux-x86/clang-3289846/bin/clang.real: error while loading shared libraries: libncurses.so.5: cannot open shared object file: No such file or directory
-curl -o libncurses-5.tar.xz -L https://github.com/Joe7500/build-scripts/raw/refs/heads/main/remote/utils/libncurses-5.tar.xz; check_fail
+curl -o libncurses-5.tar.xz -L https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/utils/libncurses-5.tar.xz; check_fail
 tar xvf libncurses-5.tar.xz ; check_fail
 sudo dpkg -i --force-all libncurses5_6.3-2ubuntu0.1_amd64.deb libtinfo5_6.3-2ubuntu0.1_amd64.deb
 rm -f libncurses-5.tar.xz libncurses5_6.3-2ubuntu0.1_amd64.deb libtinfo5_6.3-2ubuntu0.1_amd64.deb
@@ -135,7 +135,7 @@ patch -f -p 1 -R  < sched_param_perf.patch
 cd ../../../
 
 # Get and decrypt signing keys
-curl -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
+curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
@@ -171,7 +171,7 @@ PD_ID=`cat out.json | cut -d '"' -f 4`
 notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
 
 # Upload file to SF
-curl -s -o keys.1  -L https://raw.githubusercontent.com/Joe7500/build-scripts/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
+curl -s -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
 chmod a-x sf
