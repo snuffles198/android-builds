@@ -70,7 +70,7 @@ if ! echo "$@" | grep START_GAPPS_BUILD ; then
 	screen -dmS check_progress bash check_progress.sh $JJ_SPEC $PACKAGE_NAME $DO_GAPPS_BUILD
 fi
 
-crave run $CLEAN --no-patch -- "/usr/bin/curl -o builder.sh -L https://raw.githubusercontent.com/Snuffles197/android-builds/refs/heads/main/remote/$CRAVE_SCRIPT; \
+crave run $CLEAN --no-patch -- "/usr/bin/curl -o builder.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/$CRAVE_SCRIPT; \
 /usr/bin/bash builder.sh $RESUME $START_GAPPS_BUILD $CONTINUE $JJ_SPEC "
 
 echo -e "\\a" ; sleep 1 ; echo -e "\\a"
