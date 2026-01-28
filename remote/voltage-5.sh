@@ -96,8 +96,6 @@ tar xf toolchain.tar.xz ; check_fail ; rm -f toolchain.tar.xz
 git clone https://github.com/Joe7500/device_xiaomi_chime.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
-rm -rf hardware/lineage/interfaces
-git clone https://github.com/LineageOS/android_hardware_lineage_interfaces  -b $DEVICE_BRANCH hardware/lineage/interfaces ; check_fail
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
@@ -141,6 +139,10 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardCon
 cd device/xiaomi/chime/
 cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/keys/keys.mk#g' > device.mk.1
 mv device.mk.1 device.mk
+cat device.mk | sed -e 's#hardware/lineage#hardware/voltage#g' > device.mk.1
+mv device.mk.1 device.mk
+cat Android.bp | sed -e 's#hardware/lineage#hardware/voltage#g' > Android.bp.1
+mv Android.bp.1 Android.bp
 cat AndroidProducts.mk | sed -e s/lineage/voltage/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
 
