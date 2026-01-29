@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc ; source build/envsetup.sh
+source /tmp/crave_bashrc
 
-croot
+cd /tmp/src/android/
 
 set -v
 
@@ -40,14 +40,14 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   croot
+   cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys
    rm -rf vendor/lineage-priv
    rm -rf priv-keys
    rm -rf .config/b2/
    rm -rf /home/admin/.config/b2/
-   cd packages/apps/Updater/ && git reset --hard && croot
-   cd packages/modules/Connectivity/ && git reset --hard && croot
+   cd packages/apps/Updater/ && git reset --hard && cd ../../../
+   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/
@@ -62,7 +62,7 @@ cleanup_self () {
    rm -rf .tdl
    rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
    rm -f tdl.sh
-   croot
+   cd /tmp/src/android/
    rm -rf sign/keys
 }
 
@@ -121,13 +121,13 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
-cd packages/modules/Connectivity/ && git reset --hard && croot
+cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-cd packages/apps/Updater/ && git reset --hard && croot
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/res/values/config.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/res/values/config.xml
@@ -136,7 +136,7 @@ check_fail
 git clone https://android.googlesource.com/platform/external/tinyxml external/tinyxml
 cd external/tinyxml
 git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
-croot
+cd ../../
 
 curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
 tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
@@ -158,7 +158,7 @@ if ! ls vendor/google/gearhead/proprietary/; then
    dumpyara/bin/dumpyara devon.zip
    cd device/google/gearhead/
    ./extract-files.py /tmp/src/android/devon
-   croot
+   cd ../../../
    rm -rf devon dumpyara devon.zip
 fi
 
@@ -204,7 +204,7 @@ echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
-croot
+cd ../../../
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
@@ -215,7 +215,7 @@ echo 'allow platform_app ota_package_file:dir { add_name search write read };' >
 # Kernel setup
 #cd kernel/xiaomi/chime/
 #bash do_ksun-susfs.sh ; check_fail
-#croot
+#cd ../../../
 
 # Build it
 set +v
@@ -292,14 +292,14 @@ rm -f tdl.zip
 VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
 tar xf tdl_Linux.tgz ; check_fail
-croot
+cd /tmp/src/android/
 GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
 /home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
 cd /home/admin
 rm -rf .tdl
 rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
 rm -f tdl.sh
-croot
+cd /tmp/src/android/
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."

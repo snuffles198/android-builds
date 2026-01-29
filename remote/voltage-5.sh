@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc ; source build/envsetup.sh
+source /tmp/crave_bashrc
 
-croot
+cd /tmp/src/android/
 
 set -v
 
@@ -38,20 +38,20 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   croot
+   cd /tmp/src/android/
    rm -rf keys.1 keys.2 keys.tar tdl.1 tdl.2 tdl.tar tdl.zip sf
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv
    rm -rf priv-keys .config/b2/ /home/admin/.config/b2/
    rm -rf device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/ hardware/xiaomi/
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/ prebuilts/clang/host/linux-x86/clang-stablekern/
-   cd packages/apps/Updater/ && git reset --hard && croot
-   cd packages/modules/Connectivity/ && git reset --hard && croot
+   cd packages/apps/Updater/ && git reset --hard && cd -
+   cd packages/modules/Connectivity/ && git reset --hard && cd -
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
    rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
    rm -rf .tdl LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
-   croot
-   cd vendor/voltage-priv/keys && rm -rf * && git reset --hard && croot
+   cd /tmp/src/android/
+   cd vendor/voltage-priv/keys && rm -rf * && git reset --hard && cd /tmp/src/android/
 }
 
 # Better than ' || exit 1 '
@@ -99,11 +99,11 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
-cd packages/modules/Connectivity/ && git reset --hard && croot
+cd packages/modules/Connectivity/ && git reset --hard && cd -
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 
-cd packages/apps/Updater/ && git reset --hard && croot
+cd packages/apps/Updater/ && git reset --hard && cd -
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
@@ -117,7 +117,7 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 cd vendor/voltage/
 cat config/version.mk | sed -e 's/UNOFFICIAL/COMMUNITY/g' > config/version.mk.1
 mv config/version.mk.1 config/version.mk
-croot
+cd ../..
 
 rm -f hardware/qcom/sm7250/Android.bp hardware/qcom/sm7250/Android.mk
 rm -f hardware/qcom/sdm845/Android.bp hardware/qcom/sdm845/Android.mk
@@ -128,7 +128,7 @@ if [ $? -ne 0 ] ; then
    cd frameworks/base/
    curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
    patch -p 1 -f < 1.patch ; check_fail
-   croot
+   cd ../../
 fi
 
 # Setup device tree
@@ -185,7 +185,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         android:defaultValue="1" />
 </PreferenceScreen>' > overlay-lineage/packages/apps/Powerhub/res/values/powerhub_statusbar.xml
 
-croot
+cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
