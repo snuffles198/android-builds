@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc ; source build/envsetup.sh
+source /tmp/crave_bashrc
 
-croot
+cd /tmp/src/android/
 
 set -v
 
@@ -40,14 +40,14 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   croot
+   cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys
    rm -rf vendor/lineage-priv
    rm -rf priv-keys
    rm -rf .config/b2/
    rm -rf /home/admin/.config/b2/
-   cd packages/apps/Updater/ && git reset --hard && croot
-   cd packages/modules/Connectivity/ && git reset --hard && croot
+   cd packages/apps/Updater/ && git reset --hard && cd ../../../
+   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/
@@ -62,8 +62,8 @@ cleanup_self () {
    rm -rf .tdl
    rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
    rm -f tdl.sh
-   croot
-   cd vendor/voltage-priv/keys && rm -rf * && git reset --hard && croot
+   cd /tmp/src/android/
+   cd vendor/voltage-priv/keys && rm -rf * && git reset --hard && cd /tmp/src/android/
 }
 
 # Better than ' || exit 1 '
@@ -115,13 +115,13 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
-cd packages/modules/Connectivity/ && git reset --hard && croot
+cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-cd packages/apps/Updater/ && git reset --hard && croot
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
@@ -139,7 +139,7 @@ curl -o voltage_brightness_slider.patch -L https://raw.githubusercontent.com/snu
 cd packages/apps/Powerhub/
 git reset --hard
 patch -f -p 1 < ../../../voltage_brightness_slider.patch
-croot
+cd ../../../
 
 rm -f hardware/qcom/sm7250/Android.bp hardware/qcom/sm7250/Android.mk
 rm -f hardware/qcom/sdm845/Android.bp hardware/qcom/sdm845/Android.mk
@@ -187,12 +187,12 @@ echo '</resources>' >> overlay-lineage/packages/apps/Settings/res/values/voltage
 #echo '</resources>' >> overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1
 #mv overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml.1 overlay-lineage/frameworks/base/packages/SystemUI/res/values/config.xml
 
-croot
+cd ../../../
 
 # Kernel setup
 cd kernel/xiaomi/chime/
 bash do_ksun-susfs.sh ; check_fail
-croot
+cd ../../../
 
 # Get dev secrets from bucket.
 sudo apt --yes install python3-virtualenv virtualenv python3-pip-whl
@@ -257,13 +257,13 @@ VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest"
 wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
 tar xf tdl_Linux.tgz ; check_fail
 unzip -o -P $TDL_ZIP_PASSWD tdl.zip ; check_fail
-croot
+cd /tmp/src/android/
 /home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
 cd /home/admin
 rm -rf .tdl
 rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
 rm -f tdl.sh
-croot
+cd /tmp/src/android/
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."

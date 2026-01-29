@@ -2,9 +2,9 @@
 
 source /home/admin/.profile
 source /home/admin/.bashrc
-source /tmp/crave_bashrc ; source build/envsetup.sh
+source /tmp/crave_bashrc
 
-croot
+cd /tmp/src/android/
 
 set -v
 
@@ -37,17 +37,17 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
 cleanup_self () {
-   croot
+   cd /tmp/src/android/
    rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys .config/b2/ /home/admin/.config/b2/
-   cd packages/apps/Updater/ && git reset --hard && croot
-   cd packages/modules/Connectivity/ && git reset --hard && croot
+   cd packages/apps/Updater/ && git reset --hard && cd ../../../
+   cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
    rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
    rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
    rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
    rm -rf .tdl LICENSE README.md README_zh.md tdl tdl_key tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
-   croot
+   cd /tmp/src/android/
 }
 
 # Better than ' || exit 1 '
@@ -98,13 +98,13 @@ git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH
 
 # Setup AOSP source 
 patch -f -p 1 < wfdservice.rc.patch ; check_fail
-cd packages/modules/Connectivity/ && git reset --hard && croot
+cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
 patch -f -p 1 < InterfaceController.java.patch ; check_fail
 rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
 rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
 rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
 
-cd packages/apps/Updater/ && git reset --hard && croot
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
@@ -112,7 +112,7 @@ cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/master/changelog/
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 sed -i "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml
-cd vendor/infinity/ && git add . && git commit -m update ; croot
+cd vendor/infinity/ && git add . && git commit -m update ; cd -
 #(sleep 600 ; sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml)&
 
 for i in `grep -R '<string name="unofficial_build_suffix">' packages/apps/Settings/res | cut -d ':' -f 1` ; do
@@ -122,7 +122,7 @@ done
 cd vendor/infinity/
 cat config/version.mk | sed -e 's/INFINITY_BUILD_TYPE ?= UNOFFICIAL/INFINITY_BUILD_TYPE := COMMUNITY/g' > config/version.mk.1
 mv config/version.mk.1 config/version.mk
-croot
+cd ../..
 
 sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
@@ -133,7 +133,7 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 #   cd frameworks/base/
 #   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimationUtils.java.patch
 #   patch -p 1 -f < 1.patch ; check_fail
-#   croot
+#   cd ../../
 #fi
 
 cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e 's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
@@ -162,7 +162,7 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/product.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
-croot
+cd -
 
 cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
 mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
