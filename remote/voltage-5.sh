@@ -207,6 +207,15 @@ echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
 #tar xf OpenCamera.tar.xz ; rm OpenCamera.tar.xz
 #bash vendor/xiaomi/chime/OpenCamera/do.sh
 
+cd device/xiaomi/chime
+#git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+# PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
+cd ../../../
+
 # Setup kernel
 
 # Get and decrypt signing keys
