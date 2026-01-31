@@ -12,9 +12,9 @@ set -v
 PACKAGE_NAME=axion
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.1
-VENDOR_BRANCH=lineage-23.1
-XIAOMI_BRANCH=lineage-23.1
+DEVICE_BRANCH=lineage-23.2
+VENDOR_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-23.2
 REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.1 --git-lfs"
 OTA_SED_STRING="AxionAOSP/official_devices/.*json"
 
@@ -176,7 +176,7 @@ fi
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
    cd frameworks/base/
-   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimationUtils.java.patch
+   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
    patch -p 1 -f < 1.patch ; check_fail
    cd ../../
 fi
