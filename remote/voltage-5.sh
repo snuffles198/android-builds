@@ -158,7 +158,10 @@ cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#dev
 mv BoardConfig.mk.1 BoardConfig.mk
 cat lineage_chime.mk | sed -e s/lineage/voltage/g > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
+cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR  > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk voltage_chime.mk
+
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
