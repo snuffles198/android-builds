@@ -173,6 +173,7 @@ mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
 if echo $@ | grep GAPPS ; then
    echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
    echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
 else
 # VANILLA
    echo 'WITH_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
@@ -197,7 +198,6 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 #fi
 
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
-echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
 
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
@@ -275,6 +275,7 @@ mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
 # GAPPS
    echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
    echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
 
 # Build it
 set +v
