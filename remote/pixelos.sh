@@ -149,7 +149,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         <permission name="android.permission.REBOOT" />
         <permission name="android.permission.RECOVERY" />
         <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
-        <permission name="android.permission.INSTALL_PACKAGES"/>
+        <permission name="android.permission.INSTALL_PACKAGES" />
     </privapp-permissions>
 </permissions>' > updater.txt
 echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/updater.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp_whitelist_net.pixelos.ota.xml' >> device.mk
