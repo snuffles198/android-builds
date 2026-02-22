@@ -141,6 +141,20 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+
+echo '<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="net.pixelos.ota">
+        <permission name="android.permission.ACCESS_CACHE_FILESYSTEM" />
+        <permission name="android.permission.REBOOT" />
+        <permission name="android.permission.RECOVERY" />
+        <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
+        <permission name="android.permission.INSTALL_PACKAGES"/>
+    </privapp-permissions>
+</permissions>' > updater.txt
+echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/updater.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp_whitelist_net.pixelos.ota.xml' >> device.mk
+echo 'PRODUCT_PACKAGES += Updater' >> device.mk
+
 cd ../../../
 
 cat device/xiaomi/chime/lineage_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/lineage_chime.mk.1
@@ -167,8 +181,6 @@ echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
-
-echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
 cp device/xiaomi/chime/lineage_chime.mk device/xiaomi/chime/custom_chime.mk
 
