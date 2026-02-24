@@ -220,7 +220,7 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+mka bacon -j$(nproc --all)        ; check_fail
 
 set -v
 
@@ -292,7 +292,7 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+mka bacon -j$(nproc --all)        ; check_fail
 
 set -v
 
