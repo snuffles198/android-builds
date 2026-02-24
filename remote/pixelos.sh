@@ -15,7 +15,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
-GENOTA_ARG_1="crdroid"
+GENOTA_ARG_1="pixelos"
 GENOTA_ARG_2="16"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b sixteen-qpr2 $REPO_PARAMS"
