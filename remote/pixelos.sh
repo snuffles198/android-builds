@@ -155,6 +155,10 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/updater.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp_whitelist_net.pixelos.ota.xml' >> device.mk
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
+touch dummy
+echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/addon.d/.placeholder' >> device.mk
+#echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/system/addon.d/.placeholder' >> device.mk
+
 cd ../../../
 
 cat device/xiaomi/chime/lineage_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/lineage_chime.mk.1

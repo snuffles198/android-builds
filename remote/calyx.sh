@@ -12,10 +12,10 @@ set -v
 PACKAGE_NAME=calyx
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-22.2
-VENDOR_BRANCH=lineage-22.2
-XIAOMI_BRANCH=lineage-22.2
-REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android15-qpr2 --git-lfs"
+DEVICE_BRANCH=lineage-23.2
+VENDOR_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-23.2
+REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16 --git-lfs"
 OTA_SED_STRING="https://release.calyxinstitute.org/"
 OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
 
@@ -41,27 +41,16 @@ notify_send "Build $PACKAGE_NAME on crave.io started."
 # Always cleanup
 cleanup_self () {
    cd /tmp/src/android/
-   rm -rf vendor/lineage-priv/keys
-   rm -rf vendor/lineage-priv
-   rm -rf priv-keys
-   rm -rf .config/b2/
-   rm -rf /home/admin/.config/b2/
+   rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys
+   rm -rf .config/b2/ /home/admin/.config/b2/
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
-   rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/
-   rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-   rm -rf hardware/xiaomi/
-   rm -rf device/xiaomi/chime/
-   rm -rf vendor/xiaomi/chime/
-   rm -rf kernel/xiaomi/chime/
+   rm -rf prebuilts/clang/kernel/linux-x86/clang-stablekern/ prebuilts/clang/host/linux-x86/clang-stablekern/
+   rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
    rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
-   rm -rf /tmp/android-certs*
-   rm -rf /home/admin/venv/
-   rm -rf custom_scripts/
+   rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
    cd /home/admin
-   rm -rf .tdl
-   rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz
-   rm -f tdl.sh
+   rm -rf .tdl LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv tdl.zip tdl_Linux.tgz tdl.sh
    cd /tmp/src/android/
    rm -rf sign/keys
 }
@@ -104,12 +93,9 @@ TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SEC
 notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
 
 # Download trees
-rm -rf kernel/xiaomi/chime/
-rm -rf vendor/xiaomi/chime/
-rm -rf device/xiaomi/chime/
-rm -rf hardware/xiaomi/
+rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-hanikrnl-susfs.tar.xz" ; check_fail
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
