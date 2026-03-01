@@ -20,7 +20,8 @@ GENOTA_ARG_2="16"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b sixteen-qpr2 $REPO_PARAMS"
 OTA_SED_STRING="PixelOS-AOSP/official_devices/.*json"
-OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.chime.json"
+TODAY=`date +"%d%m%y"`
+OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.$TODAY.chime.json"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -33,6 +34,7 @@ notify_send() {
    curl -s -d "$MSG `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
 }
 
+notify_send "Build $PACKAGE_NAME on crave.io OTA string: $PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.$TODAY.chime.json"
 notify_send "Build $PACKAGE_NAME on crave.io started."
 
 # Always cleanup
@@ -157,7 +159,7 @@ echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
 touch dummy
 echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/addon.d/.placeholder' >> device.mk
-#echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/system/addon.d/.placeholder' >> device.mk
+echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/system/addon.d/.placeholder' >> device.mk
 
 cd ../../../
 

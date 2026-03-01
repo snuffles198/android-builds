@@ -131,13 +131,26 @@ curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubuser
 tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
 rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 
+sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/calyx/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/calyx/build/tasks/kernel.mk
+sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/calyx/build/tasks/kernel.mk
+
+grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+if [ $? -ne 0 ] ; then
+   cd frameworks/base/
+  curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
+  patch -p 1 -f < 1.patch ; check_fail
+  cd ../../
+fi
+
+rm -rf device/motorola/sm6375-common/
 rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
 rm -rf sign/
 
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
-   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
+export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
    curl -o devon.zip -L "$DEVON_URL"
    sudo apt update
    sudo apt -y install 7zip
@@ -152,11 +165,11 @@ if ! ls vendor/google/gearhead/proprietary/; then
 fi
 
 # Setup device tree
-echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
-
 cd device/xiaomi/chime/
 
 git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
+
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 
 cat AndroidProducts.mk | sed -e s/lineage/calyx/g > AndroidProducts.mk.1
 mv AndroidProducts.mk.1 AndroidProducts.mk
@@ -185,21 +198,18 @@ mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 
-#rm -f releasetools.py
-#curl -o releasetools.py -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/calyx_releasetools.py
-
 echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
+
+echo 'allow platform_app ota_package_file:dir { add_name search write read };' > sepolicy/private/platform_app.te
+
 cd ../../../
-
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-
-echo 'allow platform_app ota_package_file:dir { add_name search write read };' > device/xiaomi/chime/sepolicy/private/platform_app.te
 
 # Kernel setup
 #cd kernel/xiaomi/chime/
@@ -226,17 +236,32 @@ cd sign
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/jcalKK1oHiBRBrMv1k6iAKnKy80pY9QX
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
-tar xf keys.tar
+tar xvf keys.tar
 rm -f keys.1 keys.2 keys.tar
+cp keys/chime/com.android.btservices.pem keys/chime/com.android.bt.pem
+cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.bt.pk8
+cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.bt.x509.pem
+cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.bt.avbpubkey
+cp keys/chime/com.android.btservices.pem keys/chime/com.android.crashrecovery.pem
+cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.crashrecovery.pk8
+cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.crashrecovery.x509.pem
+cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.crashrecovery.avbpubkey
+cp keys/chime/com.android.btservices.pem keys/chime/com.android.uprobestats.pem
+cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.uprobestats.pk8
+cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.uprobestats.x509.pem
+cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.uprobestats.avbpubkey
 
 cp ../out/target/product/chime/otatools.zip .
 unzip otatools.zip
+rm -f sign/releasetools/Android.bp
+rm -f sign/releasetools/merge/Android.bp
 cp ../out/target/product/chime/obj/PACKAGING/target_files_intermediates/*.zip .
 
-cat vendor/calyx/scripts/release.sh | sed -e s/comet/chime/g > vendor/calyx/scripts/release.sh.1
-mv vendor/calyx/scripts/release.sh.1 vendor/calyx/scripts/release.sh
+sed -i s/comet/chime/g vendor/calyx/scripts/release.sh
+sed -i 's#BOOTLOADER=$(unzip -c "$TARGET_FILES" OTA/android-info.txt | grep version-bootloader | cut -d = -f 2)#echo hello#g' vendor/calyx/scripts/release.sh
+sed -i 's#RADIO=$(unzip -c "$TARGET_FILES" OTA/android-info.txt | grep version-baseband | cut -d = -f 2)#echo hello#g' vendor/calyx/scripts/release.sh
+
 chmod u+x ./vendor/calyx/scripts/release.sh
-#export BUILD_NUMBER=$(date '+%d-%m-%Y')
 export BUILD_NUMBER=`bash ../calyx/scripts/release/version.sh`
 ./vendor/calyx/scripts/release.sh chime calyx_chime-target_files.zip
 
