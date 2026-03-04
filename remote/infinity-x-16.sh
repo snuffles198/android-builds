@@ -19,8 +19,9 @@ GENOTA_ARG_1="infinity"
 GENOTA_ARG_2="3"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle --no-repo-verify -g default,-mips,-darwin,-notdefault"
 REPO_URL=" -u https://github.com/ProjectInfinity-X/manifest -b 16 $REPO_PARAMS"
+TODAY=`date +"%d%m%y"`
 OTA_SED_STRING="ProjectInfinity-X/official_devices/.*json"
-OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
+OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.$TODAY.json"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -106,14 +107,11 @@ rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/uti
 
 cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
+cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.$TODAY.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
-cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/master/changelog/.*txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
-#sed -i "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml
-#cd vendor/infinity/ && git add . && git commit -m update ; cd -
-#(sleep 600 ; sed -i -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" vendor/infinity/overlay/updater/res/values/strings.xml)&
 
 for i in `grep -R '<string name="unofficial_build_suffix">' packages/apps/Settings/res | cut -d ':' -f 1` ; do
   cat $i | sed -e 's#<string name="unofficial_build_suffix">.*string>#<string name="unofficial_build_suffix">- Community</string>#g' > $i.1
@@ -175,15 +173,17 @@ if echo $@ | grep GAPPS ; then
    echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-   cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
+   cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.$TODAY.json#g" > strings.xml.1
    mv strings.xml.1 strings.xml
-   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/master/changelog/.*txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.
    cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+   notify_send "Build $PACKAGE_NAME on crave.io OTA string: Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.$TODAY.json"
    check_fail
 else
 # VANILLA
    echo 'WITH_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
    echo 'RESERVE_SPACE_FOR_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
+   notify_send "Build $PACKAGE_NAME on crave.io OTA string: $OTA_SED_REPLACE_STRING"
 fi
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
