@@ -220,7 +220,13 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
-mka bacon -j$(nproc --all)        ; check_fail
+mka bacon target-files-package otatools-package -j$(nproc --all)  ; check_fail
+
+if echo $@ | grep GAPPS ; then
+cp out/target/product/chime/obj/PACKAGING/target_files_intermediates/infinity_chime-target_files.zip infinity_chime-target_files_GAPPS.zip
+else
+cp out/target/product/chime/obj/PACKAGING/target_files_intermediates/infinity_chime-target_files.zip infinity_chime-target_files_VANILLA.zip
+fi
 
 set -v
 
@@ -292,7 +298,8 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
-mka bacon -j$(nproc --all)        ; check_fail
+mka bacon target-files-package otatools-package -j$(nproc --all); check_fail
+cp out/target/product/chime/obj/PACKAGING/target_files_intermediates/infinity_chime-target_files.zip infinity_chime-target_files_GAPPS.zip
 
 set -v
 
