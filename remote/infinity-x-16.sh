@@ -281,11 +281,12 @@ mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
    echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
-   cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
+   cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.$TODAY.json#g" > strings.xml.1
    mv strings.xml.1 strings.xml
-   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/master/changelog/.*txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
    cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
    check_fail
+   notify_send "Build $PACKAGE_NAME on crave.io OTA string: Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.$TODAY.json"
 
 # Build it
 set +v
