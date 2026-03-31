@@ -15,7 +15,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
-REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.1 --git-lfs"
+REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.2 --git-lfs"
 OTA_SED_STRING="AxionAOSP/official_devices/.*json"
 
 # Random template helper stuff
@@ -136,8 +136,8 @@ echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
 echo 'AXION_CPU_BIG_CORES := 4,5,6,7' >> lineage_chime.mk
 echo 'AXION_CAMERA_REAR_INFO := 48' >> lineage_chime.mk
 echo 'AXION_CAMERA_FRONT_INFO := 8' >> lineage_chime.mk
-echo 'GPU_FREQS_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/available_frequencies' >> lineage_chime.mk
-echo 'GPU_MIN_FREQ_PATH := /sys/class/devfreq/5900000.qcom,kgsl-3d0/min_freq' >> lineage_chime.mk
+echo 'GPU_FREQS_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/devfreq/available_frequencies' >> lineage_chime.mk
+echo 'GPU_MIN_FREQ_PATH := /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/devfreq/min_freq' >> lineage_chime.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> lineage_chime.mk
 
 echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
@@ -179,11 +179,12 @@ cd ../../../
 
 #curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
 #mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
-echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
-if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
-   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
-   check_fail
-fi
+#echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
+#if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
+#   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
+#   check_fail
+#fi
+echo 'TARGET_INCLUDE_AXFX := true' >> device/xiaomi/chime/lineage_chime.mk
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
@@ -193,18 +194,15 @@ if [ $? -ne 0 ] ; then
    cd ../../
 fi
 
+grep -vE 'genfscon.*proc.*/sys/vm/dirty_writeback_centisecs.*u:object_r:proc_dirty:s0' device/xiaomi/chime/sepolicy/vendor/genfs_contexts > device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1
+mv device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1 device/xiaomi/chime/sepolicy/vendor/genfs_contexts
+
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
 rm -f keys.1 keys.2 keys.tar
-curl -o tdl.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
-tar xf tdl.tar
-rm -f tdl.1 tdl.2 tdl.tar
-mv tdl.zip /home/admin/
 
 sleep 10
 
@@ -218,14 +216,6 @@ source build/envsetup.sh               ; check_fail
 source build/envsetup.sh 
 source build/envsetup.sh
 # Get and decrypt signing keys
-curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
-tar xf keys.tar
-rm -f keys.1 keys.2 keys.tar
-curl -o tdl.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
 axion chime user vanilla               ; check_fail
 mka installclean
 ax -b user                             ; check_fail
