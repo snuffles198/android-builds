@@ -207,8 +207,6 @@ echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 #   check_fail
 #fi
 
-echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
-
 #curl -o OpenCamera.tar.xz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/OpenCamera.tar.xz
 #tar xf OpenCamera.tar.xz ; rm OpenCamera.tar.xz
 #bash vendor/xiaomi/chime/OpenCamera/do.sh

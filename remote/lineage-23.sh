@@ -153,8 +153,6 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-echo 'PRODUCT_ENABLE_UFFD_GC := true' >> device/xiaomi/chime/device.mk
-
 # Setup kernel
 
 # Get and decrypt signing keys
