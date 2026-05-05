@@ -252,7 +252,7 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 breakfast chime user              ; check_fail
 mka installclean
-mka bacon                         ; check_fail
+mka bacon -j$(nproc --all)        ; check_fail
 
 set -v
 

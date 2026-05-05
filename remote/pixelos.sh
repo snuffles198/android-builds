@@ -217,7 +217,7 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 breakfast chime user              ; check_fail
 mka installclean
-mka pixelos                       ; check_fail
+mka pixelos -j$(nproc --all)      ; check_fail
 
 set -v
 
