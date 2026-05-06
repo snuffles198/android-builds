@@ -1,8 +1,17 @@
 #!/bin/bash
 
+source ~/android-builds/dev-secrets/telegram.sh
+source ~/android-builds/dev-secrets/secrets.sh
+source ~/android-builds/dev-secrets/ntfy.sh
 source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
+
+mkdir -p /tmp/src
+if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+   rm -rf /tmp/src/android
+   ln -s "$PWD" /tmp/src/android
+fi
 
 cd /tmp/src/android/
 
@@ -15,7 +24,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
-REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16 --git-lfs"
+REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs"
 OTA_SED_STRING="https://release.calyxinstitute.org/"
 OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
 
