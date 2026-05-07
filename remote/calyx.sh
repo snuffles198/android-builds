@@ -24,7 +24,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
-REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs"
+REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs --depth=1 --no-tags --no-clone-bundle "
 OTA_SED_STRING="https://release.calyxinstitute.org/"
 OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
 
@@ -104,13 +104,13 @@ notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
+curl -C - -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
-curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
+curl -C - -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail
 rm -f lineage-22.1.tar.xz
-curl -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
+curl -C - -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
 tar xf toolchain.tar.xz ; check_fail
 rm -f toolchain.tar.xz
 git clone https://github.com/Joe7500/device_xiaomi_chime.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
@@ -131,14 +131,14 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings
 cp strings.xml.1 packages/apps/Updater/res/values/config.xml
 check_fail
 
-git clone https://android.googlesource.com/platform/external/tinyxml external/tinyxml
-cd external/tinyxml
-git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
-cd ../../
+#git clone https://android.googlesource.com/platform/external/tinyxml external/tinyxml
+#cd external/tinyxml
+#git revert --no-edit 6e88470e56d725d4dc4225f0218a5bb09a009953
+#cd ../../
 
-curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
-tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
-rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
+#curl -o hardware_calyx_interfaces_power-libperfmgr.tgz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/hardware_calyx_interfaces_power-libperfmgr.tgz
+#tar xf hardware_calyx_interfaces_power-libperfmgr.tgz
+#rm -f hardware_calyx_interfaces_power-libperfmgr.tgz
 
 sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/calyx/build/tasks/kernel.mk
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/calyx/build/tasks/kernel.mk
@@ -160,7 +160,7 @@ rm -rf sign/
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
 export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-   curl -o devon.zip -L "$DEVON_URL"
+   curl -C - -o devon.zip -L "$DEVON_URL" ; check_fail
    sudo apt update
    sudo apt -y install 7zip
    sudo apt -y install erofs-utils
@@ -199,6 +199,10 @@ cat device.mk | grep -v libstdc++_vendor > device.mk.1
 mv device.mk.1 device.mk
 cat device.mk | grep -v 'vendor/lineage-priv/keys/keys.mk' > device.mk.1
 mv device.mk.1 device.mk
+cat device.mk | grep -v 'libdng_sdk.vendor ' > device.mk.1
+mv device.mk.1 device.mk
+cat device.mk | grep -v 'libtinyxml ' > device.mk.1
+mv device.mk.1 device.mk
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
 
@@ -207,12 +211,12 @@ mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 
-echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
-echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
+#echo 'BUILD_BROKEN_PREBUILT_ELF_FILES := true' >> BoardConfig.mk
+#echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
+cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 
