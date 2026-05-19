@@ -204,6 +204,9 @@ cd ../../../
 #fi
 echo 'TARGET_INCLUDE_AXFX := true' >> device/xiaomi/chime/lineage_chime.mk
 
+echo 'BYPASS_CHARGE_SUPPORTED := true' >> device/xiaomi/chime/lineage_chime.mk
+echo 'BYPASS_CHARGE_TOGGLE_PATH := /sys/class/power_supply/battery/input_suspend' >> device/xiaomi/chime/lineage_chime.mk
+
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
    cd frameworks/base/
