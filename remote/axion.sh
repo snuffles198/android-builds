@@ -189,7 +189,7 @@ echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 
 curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.sched-grok" ; check_fail
-echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop
+echo 'log.tag.SfCpuPolicy=SUPPRESS' >> configs/props/system.prop
 
 echo 'PRODUCT_PACKAGES += Flashy' >> device.mk
 
