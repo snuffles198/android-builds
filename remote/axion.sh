@@ -135,6 +135,9 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
 mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 
+curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz
+tar xf flashy.tar.xz
+
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
@@ -187,6 +190,8 @@ echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 
 curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.sched-grok"
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop
+
+echo 'PRODUCT_PACKAGES += Flashy' >> device.mk
 
 cd ../../../
 
