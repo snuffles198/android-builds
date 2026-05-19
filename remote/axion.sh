@@ -135,7 +135,7 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
 mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 
-curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz
+curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz ; check_fail
 tar xf flashy.tar.xz
 
 # Setup device tree
@@ -188,7 +188,7 @@ echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.pro
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 
-curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.sched-grok"
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.sched-grok" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop
 
 echo 'PRODUCT_PACKAGES += Flashy' >> device.mk
