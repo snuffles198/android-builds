@@ -188,7 +188,7 @@ echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.pro
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 
-curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.sched-grok" ; check_fail
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> configs/props/system.prop
 
 echo 'PRODUCT_PACKAGES += Flashy' >> device.mk
