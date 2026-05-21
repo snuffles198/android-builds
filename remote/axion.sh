@@ -209,15 +209,30 @@ echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/configs/props/device.mk
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
-echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
-echo 'on property:sys.boot_completed=1' >> device/xiaomi/chime/rootdir/etc/init.target.rc  ; check_fail
-echo '    wait 20' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
-echo '    write /proc/sys/vm/swappiness 100' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
+#echo 'on property:sys.boot_completed=1' >> device/xiaomi/chime/rootdir/etc/init.target.rc  ; check_fail
+#echo '    wait 20' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
+#echo '    write /proc/sys/vm/swappiness 100' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
 
-echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts ; check_fail
-echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te ; check_fail
+#echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts ; check_fail
+#echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te ; check_fail
+
+# I was advised this is more correct:
+echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts
+echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te
+
+echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "on early-init" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    write /proc/sys/vm/swappiness 100" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "on init" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    setprop ro.lmk.swap_free_low_percentage 5" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    setprop ro.lmk.swap_util_max 95" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+
+echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/vendor.prop
+echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/vendor.prop
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
