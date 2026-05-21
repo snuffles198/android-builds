@@ -135,9 +135,6 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
 mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
 
-curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz ; check_fail
-tar xf flashy.tar.xz
-
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
@@ -169,7 +166,6 @@ echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
-cd ../../../
 
 echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
 
@@ -181,32 +177,17 @@ echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> device/xiaomi/chime/configs/p
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-cd device/xiaomi/chime
-#git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 # PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 
-curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
-echo 'log.tag.SfCpuPolicy=SUPPRESS' >> configs/props/system.prop
+echo 'TARGET_INCLUDE_AXFX := true' >> lineage_chime.mk
 
-echo 'PRODUCT_PACKAGES += Flashy' >> device.mk
-
+echo 'BYPASS_CHARGE_SUPPORTED := true' >> lineage_chime.mk
+echo 'BYPASS_CHARGE_TOGGLE_PATH := /sys/class/power_supply/battery/input_suspend' >> lineage_chime.mk
 cd ../../../
-
-#curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
-#mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
-#echo '$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)' >> device/xiaomi/chime/device.mk
-#if ! ls packages/apps/ViPER4AndroidFX/config.mk ; then
-#   git clone https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX packages/apps/ViPER4AndroidFX
-#   check_fail
-#fi
-echo 'TARGET_INCLUDE_AXFX := true' >> device/xiaomi/chime/lineage_chime.mk
-
-echo 'BYPASS_CHARGE_SUPPORTED := true' >> device/xiaomi/chime/lineage_chime.mk
-echo 'BYPASS_CHARGE_TOGGLE_PATH := /sys/class/power_supply/battery/input_suspend' >> device/xiaomi/chime/lineage_chime.mk
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
@@ -218,6 +199,25 @@ fi
 
 grep -vE 'genfscon.*proc.*/sys/vm/dirty_writeback_centisecs.*u:object_r:proc_dirty:s0' device/xiaomi/chime/sepolicy/vendor/genfs_contexts > device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1
 mv device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1 device/xiaomi/chime/sepolicy/vendor/genfs_contexts
+
+#New 2.6 qpr2
+curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz ; check_fail
+tar xf flashy.tar.xz
+
+echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/configs/props/device.mk
+
+curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
+echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
+
+echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+
+echo 'on property:sys.boot_completed=1' >> device/xiaomi/chime/rootdir/etc/init.target.rc  ; check_fail
+echo '    wait 20' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
+echo '    write /proc/sys/vm/swappiness 100' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
+
+echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts ; check_fail
+echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te ; check_fail
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
