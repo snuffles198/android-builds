@@ -254,6 +254,15 @@ echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 echo "on property:sys.boot_completed=1" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 echo "    start late_swappinesvm_tweak" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 
+#more permissions
+echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "on property:sys.boot_completed=1" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    chown root system /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    chown root system /sys/devices/system/cpu/cpu4/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "    chmod 0664 /sys/devices/system/cpu/cpu4/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+
+
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
