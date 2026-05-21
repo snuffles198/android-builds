@@ -225,7 +225,7 @@ echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaom
 echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te
 
 #lmkd use more zram swap
-cho "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
+echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 echo "on init" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 echo "    setprop ro.lmk.swap_free_low_percentage 5" >> device/xiaomi/chime/rootdir/etc/init.target.rc
 echo "    setprop ro.lmk.swap_util_max 95" >> device/xiaomi/chime/rootdir/etc/init.target.rc
