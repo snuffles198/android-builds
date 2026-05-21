@@ -141,6 +141,7 @@ tar xf flashy.tar.xz
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
 
 echo 'AXION_MAINTAINER := Joe' >> lineage_chime.mk
 echo 'AXION_PROCESSOR := Snapdragon_662' >> lineage_chime.mk
