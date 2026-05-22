@@ -135,6 +135,8 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 
 cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 # PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
