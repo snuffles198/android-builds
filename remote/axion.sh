@@ -214,7 +214,7 @@ echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.
 echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
-echo 'PRODUCT_PACKAGES += custom_init_rc' >>device/xiaomi/chime/device.mk
+echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
 mkdir device/xiaomi/chime/custom_init
 echo 'prebuilt_etc {
     name: "custom_init_rc",
