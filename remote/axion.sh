@@ -132,8 +132,10 @@ sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
-cat vendor/lineage/prebuilt/common/bin/backuptool.sh | sed -e 's/export V=23/export V=2/g' > vendor/lineage/prebuilt/common/bin/backuptool.sh.1
-mv vendor/lineage/prebuilt/common/bin/backuptool.sh.1 vendor/lineage/prebuilt/common/bin/backuptool.sh
+sed -i 's/export V=23/export V=2\./g' vendor/lineage/prebuilt/common/bin/backuptool.sh
+sed -i 's/ro.lineage.version/ro.axion.version/g' vendor/lineage/prebuilt/common/bin/backuptool.sh
+
+sed -i 's#write /proc/sys/vm/swappiness.*$#write /proc/sys/vm/swappiness 90#g' system/core/rootdir/init.rc
 
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
@@ -209,59 +211,20 @@ echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/configs/props/device.mk
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
-#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
-#echo 'on property:sys.boot_completed=1' >> device/xiaomi/chime/rootdir/etc/init.target.rc  ; check_fail
-#echo '    wait 20' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
-#echo '    write /proc/sys/vm/swappiness 100' >> device/xiaomi/chime/rootdir/etc/init.target.rc ; check_fail
-
-#echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts ; check_fail
-#echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te ; check_fail
-
-# I was advised this is more correct:
-#sepolicy
-echo '/proc/sys/vm/swappiness    u:object_r:proc_drop_caches:s0' >> device/xiaomi/chime/sepolicy/vendor/file_contexts
-echo 'allow vendor_init proc_drop_caches:file write;' >> device/xiaomi/chime/sepolicy/vendor/vendor_init.te
-
-#lmkd use more zram swap
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "on init" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    setprop ro.lmk.swap_free_low_percentage 5" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    setprop ro.lmk.swap_util_max 95" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-
-echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/vendor.prop
-echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/vendor.prop
-
-#swappiness
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "on property:sys.boot_completed=1" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    write /proc/sys/vm/swappiness 100" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-
-#swappines with delay
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "service late_swappinesvm_tweak /vendor/bin/sh -c 'sleep 30 && echo 100 > /proc/sys/vm/swappiness'" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    class late_start" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    user root" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    group root" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    disabled" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    oneshot" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    seclabel u:r:vendor_init:s0" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "on property:sys.boot_completed=1" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    start late_swappinesvm_tweak" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-
-#more permissions
-echo "" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "on property:sys.boot_completed=1" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    chown root system /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    chown root system /sys/devices/system/cpu/cpu4/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-echo "    chmod 0664 /sys/devices/system/cpu/cpu4/cpufreq/schedutil/down_rate_limit_us" >> device/xiaomi/chime/rootdir/etc/init.target.rc
-
+echo 'PRODUCT_PACKAGES += custom_init_rc' >>device/xiaomi/chime/device.mk
+mkdir device/xiaomi/chime/custom_init
+echo 'prebuilt_etc {
+    name: "custom_init_rc",
+    src: "custom_init.rc",
+    sub_dir: "init",
+    filename: "custom_init.rc",
+}' > device/xiaomi/chime/custom_init/Adroid.bp
+echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 1
+    write /proc/sys/vm/swappiness 90' > device/xiaomi/chime/custom_init/custom_init_rc
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
