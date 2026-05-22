@@ -158,13 +158,23 @@ echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-#cat device/xiaomi/chime/configs/props/system.prop | grep -v debug.sf.disable_client_composition_cache > device/xiaomi/chime/configs/props/system.prop.1
-#mv device/xiaomi/chime/configs/props/system.prop.1 device/xiaomi/chime/configs/props/system.prop
-#echo 'user=bluetooth seinfo=default isPrivApp=true name=com.android.bluetooth domain=bluetooth type=bluetooth_data_file' >> device/xiaomi/chime/sepolicy/vendor/seapp_contexts
+curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
+echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
-#curl -o OpenCamera.tar.xz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/OpenCamera.tar.xz
-#tar xf OpenCamera.tar.xz ; rm OpenCamera.tar.xz
-#bash vendor/xiaomi/chime/OpenCamera/do.sh
+echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+
+echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
+mkdir device/xiaomi/chime/custom_init
+echo 'prebuilt_etc {
+    name: "custom_init_rc",
+    src: "custom_init.rc",
+    sub_dir: "init",
+    filename: "custom_init.rc",
+}' > device/xiaomi/chime/custom_init/Adroid.bp
+echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 1
+    write /proc/sys/vm/swappiness 90' > device/xiaomi/chime/custom_init/custom_init_rc
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
