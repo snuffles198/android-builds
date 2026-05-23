@@ -169,15 +169,15 @@ cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 
-echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> device/xiaomi/chime/lineage_chime.mk
+echo 'TARGET_INCLUDES_LOS_PREBUILTS := true' >> lineage_chime.mk
 
-echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 
-echo 'persist.sys.perf.scroll_opt=true'  >> device/xiaomi/chime/configs/props/system.prop
-echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> device/xiaomi/chime/configs/props/system.prop
+echo 'persist.sys.perf.scroll_opt=true'  >> configs/props/system.prop
+echo 'persist.sys.perf.scroll_opt.heavy_app=2'  >> configs/props/system.prop
 
-echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
-echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> BoardConfig.mk
 
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 # PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
@@ -207,7 +207,6 @@ curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/
 tar xf flashy.tar.xz
 
 echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/configs/props/device.mk
-
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
