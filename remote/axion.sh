@@ -205,8 +205,8 @@ mv device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1 device/xiaomi/chime/sepo
 #New 2.6 qpr2
 curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/heads/main/remote/src/flashy.tar.xz ; check_fail
 tar xf flashy.tar.xz
-
 echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/configs/props/device.mk
+
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
