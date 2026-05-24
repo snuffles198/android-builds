@@ -175,7 +175,7 @@ echo 'prebuilt_etc {
 }' > device/xiaomi/chime/custom_init/Adroid.bp
 echo 'on property:sys.boot_completed=1
     exec -- /system/bin/sleep 1
-    write /proc/sys/vm/swappiness 90' > device/xiaomi/chime/custom_init/custom_init_rc
+    write /proc/sys/vm/swappiness 90' > device/xiaomi/chime/custom_init/custom_init.rc
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
