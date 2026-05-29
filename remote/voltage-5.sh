@@ -144,11 +144,9 @@ if [ $? -ne 0 ] ; then
 fi
 
 # Setup device tree
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-
 cd device/xiaomi/chime/
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 cat device.mk | sed -e 's#vendor/lineage-priv/keys/keys.mk#vendor/voltage-priv/keys/keys.mk#g' > device.mk.1
 mv device.mk.1 device.mk
 cat device.mk | sed -e 's#hardware/lineage#hardware/voltage#g' > device.mk.1
@@ -207,6 +205,10 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
+
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 
 #curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
 #mv audio_effects.xml device/xiaomi/chime/audio/audio_effects.xml
