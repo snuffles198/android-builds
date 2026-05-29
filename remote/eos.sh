@@ -140,6 +140,8 @@ git clone https://gitlab.e.foundation/steadfasterX/android_vendor_e vendor/e
 
 # Setup device tree
 cd device/xiaomi/chime
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 
 #eos weird build system
 echo '#!/bin/bash' > vendorsetup.sh
