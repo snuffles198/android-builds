@@ -210,8 +210,8 @@ echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/device.mk
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
-echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
 #echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
 #mkdir device/xiaomi/chime/custom_init
