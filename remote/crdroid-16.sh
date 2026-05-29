@@ -159,8 +159,8 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 
-echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
