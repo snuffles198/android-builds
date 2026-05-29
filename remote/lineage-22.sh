@@ -128,6 +128,8 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 # Setup device tree
 cd device/xiaomi/chime
 git revert --no-edit 6cece0c9cf6aa7d4ed5380605fed9b90f63c250c # Squiggly media progress bar, depends on ROM
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
