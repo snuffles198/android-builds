@@ -128,11 +128,6 @@ if [ $? -ne 0 ] ; then
 fi
 
 # Setup device tree
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
-
 cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
@@ -164,6 +159,11 @@ curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercon
 
 echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
+
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
 #echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
 #mkdir device/xiaomi/chime/custom_init
