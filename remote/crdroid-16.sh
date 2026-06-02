@@ -131,9 +131,7 @@ fi
 cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
-
-curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
-
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 # PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
@@ -156,8 +154,6 @@ echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
-
-curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 
 #echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 #echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail

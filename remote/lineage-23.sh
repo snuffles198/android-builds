@@ -137,7 +137,7 @@ fi
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c # Squiggly media progress bar, depends on ROM
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
-curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk

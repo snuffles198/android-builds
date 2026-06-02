@@ -142,7 +142,7 @@ rm -f hardware/xiaomi/megvii/Android.bp
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
-curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 sed -i -e 's#vendor/lineage/config#vendor/custom/config#g' lineage_chime.mk
 sed -i -e 's#lineage#custom#g' AndroidProducts.mk
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop

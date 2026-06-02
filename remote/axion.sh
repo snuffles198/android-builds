@@ -141,7 +141,7 @@ sed -i 's#write /proc/sys/vm/swappiness.*$#write /proc/sys/vm/swappiness 90#g' s
 cd device/xiaomi/chime && git reset --hard ; check_fail
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
-
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'AXION_MAINTAINER := Joe' >> lineage_chime.mk
 echo 'AXION_PROCESSOR := Snapdragon_662' >> lineage_chime.mk
 echo 'AXION_CPU_SMALL_CORES := 0,1,2,3' >> lineage_chime.mk
@@ -207,7 +207,6 @@ curl -L -o flashy.tar.xz https://github.com/snuffles198/android-builds/raw/refs/
 tar xf flashy.tar.xz
 echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/device.mk
 
-curl -o device/xiaomi/chime/configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
 
 #echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
