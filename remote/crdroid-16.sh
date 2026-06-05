@@ -120,6 +120,7 @@ sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/lineage/build/tasks/kernel.mk
 
 sed -i 's/"maintainer".*$/"maintainer": "Joe7500",/g' vendor/crDroidOTA/chime.json
+sed -i '/val maintainer = resolvedMaintainer/i \        resolvedMaintainer = "Joe7500"\n        resolvedDonateUrl = null' packages/apps/Settings/src/com/android/settings/deviceinfo/firmwareversion/BuildMaintainerPreference.kt
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
