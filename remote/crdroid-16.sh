@@ -137,6 +137,9 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
+
+echo 'CR_MAINTAINER := Joe7500' >> lineage_chime.mk
+
 cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
