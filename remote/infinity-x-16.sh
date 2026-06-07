@@ -202,9 +202,9 @@ mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
 
-#echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
-#echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
-#echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 
