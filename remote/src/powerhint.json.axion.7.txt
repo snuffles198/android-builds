@@ -303,7 +303,7 @@
       "Name": "SchedTABoost",
       "Paths": ["/dev/stune/top-app/schedtune.boost"],
       "Values": ["0", "5", "10", "15", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
-      "DefaultIndex": 0,
+      "DefaultIndex": 1,
       "Truncate": true,
       "HoldFd": false,
       "WriteOnly": false,
