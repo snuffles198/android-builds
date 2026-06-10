@@ -155,6 +155,17 @@
       "ResetOnInit": true
     },
     {
+      "Name": "GPUPMQOSLatency",
+      "Paths": ["/sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/pmqos_active_latency"],
+      "Values": ["0", "1"],
+      "DefaultIndex": 1,
+      "Truncate": true,
+      "HoldFd": false,
+      "WriteOnly": false,
+      "AllowFailure": false,
+      "ResetOnInit": true
+    },
+    {
       "Name": "CPUBWHystTriggerCount",
       "Paths": ["/sys/devices/platform/soc/soc:qcom,cpu-cpu-ddr-bw/devfreq/soc:qcom,cpu-cpu-ddr-bw/bw_hwmon/hyst_trigger_count"],
       "Values": ["3", "5"],
