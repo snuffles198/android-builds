@@ -157,6 +157,8 @@ echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_c
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0' >> sepolicy/vendor/genfs_contexts
 echo 'allow init vendor_sysfs_kgsl:file setattr;' >> sepolicy/vendor/init.te
+echo 'allow system_server vendor_sysfs_devfreq:file rw_file_perms;' >> sepolicy/vendor/system_server.te
+echo 'allow system_server vendor_sysfs_kgsl:file rw_file_perms;' >> sepolicy/vendor/system_server.te
 #echo 'genfscon sysfs /devices/platform/1c500000.mali/available_frequencies u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
 #echo 'genfscon sysfs /devices/platform/1c500000.mali/hint_min_freq u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
 #echo 'allow init proc_vm_dirty:file rw_file_perms;' > sepolicy/vendor/axion.te
@@ -189,6 +191,10 @@ echo 'TARGET_INCLUDE_AXFX := true' >> lineage_chime.mk
 
 echo 'BYPASS_CHARGE_SUPPORTED := true' >> lineage_chime.mk
 echo 'BYPASS_CHARGE_TOGGLE_PATH := /sys/class/power_supply/battery/input_suspend' >> lineage_chime.mk
+
+curl -o axion-2.7-init-perms.txt -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/axion-2.7-init-perms.txt; check_fail
+cat axion-2.7-init-perms.txt >> rootdir/etc/init.target.rc
+
 cd ../../../
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
