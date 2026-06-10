@@ -157,7 +157,7 @@
     {
       "Name": "GPUPMQOSLatency",
       "Paths": ["/sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/pmqos_active_latency"],
-      "Values": ["0", "1"],
+      "Values": ["0", "422"],
       "DefaultIndex": 1,
       "Truncate": true,
       "HoldFd": false,
