@@ -1,0 +1,93 @@
+    chown system system /dev/stune/svp/tasks
+    chown system system /dev/stune/ax_foreground/tasks
+    chown system system /dev/stune/audio-app/tasks
+    chown system system /dev/stune/restricted/tasks
+    chown system system /dev/stune/foreground_window/tasks
+    chown system system /dev/stune/system/tasks
+    chown system system /dev/stune/system-background/tasks
+    chown system system /dev/stune/dex2oat/tasks
+    chown system system /dev/stune/l-background/tasks
+    chown system system /dev/stune/h-background/tasks
+    chown system system /dev/stune/systemui/tasks
+    chown system system /dev/stune/svp/schedtune.boost
+    chown system system /dev/stune/ax_foreground/schedtune.boost
+    chown system system /dev/stune/audio-app/schedtune.boost
+    chown system system /dev/stune/restricted/schedtune.boost
+    chown system system /dev/stune/foreground_window/schedtune.boost
+    chown system system /dev/stune/system/schedtune.boost
+    chown system system /dev/stune/system-background/schedtune.boost
+    chown system system /dev/stune/dex2oat/schedtune.boost
+    chown system system /dev/stune/l-background/schedtune.boost
+    chown system system /dev/stune/h-background/schedtune.boost
+    chown system system /dev/stune/systemui/schedtune.boost
+    chown system system /dev/stune/svp/cgroup.procs
+    chown system system /dev/stune/ax_foreground/cgroup.procs
+    chown system system /dev/stune/audio-app/cgroup.procs
+    chown system system /dev/stune/restricted/cgroup.procs
+    chown system system /dev/stune/foreground_window/cgroup.procs
+    chown system system /dev/stune/system/cgroup.procs
+    chown system system /dev/stune/system-background/cgroup.procs
+    chown system system /dev/stune/dex2oat/cgroup.procs
+    chown system system /dev/stune/l-background/cgroup.procs
+    chown system system /dev/stune/h-background/cgroup.procs
+    chown system system /dev/stune/systemui/cgroup.procs
+    chown system system /dev/stune/svp/schedtune.prefer_idle
+    chown system system /dev/stune/ax_foreground/schedtune.prefer_idle
+    chown system system /dev/stune/audio-app/schedtune.prefer_idle
+    chown system system /dev/stune/restricted/schedtune.prefer_idle
+    chown system system /dev/stune/foreground_window/schedtune.prefer_idle
+    chown system system /dev/stune/system/schedtune.prefer_idle
+    chown system system /dev/stune/system-background/schedtune.prefer_idle
+    chown system system /dev/stune/dex2oat/schedtune.prefer_idle
+    chown system system /dev/stune/l-background/schedtune.prefer_idle
+    chown system system /dev/stune/h-background/schedtune.prefer_idle
+    chown system system /dev/stune/systemui/schedtune.prefer_idle
+    chmod 0664 /dev/stune/svp/tasks
+    chmod 0664 /dev/stune/ax_foreground/tasks
+    chmod 0664 /dev/stune/audio-app/tasks
+    chmod 0664 /dev/stune/restricted/tasks
+    chmod 0664 /dev/stune/foreground_window/tasks
+    chmod 0664 /dev/stune/system/tasks
+    chmod 0664 /dev/stune/system-background/tasks
+    chmod 0664 /dev/stune/dex2oat/tasks
+    chmod 0664 /dev/stune/l-background/tasks
+    chmod 0664 /dev/stune/h-background/tasks
+    chmod 0664 /dev/stune/systemui/tasks
+    chmod 0664 /dev/stune/svp/schedtune.boost
+    chmod 0664 /dev/stune/ax_foreground/schedtune.boost
+    chmod 0664 /dev/stune/audio-app/schedtune.boost
+    chmod 0664 /dev/stune/restricted/schedtune.boost
+    chmod 0664 /dev/stune/foreground_window/schedtune.boost
+    chmod 0664 /dev/stune/system/schedtune.boost
+    chmod 0664 /dev/stune/system-background/schedtune.boost
+    chmod 0664 /dev/stune/dex2oat/schedtune.boost
+    chmod 0664 /dev/stune/l-background/schedtune.boost
+    chmod 0664 /dev/stune/h-background/schedtune.boost
+    chmod 0664 /dev/stune/systemui/schedtune.boost
+    chmod 0664 /dev/stune/svp/cgroup.procs
+    chmod 0664 /dev/stune/ax_foreground/cgroup.procs
+    chmod 0664 /dev/stune/audio-app/cgroup.procs
+    chmod 0664 /dev/stune/restricted/cgroup.procs
+    chmod 0664 /dev/stune/foreground_window/cgroup.procs
+    chmod 0664 /dev/stune/system/cgroup.procs
+    chmod 0664 /dev/stune/system-background/cgroup.procs
+    chmod 0664 /dev/stune/dex2oat/cgroup.procs
+    chmod 0664 /dev/stune/l-background/cgroup.procs
+    chmod 0664 /dev/stune/h-background/cgroup.procs
+    chmod 0664 /dev/stune/systemui/cgroup.procs
+    chmod 0664 /dev/stune/svp/schedtune.prefer_idle
+    chmod 0664 /dev/stune/ax_foreground/schedtune.prefer_idle
+    chmod 0664 /dev/stune/audio-app/schedtune.prefer_idle
+    chmod 0664 /dev/stune/restricted/schedtune.prefer_idle
+    chmod 0664 /dev/stune/foreground_window/schedtune.prefer_idle
+    chmod 0664 /dev/stune/system/schedtune.prefer_idle
+    chmod 0664 /dev/stune/system-background/schedtune.prefer_idle
+    chmod 0664 /dev/stune/dex2oat/schedtune.prefer_idle
+    chmod 0664 /dev/stune/l-background/schedtune.prefer_idle
+    chmod 0664 /dev/stune/h-background/schedtune.prefer_idle
+    chmod 0664 /dev/stune/systemui/schedtune.prefer_idle
+
+    chmod 0664 /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/pmqos_active_latency
+    chown system system /sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/pmqos_active_latency
+    chmod 0664 /proc/sys/kernel/sched_energy_aware
+    chown system system /proc/sys/kernel/sched_energy_aware
