@@ -239,7 +239,7 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
 chmod a-x sf
 chmod go-rwx sf
-rsync -avP -e 'ssh -i ./sf -o "StrictHostKeyChecking accept-new"' $GO_FILE $SF_URL
+rsync -avP -e 'ssh -i ./sf -o StrictHostKeyChecking=accept-new -o BatchMode=yes' $GO_FILE $SF_URL
 rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
