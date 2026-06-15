@@ -362,7 +362,7 @@
     {"PowerHint": "DISPLAY_INACTIVE", "Node": "SchedFGBoost", "Duration": 0, "Value": "0"},
     {"PowerHint": "DISPLAY_INACTIVE", "Node": "SchedTABoost", "Duration": 0, "Value": "0"},
     {"PowerHint": "DISPLAY_INACTIVE", "Node": "CPUBWUseAb", "Duration": 0, "Value": "0"},
-    {"PowerHint": "DISPLAY_INACTIVE", "Node": "SchedTALat", "Duration": 0, "Value": "1"},
+    {"PowerHint": "DISPLAY_INACTIVE", "Node": "SchedTALat", "Duration": 0, "Value": "0"},
 
     {"PowerHint": "EXPENSIVE_RENDERING", "Node": "PowerHALMainState", "Duration": 0, "Value": "EXPENSIVE_RENDERING"},
     {"PowerHint": "EXPENSIVE_RENDERING", "Node": "PowerHALRenderingState", "Duration": 0, "Value": "EXPENSIVE_RENDERING"},
