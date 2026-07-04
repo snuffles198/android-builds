@@ -146,7 +146,9 @@ fi
 cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e 's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
 mv vendor/infinity/prebuilt/common/bin/backuptool.sh.1 vendor/infinity/prebuilt/common/bin/backuptool.sh
 
+if grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat hardware/lineage/compat/Android.bp && grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat prebuilts/misc/protobuf_vendorcompat/Android.bp; then
 rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
+fi
 
 # Setup device tree
 
