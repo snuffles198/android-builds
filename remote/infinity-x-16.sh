@@ -146,6 +146,8 @@ fi
 cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e 's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
 mv vendor/infinity/prebuilt/common/bin/backuptool.sh.1 vendor/infinity/prebuilt/common/bin/backuptool.sh
 
+rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
+
 # Setup device tree
 
 cd device/xiaomi/chime
