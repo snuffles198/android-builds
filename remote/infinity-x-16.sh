@@ -257,7 +257,7 @@ if [[ ! -f $GO_FILE ]]; then
 fi
 curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
 PD_ID=`cat out.json | cut -d '"' -f 4`
-notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID : `cat out.json`"
 rm -f out.json
 
 # Upload file to SF
@@ -331,7 +331,7 @@ if [[ ! -f $GO_FILE ]]; then
 fi
 curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
 PD_ID=`cat out.json | cut -d '"' -f 4`
-notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID : `cat out.json`"
 rm -f out.json
 
 # Upload file to SF
