@@ -126,6 +126,8 @@ for i in `find hardware/qcom/sdm845/ -xtype l` ; do rm $i; done
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7-A15.txt" ; check_fail
+
 cat lineage_chime.mk | grep -v "RESERVE_SPACE_FOR_GAPPS" > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 cat lineage_chime.mk | grep -v "WITH_GMS" > lineage_chime.mk.1
@@ -180,7 +182,25 @@ cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-
 cd vendor/xiaomi/chime
 curl -o rising.tar.xz -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/rising-vendor.tar.xz
 tar xf rising.tar.xz ; check_fail
-rm rising.tar.xz
+rm -f rising.tar.xz
+cd -
+cd vendor/xiaomi
+mv chime chime-src
+rm -f chime-src/*
+cd -
+cd device/xiaomi/chime
+echo 'vendor/bin/hw/vendor.qti.hardware.servicetracker@1.2-service
+vendor/lib64/hw/vendor.qti.hardware.servicetracker@1.2-impl.so
+vendor/lib64/libskewknob.so
+vendor/etc/vintf/manifest/vendor.qti.hardware.servicetracker@1.2-service.xml
+vendor/etc/init/vendor.qti.hardware.servicetracker@1.2-service.rc
+vendor/lib/hw/vendor.qti.hardware.servicetracker@1.2-impl.so
+vendor/lib/libskewknob.so
+system_ext/lib64/libskewknob_system.so
+system_ext/lib64/libbeluga.so
+system_ext/lib/libskewknob_system.so
+system_ext/lib/libbeluga.so' >> proprietary-files.txt
+./extract-files.py ../../../vendor/xiaomi/chime-src/proprietary/ ; check_fail
 cd -
 
 #curl -o audio_effects.xml -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/audio_effects_viper.xml
