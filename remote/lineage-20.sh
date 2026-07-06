@@ -131,6 +131,9 @@ cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 check_fail
 
 # Setup device tree
+cd device/xiaomi/chime/
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7-A15.txt" ; check_fail
+cd ../../../
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
