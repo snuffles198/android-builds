@@ -57,10 +57,6 @@ else
     SSHKEY=sf
 fi
 
-echo $1 $2 $REMOTE
-exit
-
-
 while ! rsync -avz --progress --partial --inplace --timeout=60 --bwlimit=800K  -e "ssh -i /home/user/.ssh/sourceforge" $2 joe75001@frs.sourceforge.net:$REMOTE; do
     echo "Connection dropped. Retrying in 5 seconds..."
     sleep 5
