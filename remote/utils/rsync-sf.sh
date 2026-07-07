@@ -57,7 +57,7 @@ else
     SSHKEY=sf
 fi
 
-while ! rsync -avz --progress --partial --inplace --timeout=60 --bwlimit=800K  -e "ssh -i /home/user/.ssh/sourceforge -o StrictHostKeyChecking=accept-new -o BatchMode=yes" $2 joe75001@frs.sourceforge.net:$REMOTE; do
+while ! rsync -avz --progress --partial --inplace --timeout=60 $BWLIMIT  -e "ssh -i $SSHKEY -o StrictHostKeyChecking=accept-new -o BatchMode=yes" $2 joe75001@frs.sourceforge.net:$REMOTE; do
     echo "Connection dropped. Retrying in 5 seconds..."
     sleep 5
 done
