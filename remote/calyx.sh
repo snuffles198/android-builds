@@ -177,7 +177,7 @@ fi
 cd device/xiaomi/chime/
 
 git revert --no-edit f29fff90142578384ae8738c4ac55d784c7ed6ba
-git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+
 curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
 
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
@@ -208,6 +208,9 @@ mv device.mk.1 device.mk
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
 
+grep -v lirc_device sepolicy/vendor/device.te > sepolicy/vendor/device.te.1
+mv sepolicy/vendor/device.te.1 sepolicy/vendor/device.te
+
 cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/calyx/config/device_framework_matrix.xml#g > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 cat BoardConfig.mk | sed -e s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/calyx/sepolicy/libperfmgr/sepolicy.mk#g > BoardConfig.mk.1
@@ -222,9 +225,20 @@ cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
 echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+# PRODUCT_SYSTEM_PROPERTIES += ro.surface_flinger.supports_background_blur=1
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
+echo 'TARGET_ENABLE_BLUR := true' >> calyx_chime.mk
+
 echo 'allow platform_app ota_package_file:dir { add_name search write read };' > sepolicy/private/platform_app.te
 
 cd ../../../
+
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 # Kernel setup
 #cd kernel/xiaomi/chime/
@@ -238,8 +252,7 @@ source build/envsetup.sh          ; check_fail
 breakfast chime user              ; check_fail
 m installclean
 m                         ; check_fail
-m target-files-package
-m otatools-package otatools-keys-package
+m target-files-package otatools-package otatools-keys-package
 
 set -v
 
@@ -253,20 +266,8 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xvf keys.tar
 rm -f keys.1 keys.2 keys.tar
-cp keys/chime/com.android.btservices.pem keys/chime/com.android.bt.pem
-cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.bt.pk8
-cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.bt.x509.pem
-cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.bt.avbpubkey
-cp keys/chime/com.android.btservices.pem keys/chime/com.android.crashrecovery.pem
-cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.crashrecovery.pk8
-cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.crashrecovery.x509.pem
-cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.crashrecovery.avbpubkey
-cp keys/chime/com.android.btservices.pem keys/chime/com.android.uprobestats.pem
-cp keys/chime/com.android.btservices.pk8 keys/chime/com.android.uprobestats.pk8
-cp keys/chime/com.android.btservices.x509.pem keys/chime/com.android.uprobestats.x509.pem
-cp keys/chime/com.android.btservices.avbpubkey keys/chime/com.android.uprobestats.avbpubkey
 
-cp ../out/target/product/chime/otatools.zip .
+cp ../out/soong/.intermediates/build/make/tools/otatools_package/otatools-package/linux_glibc_x86_64/gen/otatools.zip .
 unzip otatools.zip
 rm -f sign/releasetools/Android.bp
 rm -f sign/releasetools/merge/Android.bp
@@ -282,7 +283,7 @@ export BUILD_NUMBER=`bash ../calyx/scripts/release/version.sh`
 
 OTA_FILE=`find out/ | grep chime-ota_update | grep -v sum`
 FACTORY_FILE=`find out/ | grep chime-factory | grep -v sum`
-cp $OTA_FILE ../CalyxOS-chime-$BUILD_NUMBER.zip
+cp $OTA_FILE ../CalyxOS-chime-$BUILD_NUMBER-$(date +"%d-%m-%Y").zip
 cp $FACTORY_FILE ../CalyxOS-chime-factory-$BUILD_NUMBER.zip
 cd ..
 rm -rf sign/keys
