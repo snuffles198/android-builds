@@ -25,8 +25,8 @@ DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
 REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs --depth=1 --no-tags --no-clone-bundle "
-OTA_SED_STRING="https://release.calyxinstitute.org/"
-OTA_SED_REPLACE_STRING="https://github.com/Joe7500/Builds/releases/download/calyx-ota/"
+OTA_SED_STRING="https://release.calyxos.org/ota/"
+OTA_SED_REPLACE_STRING="https://joes-android-builds.sourceforge.io/ota/"
 
 # Random template helper stuff
 export BUILD_USERNAME=user
