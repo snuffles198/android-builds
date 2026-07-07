@@ -291,45 +291,18 @@ rm -rf sign/keys
 echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
-# Upload output to gofile
-GO_FILE_MD5=`md5sum "CalyxOS-chime-$BUILD_NUMBER.zip"`
-GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/gofile.sh
-bash goupload.sh $GO_FILE
-GO_LINK=`cat GOFILE.txt`
-notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-rm -f goupload.sh GOFILE.txt
-GO_FILE_MD5=`md5sum "CalyxOS-chime-factory-$BUILD_NUMBER.zip"`
-GO_FILE="CalyxOS-chime-factory-$BUILD_NUMBER.zip"
-curl -o goupload.sh -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/gofile.sh
-bash goupload.sh $GO_FILE
-GO_LINK=`cat GOFILE.txt`
-notify_send "MD5:$GO_FILE_MD5 $GO_LINK"
-rm -f goupload.sh GOFILE.txt
-
-# Upload output to telegram
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE_MD5=`md5sum "$GO_FILE"`
+GO_FILE=`pwd`/$GO_FILE
 if [[ ! -f $GO_FILE ]]; then
    GO_FILE=builder.sh
 fi
-cd /home/admin
-curl -o tdl.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/ktdlxIevOo3wGJWrun01W1BzVWvKKZGw
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d tdl.1 > tdl.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d tdl.2 > tdl.tar
-tar xf tdl.tar
-rm -f tdl.1 tdl.2 tdl.tar
-unzip -o -P $TDL_ZIP_PASSWD tdl.zip
-rm -f tdl.zip
-VERSION=$(curl --silent "https://api.github.com/repos/iyear/tdl/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-wget -O tdl_Linux.tgz https://github.com/iyear/tdl/releases/download/$VERSION/tdl_Linux_64bit.tar.gz ; check_fail
-tar xf tdl_Linux.tgz ; check_fail
-cd /tmp/src/android/
-GO_FILE="CalyxOS-chime-$BUILD_NUMBER.zip"
-/home/admin/tdl upload -c $TDL_CHAT_ID -p "$GO_FILE"
-cd /home/admin
-rm -rf .tdl
-rm -rf  LICENSE  README.md  README_zh.md  tdl  tdl_key  tdl_Linux_64bit.tar.gz* venv
-rm -f tdl.sh
-cd /tmp/src/android/
+curl -T "$GO_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=`cat out.json | cut -d '"' -f 4`
+notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io completed. $TIME_TAKEN."
