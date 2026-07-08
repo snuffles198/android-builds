@@ -17,8 +17,8 @@ VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
 GENOTA_ARG_1="rising"
 GENOTA_ARG_2="8"
-REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/RisingOS-Revived/android -b sixteen $REPO_PARAMS"
+REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle "
+REPO_URL="-u https://github.com/RisingOS-Revived/android -b sixteen-qpr2 $REPO_PARAMS"
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
