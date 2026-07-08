@@ -292,8 +292,7 @@ echo success > result.txt
 notify_send "Build $PACKAGE_NAME on crave.io succeeded."
 
 # Upload output to pixeldrain
-cp out/target/product/chime/$PACKAGE_NAME*.zip .
-GO_FILE=`ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1`
+GO_FILE=`ls --color=never -1tr CalyxOS*.zip | grep -v factory | tail -1`
 GO_FILE_MD5=`md5sum "$GO_FILE"`
 GO_FILE=`pwd`/$GO_FILE
 if [[ ! -f $GO_FILE ]]; then
