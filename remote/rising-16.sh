@@ -185,6 +185,7 @@ tar xf rising.tar.xz ; check_fail
 rm -f rising.tar.xz
 cd -
 cd vendor/xiaomi
+rm -rf chime-src/
 mv chime chime-src
 rm -f chime-src/*
 cd -
