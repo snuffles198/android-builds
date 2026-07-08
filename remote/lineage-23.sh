@@ -133,6 +133,10 @@ if [ $? -ne 0 ] ; then
   cd ../../
 fi
 
+if grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat hardware/lineage/compat/Android.bp && grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat prebuilts/misc/protobuf_vendorcompat/Android.bp; then
+rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
+fi
+
 # Setup device tree
 cd device/xiaomi/chime
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c # Squiggly media progress bar, depends on ROM
