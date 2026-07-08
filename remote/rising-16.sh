@@ -144,7 +144,7 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
 if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
    echo 'WITH_GMS := true' >> lineage_chime.mk
-   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := false' >> lineage_chime.mk
+   echo 'TARGET_DEFAULT_PIXEL_LAUNCHER := true' >> lineage_chime.mk
    echo 'TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := true' >> lineage_chime.mk
 else
 # VANILLA
