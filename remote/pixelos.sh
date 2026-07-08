@@ -149,6 +149,7 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/system.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
+echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 
 echo '<?xml version="1.0" encoding="utf-8"?>
 <permissions>
