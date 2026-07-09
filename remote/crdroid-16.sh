@@ -164,6 +164,7 @@ prebuilt_etc {
 }' >> rootdir/Android.bp
 
 echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 10
     write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
 
 echo 'PRODUCT_PACKAGES += custom_init_rc' >> device.mk
