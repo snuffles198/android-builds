@@ -232,7 +232,7 @@ echo 'prebuilt_etc {
     src: "custom_init.rc",
     sub_dir: "init",
     filename: "custom_init.rc",
-}' > device/xiaomi/chime/custom_init/Adroid.bp
+}' > device/xiaomi/chime/custom_init/Android.bp
 echo 'on property:sys.boot_completed=1
     exec -- /system/bin/sleep 10
     write /proc/sys/vm/swappiness 95' > device/xiaomi/chime/custom_init/custom_init.rc
