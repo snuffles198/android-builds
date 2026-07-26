@@ -90,6 +90,14 @@ else
    /opt/crave/resync.sh
 fi
 
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ; do
+   repo sync frameworks/base
+   if [ $? -eq 0 ]; then
+      break
+   fi
+   sleep 60
+done
+
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
