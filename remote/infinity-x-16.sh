@@ -88,15 +88,15 @@ else
    repo init $REPO_URL  ; check_fail
    cleanup_self
    /opt/crave/resync.sh
+   # infinity-x frameworks-base git server sometimes has issues. try harder for up to 15 minutes.
+   for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ; do
+      repo sync frameworks/base
+      if [ $? -eq 0 ]; then
+         break
+      fi
+      sleep 60
+   done
 fi
-
-for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ; do
-   repo sync frameworks/base
-   if [ $? -eq 0 ]; then
-      break
-   fi
-   sleep 60
-done
 
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
