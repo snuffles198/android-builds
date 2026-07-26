@@ -88,10 +88,9 @@ else
    repo init $REPO_URL  ; check_fail
    cleanup_self
    /opt/crave/resync.sh
-   # infinity-x frameworks-base git server sometimes has issues. try harder for up to 15 minutes.
+   # infinity git servers sometimes have issues. try harder for up to 15 tries.
    for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ; do
-      repo sync frameworks/base
-      if [ $? -eq 0 ]; then
+      if repo sync frameworks/base packages/apps/InfinitySuite packages/apps/Launcher3 packages/apps/Settings vendor/google/gms ; then
          break
       fi
       sleep 60
