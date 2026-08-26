@@ -9,8 +9,10 @@ source /tmp/crave_bashrc
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
    rm -rf /tmp/src/android
    ln -s "$PWD" /tmp/src/android
+  fi
 fi
 
 cd /tmp/src/android/
@@ -120,6 +122,25 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#$OTA_SED_REPLACE_STRING#g" > strings
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 rm -f strings.xml.1
 check_fail
+
+cd frameworks/base/
+echo 'diff --git a/services/core/java/com/android/server/pm/ComputerEngine.java b/services/core/java/com/android/server/pm/ComputerEngine.java
+index 3300f3481..5a41e5c6d 100644
+--- a/services/core/java/com/android/server/pm/ComputerEngine.java
++++ b/services/core/java/com/android/server/pm/ComputerEngine.java
+@@ -1486,9 +1486,6 @@ public class ComputerEngine implements Computer {
+     public static native boolean isDebuggable();
+
+     public static boolean isMicrogSigned(AndroidPackage p) {
+-        if (!isDebuggable()) {
+-            return false;
+-        }
+
+         // Allowlist the following apps:
+         // * com.android.vending - microG Companion
+' > 2.patch
+patch -p 1 -f < 2.patch
+cd -
 
 sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk
 sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/lineage/build/tasks/kernel.mk

@@ -9,8 +9,10 @@ source /tmp/crave_bashrc
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
    rm -rf /tmp/src/android
    ln -s "$PWD" /tmp/src/android
+  fi
 fi
 
 cd /tmp/src/android/

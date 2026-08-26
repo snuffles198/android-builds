@@ -9,8 +9,10 @@ source /tmp/crave_bashrc
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
    rm -rf /tmp/src/android
    ln -s "$PWD" /tmp/src/android
+  fi
 fi
 
 cd /tmp/src/android/
@@ -127,11 +129,30 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
-   cd frameworks/base/
+  cd frameworks/base/
   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
   patch -p 1 -f < 1.patch ; check_fail
   cd ../../
 fi
+
+cd frameworks/base/
+echo 'diff --git a/services/core/java/com/android/server/pm/ComputerEngine.java b/services/core/java/com/android/server/pm/ComputerEngine.java
+index 3300f3481..5a41e5c6d 100644
+--- a/services/core/java/com/android/server/pm/ComputerEngine.java
++++ b/services/core/java/com/android/server/pm/ComputerEngine.java
+@@ -1486,9 +1486,6 @@ public class ComputerEngine implements Computer {
+     public static native boolean isDebuggable();
+
+     public static boolean isMicrogSigned(AndroidPackage p) {
+-        if (!isDebuggable()) {
+-            return false;
+-        }
+
+         // Allowlist the following apps:
+         // * com.android.vending - microG Companion
+' > 2.patch
+patch -p 1 -f < 2.patch
+cd -
 
 if grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat hardware/lineage/compat/Android.bp && grep prebuilt_libprotobuf-cpp-full-3.9.1-vendorcompat prebuilts/misc/protobuf_vendorcompat/Android.bp; then
 rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
@@ -151,7 +172,34 @@ echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
 echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
-echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk 
+echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
+
+echo 'ro.lmk.kill_heaviest_task=true
+ro.lmk.use_psi=true
+ro.lmk.use_cgroup_v2=true
+ro.lmk.use_minfree_levels=false
+ro.lmk.thrashing_limit_decay=50
+ro.lmk.downgrade_pressure=30
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.psi_complete_stall_ms=700
+ro.lmk.thrashing_limit=30
+ro.lmk.swap_util_max=100
+ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
+
+echo '
+prebuilt_etc {
+    name: "init.custom.rc",
+    src: "etc/init.custom.rc",
+    sub_dir: "init",
+    filename: "init.custom.rc",
+}' >> rootdir/Android.bp
+
+echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 10
+    write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
+
+echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
+
 cd -
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop

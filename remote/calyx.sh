@@ -9,8 +9,10 @@ source /tmp/crave_bashrc
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
    rm -rf /tmp/src/android
    ln -s "$PWD" /tmp/src/android
+  fi
 fi
 
 cd /tmp/src/android/
@@ -155,22 +157,23 @@ fi
 rm -rf device/motorola/sm6375-common/
 rm -rf vendor/qcom/opensource/power
 rm -rf device/motorola/
+rm -rf device/fairphone/
 rm -rf sign/
 
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
-export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-   curl -C - -o devon.zip -L "$DEVON_URL" ; check_fail
-   sudo apt update
-   sudo apt -y install 7zip
-   sudo apt -y install erofs-utils
-   virtualenv dumpyara
-   dumpyara/bin/pip install dumpyara
-   dumpyara/bin/dumpyara devon.zip
-   cd device/google/gearhead/
-   ./extract-files.py /tmp/src/android/devon
-   cd ../../../
-   rm -rf devon dumpyara devon.zip
+  export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
+  curl -C - -o devon.zip -L "$DEVON_URL" ; check_fail
+  sudo apt update
+  sudo apt -y install 7zip erofs-utils virtualenv android-sdk-libsparse-utils 
+  platform-utils
+  virtualenv dumpyara
+  dumpyara/bin/pip install dumpyara
+  dumpyara/bin/dumpyara devon.zip
+  cd device/google/gearhead/
+  ./extract-files.py /tmp/src/android/devon
+  cd ../../../
+  rm -rf devon dumpyara devon.zip
 fi
 
 # Setup device tree

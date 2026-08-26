@@ -9,8 +9,10 @@ source /tmp/crave_bashrc
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
    rm -rf /tmp/src/android
    ln -s "$PWD" /tmp/src/android
+  fi
 fi
 
 cd /tmp/src/android/
@@ -134,8 +136,6 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 
 sed -i 's/export V=23/export V=2\./g' vendor/lineage/prebuilt/common/bin/backuptool.sh
 sed -i 's/ro.lineage.version/ro.axion.version/g' vendor/lineage/prebuilt/common/bin/backuptool.sh
-
-#sed -i 's#write /proc/sys/vm/swappiness.*$#write /proc/sys/vm/swappiness 90#g' system/core/rootdir/init.rc
 
 # Setup device tree
 cd device/xiaomi/chime && git reset --hard ; check_fail
