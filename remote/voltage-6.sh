@@ -306,7 +306,7 @@ export TG_URL
 ) &
 
 export GOGC=15
-refreshmod || refreshmod
+refreshmod
 check_fail
 unset GOGC
 
