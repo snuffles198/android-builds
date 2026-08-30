@@ -20,17 +20,17 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=PixelOS
+PACKAGE_NAME=lineage-24
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-24.0-BETA
 VENDOR_BRANCH=lineage-24.0-BETA
 XIAOMI_BRANCH=lineage-23.2
-GENOTA_ARGS="pixelos 17"
+GENOTA_ARGS="lineage 24"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b seventeen $REPO_PARAMS"
-OTA_SED_STRING="PixelOS-AOSP/official_devices/.*json"
-OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.chime.json"
+OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
+OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 export TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=$(echo $@ | cut -d ":" -f 2) ; fi
@@ -123,8 +123,6 @@ if [ $? -ne 0 ] ; then
   cd ../../
 fi
 
-rm -f hardware/xiaomi/megvii/Android.bp
-
 # Setup device tree
 cd device/xiaomi/chime
 
@@ -170,31 +168,6 @@ echo 'on property:sys.boot_completed=1
     exec -- /system/bin/sleep 10
     write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
-
-echo '<?xml version="1.0" encoding="utf-8"?>
-<permissions>
-    <privapp-permissions package="net.pixelos.ota">
-        <permission name="android.permission.ACCESS_CACHE_FILESYSTEM" />
-        <permission name="android.permission.REBOOT" />
-        <permission name="android.permission.RECOVERY" />
-        <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
-        <permission name="android.permission.INSTALL_PACKAGES" />
-    </privapp-permissions>
-</permissions>' > updater.txt
-echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/updater.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp_whitelist_net.pixelos.ota.xml' >> device.mk
-echo 'PRODUCT_PACKAGES += Updater' >> device.mk
-touch dummy
-echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/addon.d/.placeholder' >> device.mk
-echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/system/addon.d/.placeholder' >> device.mk
-
-sed -i 's#vendor/lineage/config#vendor/custom/config#g' lineage_chime.mk
-sed -i 's#lineage#custom#g' AndroidProducts.mk
-
-sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
-sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
-echo 'WITH_GAPPS := true' >> lineage_chime.mk
-echo 'WITH_GMS := true' >> lineage_chime.mk
-echo 'RESERVE_SPACE_FOR_GAPPS := false' >> lineage_chime.mk
 
 cp lineage_chime.mk custom_chime.mk
 
@@ -242,7 +215,7 @@ fi
 ) &
 
 mka installclean
-mka pixelos -j$(nproc --all) ; check_fail
+mka bacon -j$(nproc --all) ; check_fail
 
 set -v
 

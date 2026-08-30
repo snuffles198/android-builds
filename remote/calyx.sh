@@ -29,6 +29,7 @@ XIAOMI_BRANCH=lineage-23.2
 REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs --depth=1 --no-tags --no-clone-bundle "
 OTA_SED_STRING="https://release.calyxos.org/ota/"
 OTA_SED_REPLACE_STRING="https://joes-android-builds.sourceforge.io/ota/"
+alias curl='curl --retry 5 --retry-delay 30 --connect-timeout 30 -C -'
 
 # Random template helper stuff
 export BUILD_USERNAME=user
@@ -163,7 +164,7 @@ rm -rf sign/
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
   export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-  curl -C - -o devon.zip -L "$DEVON_URL" ; check_fail
+  curl -o devon.zip -L "$DEVON_URL" ; check_fail
   sudo apt update
   sudo apt -y install 7zip erofs-utils virtualenv android-sdk-libsparse-utils 
   platform-utils
