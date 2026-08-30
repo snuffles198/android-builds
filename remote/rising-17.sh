@@ -212,8 +212,6 @@ rm -f keys.1 keys.2 keys.tar
 
 notify_send "build it."
 
-exit
-
 # Build it
 set +v
 
