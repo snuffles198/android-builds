@@ -225,12 +225,12 @@ echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-echo 'ro.lmk.psi_partial_stall_ms=200' >> device/xiaomi/chime/configs/props/system.prop
-echo 'ro.lmk.psi_complete_stall_ms=700' >> device/xiaomi/chime/configs/props/system.prop
-echo 'ro.lmk.thrashing_limit=30' >> device/xiaomi/chime/configs/props/system.prop
-echo 'ro.lmk.thrashing_limit_decay=50' >> device/xiaomi/chime/configs/props/system.prop
-echo 'ro.lmk.swap_util_max=100' >> device/xiaomi/chime/configs/props/system.prop
-echo 'ro.lmk.kill_heaviest_task=true' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.psi_partial_stall_ms=200' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.psi_complete_stall_ms=700' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.thrashing_limit=30' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.thrashing_limit_decay=50' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.swap_util_max=100' >> device/xiaomi/chime/configs/props/system.prop
+#echo 'ro.lmk.kill_heaviest_task=true' >> device/xiaomi/chime/configs/props/system.prop
 
 echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
 mkdir device/xiaomi/chime/custom_init
