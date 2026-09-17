@@ -217,6 +217,12 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chim
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
+
+#sed -i 's|gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2|gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.2 --de^Cypt keys.1 <<< "$GPG_PASS_1"|g' crdroid-16.sh
+#sed -i 's|gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar|gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.tar --decrypt keys.2 <<< "$GPG_PASS_2"|g' crdroid-16.sh
+gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.2 --decrypt keys.1 <<< "$GPG_PASS_1"
+gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.tar --decrypt keys.2 <<< "$GPG_PASS_2"
+
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
 gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
@@ -252,13 +258,6 @@ PD_ID=`cat out.json | cut -d '"' -f 4`
 notify_send "MD5:$GO_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
 rm -f out.json
 
-# Upload file to SF
-curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/usfJoFvObArLx0KmBzwerPPTzliixTN2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > sf
-chmod a-x sf
-chmod go-rwx sf
-rm -f keys.1 keys.2 sf
 
 # Generate and send OTA json file
 curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
