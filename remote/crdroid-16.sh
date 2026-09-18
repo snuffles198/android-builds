@@ -8,6 +8,9 @@ source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
 
+echo "--------------------env test-------------------------"
+echo "$BUCKET_NAME"
+
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
   if [ "$(pwd)" != "/tmp/src/android" ]; then
