@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source ~/android-builds/dev-secrets/telegram.sh
+source ~/android-builds/dev-secrets/secrets.sh
+source ~/android-builds/dev-secrets/ntfy.sh
+source .env
 source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
@@ -223,8 +227,8 @@ curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/
 gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.2 --decrypt keys.1 <<< "$GPG_PASS_1"
 gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output keys.tar --decrypt keys.2 <<< "$GPG_PASS_2"
 
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
-gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
+#gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+#gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
 rm -f keys.1 keys.2 keys.tar
 

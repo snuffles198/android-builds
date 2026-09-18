@@ -3,6 +3,7 @@
 source ~/android-builds/dev-secrets/telegram.sh
 source ~/android-builds/dev-secrets/secrets.sh
 source ~/android-builds/dev-secrets/ntfy.sh
+source .env
 source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
