@@ -158,12 +158,42 @@ echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_c
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0' >> sepolicy/vendor/genfs_contexts
 echo 'allow init vendor_sysfs_kgsl:file setattr;' >> sepolicy/vendor/init.te
-echo 'allow system_server vendor_sysfs_devfreq:file rw_file_perms;' >> sepolicy/vendor/system_server.te
-echo 'allow system_server vendor_sysfs_kgsl:file rw_file_perms;' >> sepolicy/vendor/system_server.te
-#echo 'genfscon sysfs /devices/platform/1c500000.mali/available_frequencies u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
-#echo 'genfscon sysfs /devices/platform/1c500000.mali/hint_min_freq u:object_r:sysfs_gpu:s0' >> sepolicy/vendor/genfs_contexts
-#echo 'allow init proc_vm_dirty:file rw_file_perms;' > sepolicy/vendor/axion.te
-#echo 'allow init proc_dirty_ratio:file rw_file_perms;' >>  sepolicy/vendor/axion.te
+echo 'allow system_server sysfs_devices_system_cpu rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+echo 'allow system_server vendor_sysfs_kgsl rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+echo 'allow system_server vendor_sysfs_devfreq rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+
+echo '<?xml version="1.0" encoding="utf-8"?>
+<kernel-manager>
+    <cpu
+        id="little"
+        group="Little Cluster"
+        minId="axion_min_freq"
+        maxId="axion_max_freq"
+        governorId="little_cpu_governor"
+        minNode="/sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq"
+        maxNode="/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq"
+        availablePath="/sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies"
+        governorNode="/sys/devices/system/cpu/cpufreq/policy0/scaling_governor"
+        governorAvailablePath="/sys/devices/system/cpu/cpufreq/policy0/scaling_available_governors" />
+    <cpu
+        id="big"
+        group="Big Cluster"
+        minId="axion_min_freq_big"
+        maxId="axion_max_freq_big"
+        governorId="big_cpu_governor"
+        minNode="/sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq"
+        maxNode="/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq"
+        availablePath="/sys/devices/system/cpu/cpufreq/policy4/scaling_available_frequencies"
+        governorNode="/sys/devices/system/cpu/cpufreq/policy4/scaling_governor"
+        governorAvailablePath="/sys/devices/system/cpu/cpufreq/policy4/scaling_available_governors" />
+    <gpu
+        node="/sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/devfreq"
+        currentNode="/sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/gpuclk"
+        usageNode="/sys/devices/platform/soc/5900000.qcom,kgsl-3d0/kgsl/kgsl-3d0/gpu_busy_percentage"
+        frequencyMultiplier="1"
+        values="950000000,900000000,820000000,745000000,600000000,465000000,320000000" />
+</kernel-manager>' > ax_kernel_manager.xml
+echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)ax_kernel_manager.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_kernel_manager.xml' >> device.mk
 
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
