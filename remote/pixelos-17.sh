@@ -25,12 +25,12 @@ VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-24.0-BETA
 VENDOR_BRANCH=lineage-24.0-BETA
-XIAOMI_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-24.0
 GENOTA_ARGS="pixelos 17"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL="-u https://github.com/PixelOS-AOSP/android_manifest -b seventeen $REPO_PARAMS"
 OTA_SED_STRING="PixelOS-AOSP/official_devices/.*json"
-OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.16.$VARIANT_NAME.$BUILD_TYPE.chime.json"
+OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.17.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 export TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=$(echo $@ | cut -d ":" -f 2) ; fi
@@ -101,7 +101,7 @@ rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail
 rm -f lineage-22.1.tar.xz
-git clone https://github.com/snuffles198/device_tree -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
+git clone https://github.com/snuffles198/device_tree --depth=1 -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/snuffles198/vendor_tree --depth=1 -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi --depth=1 -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
@@ -128,6 +128,7 @@ rm -f hardware/xiaomi/megvii/Android.bp
 # Setup device tree
 cd device/xiaomi/chime
 
+git pull --unshallow
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
 
@@ -218,18 +219,9 @@ export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 lunch custom_chime-cp2a-user
 
-#if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
-#  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
-#  if [ $(awk '/MemTotal/ {print $2}' /proc/meminfo) -gt 33554432 ]; then
-#    sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(56 * 1024 * 1024 * 1024)\\n' build/soong/cmd/soong_build/main.go
-#  else
-#    sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(40)\\n' build/soong/cmd/soong_build/main.go
-#  fi
-#fi
-
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
-  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(56 * 1024 * 1024 * 1024)\\n' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
 
 ( sleep 3600;
