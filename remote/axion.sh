@@ -193,7 +193,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         frequencyMultiplier="1"
         values="950000000,900000000,820000000,745000000,600000000,465000000,320000000" />
 </kernel-manager>' > ax_kernel_manager.xml
-echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)ax_kernel_manager.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_kernel_manager.xml' >> device.mk
+echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/ax_kernel_manager.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_kernel_manager.xml' >> device.mk
 
 cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
 mv BoardConfig.mk.1 BoardConfig.mk
