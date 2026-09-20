@@ -158,10 +158,11 @@ echo 'genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:
 echo 'genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/vm/dirty_ratio u:object_r:proc_dirty:s0' >> sepolicy/vendor/genfs_contexts
 echo 'genfscon proc /sys/kernel/sched_migration_cost_ns u:object_r:proc_sched:s0' >> sepolicy/vendor/genfs_contexts
+
 echo 'allow init vendor_sysfs_kgsl:file setattr;' >> sepolicy/vendor/init.te
-echo 'allow system_server sysfs_devices_system_cpu rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
-echo 'allow system_server vendor_sysfs_kgsl rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
-echo 'allow system_server vendor_sysfs_devfreq rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+echo 'allow system_server sysfs_devices_system_cpu:file rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+echo 'allow system_server vendor_sysfs_kgsl:file rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
+echo 'allow system_server vendor_sysfs_devfreq:file rw_file_perms;' >> sepolicy/vendor/ax_kernel_manager.te
 
 echo '<?xml version="1.0" encoding="utf-8"?>
 <kernel-manager>
