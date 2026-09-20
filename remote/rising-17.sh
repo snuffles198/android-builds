@@ -25,7 +25,7 @@ VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-24.0-BETA
 VENDOR_BRANCH=lineage-24.0-BETA
-XIAOMI_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-24.0
 GENOTA_ARGS="rising 9"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
 REPO_URL=" -u https://github.com/RisingOS-Revived/android -b seventeen $REPO_PARAMS"
@@ -99,7 +99,7 @@ rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail
 rm -f lineage-22.1.tar.xz
-git clone https://github.com/snuffles198/device_tree -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
+git clone https://github.com/snuffles198/device_tree --depth=1 -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/snuffles198/vendor_tree --depth=1 -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi --depth=1 -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
@@ -131,6 +131,7 @@ rm -f hardware/xiaomi/megvii/Android.bp
 # Setup device tree
 cd device/xiaomi/chime
 
+git pull --unshallow
 git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
 
@@ -149,7 +150,7 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 
 echo 'TARGET_DISABLE_EPPE := true' >> device.mk
 
-echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
+#echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
 
 #echo 'ro.lmk.kill_heaviest_task=true
 #ro.lmk.use_psi=true
@@ -179,9 +180,6 @@ cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-
 cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
 cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw600dp-nodpi
 
-sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
-sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
-
 echo 'PRODUCT_NO_CAMERA := false' >> lineage_chime.mk
 
 export RISING_MAINTAINER="Joe"
@@ -192,11 +190,16 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
     RisingMaintainer="Joe"' >> lineage_chime.mk
 echo 'ro.build.product=chime' >> configs/props/system.prop
 
+sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
+sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
+
 if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+   echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
    echo 'WITH_GMS := true' >> lineage_chime.mk
 else
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
+   echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
    echo 'WITH_GMS := false' >> lineage_chime.mk
    echo 'PRODUCT_PACKAGES += Gallery2' >> device.mk
 fi
@@ -223,18 +226,9 @@ export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 riseup chime user
 
-#if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
-#  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
-#  if [ $(awk '/MemTotal/ {print $2}' /proc/meminfo) -gt 33554432 ]; then
-#    sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(56 * 1024 * 1024 * 1024)\\n' build/soong/cmd/soong_build/main.go
-#  else
-#    sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(40)\\n' build/soong/cmd/soong_build/main.go
-#  fi
-#fi
-
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
-  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(56 * 1024 * 1024 * 1024)\\n' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
 
 ( sleep 3600;
