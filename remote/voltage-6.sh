@@ -26,7 +26,7 @@ VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-24.0-BETA
 VENDOR_BRANCH=lineage-24.0-BETA
-XIAOMI_BRANCH=lineage-23.2
+XIAOMI_BRANCH=lineage-24.0
 GENOTA_ARG_1="voltage"
 GENOTA_ARG_2="6"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
@@ -87,18 +87,24 @@ check_fail () {
 }
 
 # repo sync. or not.
-if echo "$@" | grep resume; then
-   echo "resuming"
+if ls /opt/crave/resync.sh; then
+  resync_script=/opt/crave/resync.sh
 else
-   rm -rf .repo/manifests*
-   repo init $REPO_URL --git-lfs ; check_fail
-   cleanup_self
-   tar xf hardware.tar ; tar xf kernel.tar  ; tar xf device.tar
-   /opt/crave/resync.sh
-   repo forall -c "git clean -fdx ; git reset --hard HEAD"
-   /opt/crave/resync.sh ; check_fail
+  curl -o resync.sh -L https://raw.githubusercontent.com/accupara/docker-images/refs/heads/master/aosp/common/resync.sh
+  chmod a+x resync.sh
+  resync_script=/tmp/src/android/resync.sh
 fi
-tar cf hardware.tar hardware/ ; tar cf kernel.tar kernel/ ; tar cf device.tar device/
+if echo "$@" | grep resume; then
+  echo "resuming"
+else
+  repo init $REPO_URL  ; check_fail
+  cleanup_self
+  $resync_script
+  if [ $? -ne 0 ]; then
+    repo forall -c "git clean -fdx ; git reset --hard HEAD"
+    $resync_script ; check_fail
+  fi
+fi
 
 TIME_TAKEN=`printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))`
 notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
@@ -107,11 +113,12 @@ notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
 curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A17.tar.xz" ; check_fail
-tar xf kernel.tar.xz ; check_fail ; rm -f kernel.tar.xz
+tar xf kernel.tar.xz ; check_fail 
+rm -f kernel.tar.xz
 curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail ; rm -f lineage-22.1.tar.xz
-curl -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
-tar xf toolchain.tar.xz ; check_fail ; rm -f toolchain.tar.xz
+#curl -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
+#tar xf toolchain.tar.xz ; check_fail ; rm -f toolchain.tar.xz
 git clone https://github.com/snuffles198/device_tree -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com/snuffles198/vendor_tree -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
@@ -172,8 +179,7 @@ mv lineage_frame.xml ../../../vendor/lineage/config/device_framework_matrix.xml
 
 sed -i s#device/lineage/sepolicy/libperfmgr/sepolicy.mk#device/voltage/sepolicy/libperfmgr/sepolicy.mk#g BoardConfig.mk
 sed -i s#device/lineage/sepolicy/libion/sepolicy.mk#device/voltage/sepolicy/libion/sepolicy.mk#g BoardConfig.mk
-cat lineage_chime.mk | sed -e s/lineage/voltage/g > lineage_chime.mk.1
-mv lineage_chime.mk.1 lineage_chime.mk
+sed -i s/lineage/voltage/g lineage_chime.mk
 cat lineage_chime.mk | grep -v TARGET_ENABLE_BLUR  > lineage_chime.mk.1
 mv lineage_chime.mk.1 lineage_chime.mk
 mv lineage_chime.mk voltage_chime.mk
@@ -203,19 +209,16 @@ echo '<?xml version="1.0" encoding="utf-8"?>
         android:defaultValue="1" />
 </PreferenceScreen>' > overlay-lineage/packages/apps/Powerhub/res/values/powerhub_statusbar.xml
 
-cd ../../../
+echo 'persist.sys.activity_anim_perf_override=true' >> configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> BoardConfig.mk
 
-echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
-echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
-echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
+echo 'PRODUCT_PACKAGES += Updater' >> device.mk
 
-echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
+cat BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> BoardConfig.mk
 
-cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
-mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
-echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
-
-cd device/xiaomi/chime
 #git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
 echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
 echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/system.prop
@@ -251,8 +254,8 @@ echo 'on property:sys.boot_completed=1
 
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
-echo "ro.voltage.build.date=$(date +%Y-%m-%d)" >> configs/props/system.prop
-echo 'ro.voltage.version=6.0' >> configs/props/system.prop
+#echo "ro.voltage.build.date=$(date +%Y-%m-%d)" >> configs/props/system.prop
+#echo 'ro.voltage.version=6.0' >> configs/props/system.prop
 
 cd ../../../
 
@@ -269,49 +272,27 @@ rm -f keys.1 keys.2 keys.tar
 
 set +v
 
-#delete hardware repos not needed for this device to try free up ram for soong.
-cd device
-rm -rf amlogic  common  generic  google  google_car  linaro  sample
-cd ..
-repo sync -l device/google/cuttlefish device/generic/goldfish device/generic/car device/generic/trusty device/sample
-cd hardware
-rm -rf broadcom knowles nxp samsung synaptics telink ti
-cd ..
-cd hardware/qcom-caf
-tar cf ../qcom-caf-bak.tar bootctrl common sm8250 thermal thermal-legacy-um wlan
-rm -rf *
-tar xf ../qcom-caf-bak.tar ; rm ../qcom-caf-bak.tar
-cd ..
-cd google
-tar cf ../hardware_google.tar gfxstream apf pixel/Android.bp pixel/pixelstats pixel/power-libperfmgr interfaces/Android.bp interfaces/bluetooth/ interfaces/power
-rm -rf *
-tar xf ../hardware_google.tar ; rm -rf ../hardware_google.tar
-cd ../../
-rm -rf kernel/tests
-rm -rf hardware/qcom
-
 source build/envsetup.sh          ; check_fail
 source build/envsetup.sh
 export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 lunch voltage_chime-cp2a-user     ; check_fail
+mka installclean
 
-export TG_URL
+if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
+  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
+fi
+
 ( sleep 3600;
-  if pgrep soong_build || { sleep 600; pgrep soong_build; } ; then
-    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="crave.io build failed. soong timed out after limit. `date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
-    curl -s -d "crave.io build failed. soong timed out after limit. `date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
+  if pgrep soong_build; then
+    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
+    curl -s -d "build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
     rm -rf /tmp/src/android/vendor/lineage-priv ;
     kill -9 $$ ;
   fi
 ) &
 
-export GOGC=15
-refreshmod
-check_fail
-unset GOGC
-
-mka installclean
 mka bacon -j$(nproc --all)        ; check_fail
 
 set -v
