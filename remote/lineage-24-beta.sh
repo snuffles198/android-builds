@@ -7,7 +7,7 @@ source .env
 source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
-
+rm -f .env
 
 mkdir -p /tmp/src
 if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then

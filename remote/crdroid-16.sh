@@ -7,6 +7,7 @@ source .env
 source /home/admin/.profile
 source /home/admin/.bashrc
 source /tmp/crave_bashrc
+rm -f .env
 
 echo "--------------------env test-------------------------"
 echo "$BUCKET_NAME"
