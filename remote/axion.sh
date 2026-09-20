@@ -275,8 +275,6 @@ gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
 tar xf keys.tar
 rm -f keys.1 keys.2 keys.tar
 
-sleep 10
-
 # Build it
 set +v
 
