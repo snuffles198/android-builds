@@ -145,7 +145,7 @@ echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 
 echo 'TARGET_DISABLE_EPPE := true' >> device.mk
 
-echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
+#echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
 
 #echo 'ro.lmk.kill_heaviest_task=true
 #ro.lmk.use_psi=true

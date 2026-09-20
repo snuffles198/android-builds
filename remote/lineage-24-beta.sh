@@ -254,7 +254,7 @@ export KBUILD_BUILD_USER=user
 export KBUILD_BUILD_HOST=localhost
 lunch lineage_chime-cp2a-user              ; check_fail
 mka installclean
-PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS=false WITH_DEXPREOPT=false mka bacon -j$(nproc --all)        ; check_fail
+mka bacon -j$(nproc --all)        ; check_fail
 
 set -v
 

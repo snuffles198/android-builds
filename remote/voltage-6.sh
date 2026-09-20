@@ -226,7 +226,7 @@ echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 echo 'TARGET_ENABLE_BLUR := true' >> voltage_chime.mk
 echo 'TARGET_DISABLE_EPPE := true' >> device.mk
-echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
+#echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
 
 #echo 'ro.lmk.kill_heaviest_task=true
 #ro.lmk.use_psi=true
