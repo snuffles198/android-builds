@@ -27,7 +27,7 @@ BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-23.2
 VENDOR_BRANCH=lineage-23.2
 XIAOMI_BRANCH=lineage-23.2
-REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.2 --git-lfs"
+REPO_URL="-u https://github.com/AxionAOSP/android.git -b lineage-23.2 --git-lfs --no-tags --no-clone-bundle --depth=1"
 OTA_SED_STRING="AxionAOSP/official_devices/.*json"
 
 # Random template helper stuff
