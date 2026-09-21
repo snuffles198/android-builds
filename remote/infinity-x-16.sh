@@ -85,20 +85,23 @@ check_fail () {
 }
 
 # repo sync. or not.
-if echo "$@" | grep resume; then
-   echo "resuming"
+if ls /opt/crave/resync.sh; then
+  resync_script=/opt/crave/resync.sh
 else
-   rm -rf .repo/manifests*
-   repo init $REPO_URL  ; check_fail
-   cleanup_self
-   /opt/crave/resync.sh
-   # infinity git servers sometimes have issues. try harder for up to 15 tries.
-   for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ; do
-      if repo sync frameworks/base packages/apps/InfinitySuite packages/apps/Launcher3 packages/apps/Settings vendor/google/gms ; then
-         break
-      fi
-      sleep 60
-   done
+  curl -o resync.sh -L https://raw.githubusercontent.com/accupara/docker-images/refs/heads/master/aosp/common/resync.sh
+  chmod a+x resync.sh
+  resync_script=/tmp/src/android/resync.sh
+fi
+if echo "$@" | grep resume; then
+  echo "resuming"
+else
+  repo init $REPO_URL  ; check_fail
+  cleanup_self
+  $resync_script
+  if [ $? -ne 0 ]; then
+    repo forall -c "git clean -fdx ; git reset --hard HEAD"
+    $resync_script ; check_fail
+  fi
 fi
 
 # Download trees
