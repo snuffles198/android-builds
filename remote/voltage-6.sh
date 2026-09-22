@@ -142,7 +142,7 @@ sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5
 sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/voltage/build/tasks/kernel.mk
 
 cd vendor/voltage/
-sed -i 's/UNOFFICIAL/COMMUNITY/g' > config/version.mk
+sed -i 's/UNOFFICIAL/COMMUNITY/g' config/version.mk
 cd ../..
 
 rm -f hardware/qcom/sm7250/Android.bp hardware/qcom/sm7250/Android.mk
@@ -255,9 +255,6 @@ echo 'on property:sys.boot_completed=1
 
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
-#echo "ro.voltage.build.date=$(date +%Y-%m-%d)" >> configs/props/system.prop
-#echo 'ro.voltage.version=6.0' >> configs/props/system.prop
-
 cd ../../../
 
 # Setup kernel
@@ -277,14 +274,12 @@ source build/envsetup.sh          ; check_fail
 source build/envsetup.sh
 export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
-lunch voltage_chime-cp2a-user     ; check_fail
-mka installclean
 
+# soong oom killed
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
   sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
-
 ( sleep 3600;
   if pgrep soong_build; then
     curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
@@ -294,7 +289,9 @@ fi
   fi
 ) &
 
-mka bacon -j$(nproc --all)        ; check_fail
+breakfast chime user
+mka installclean
+brunch chime user -j$(nproc --all) ; check_fail
 
 set -v
 
