@@ -255,6 +255,8 @@ echo 'on property:sys.boot_completed=1
 
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
+echo 'PRODUCT_PACKAGES += disable_configstore' >> device.mk
+
 cd ../../../
 
 # Setup kernel
