@@ -245,6 +245,26 @@ echo 'TARGET_ENABLE_BLUR := true' >> calyx_chime.mk
 
 echo 'allow platform_app ota_package_file:dir { add_name search write read };' > sepolicy/private/platform_app.te
 
+echo 'ro.lmk.kill_heaviest_task=true
+ro.lmk.use_psi=true
+ro.lmk.use_cgroup_v2=true
+ro.lmk.use_minfree_levels=false
+ro.lmk.thrashing_limit_decay=50
+ro.lmk.downgrade_pressure=30
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.psi_complete_stall_ms=700
+ro.lmk.thrashing_limit=30
+ro.lmk.swap_util_max=100
+ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
+
+echo '
+prebuilt_etc {
+    name: "init.custom.rc",
+    src: "etc/init.custom.rc",
+    sub_dir: "init",
+    filename: "init.custom.rc",
+}' >> rootdir/Android.bp
+
 cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
