@@ -239,6 +239,32 @@ echo 'BYPASS_CHARGE_TOGGLE_PATH := /sys/class/power_supply/battery/input_suspend
 curl -o axion-2.7-init-perms.txt -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/axion-2.7-init-perms.txt; check_fail
 cat axion-2.7-init-perms.txt >> rootdir/etc/init.target.rc
 
+echo 'ro.lmk.kill_heaviest_task=true
+ro.lmk.use_psi=true
+ro.lmk.use_cgroup_v2=true
+ro.lmk.use_minfree_levels=false
+ro.lmk.thrashing_limit_decay=50
+ro.lmk.downgrade_pressure=30
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.psi_complete_stall_ms=700
+ro.lmk.thrashing_limit=30
+ro.lmk.swap_util_max=100
+ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
+
+echo '
+prebuilt_etc {
+    name: "init.custom.rc",
+    src: "etc/init.custom.rc",
+    sub_dir: "init",
+    filename: "init.custom.rc",
+}' >> rootdir/Android.bp
+
+echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 10
+    write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
+
+echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
+
 cd ../../../
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
@@ -258,28 +284,6 @@ tar xf flashy.tar.xz
 echo 'PRODUCT_PACKAGES += Flashy' >> device/xiaomi/chime/device.mk
 
 echo 'log.tag.SfCpuPolicy=SUPPRESS' >> device/xiaomi/chime/configs/props/system.prop ; check_fail
-
-#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-
-#echo 'ro.lmk.psi_partial_stall_ms=200' >> device/xiaomi/chime/configs/props/system.prop
-#echo 'ro.lmk.psi_complete_stall_ms=700' >> device/xiaomi/chime/configs/props/system.prop
-#echo 'ro.lmk.thrashing_limit=30' >> device/xiaomi/chime/configs/props/system.prop
-#echo 'ro.lmk.thrashing_limit_decay=50' >> device/xiaomi/chime/configs/props/system.prop
-#echo 'ro.lmk.swap_util_max=100' >> device/xiaomi/chime/configs/props/system.prop
-#echo 'ro.lmk.kill_heaviest_task=true' >> device/xiaomi/chime/configs/props/system.prop
-
-echo 'PRODUCT_PACKAGES += custom_init_rc' >> device/xiaomi/chime/device.mk
-mkdir device/xiaomi/chime/custom_init
-echo 'prebuilt_etc {
-    name: "custom_init_rc",
-    src: "custom_init.rc",
-    sub_dir: "init",
-    filename: "custom_init.rc",
-}' > device/xiaomi/chime/custom_init/Android.bp
-echo 'on property:sys.boot_completed=1
-    exec -- /system/bin/sleep 10
-    write /proc/sys/vm/swappiness 95' > device/xiaomi/chime/custom_init/custom_init.rc
 
 # Get and decrypt signing keys
 curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo

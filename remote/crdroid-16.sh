@@ -169,17 +169,17 @@ echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 echo 'CR_MAINTAINER := Joe7500' >> lineage_chime.mk
 
-#echo 'ro.lmk.kill_heaviest_task=true
-#ro.lmk.use_psi=true
-#ro.lmk.use_cgroup_v2=true
-#ro.lmk.use_minfree_levels=false
-#ro.lmk.thrashing_limit_decay=50
-#ro.lmk.downgrade_pressure=30
-#ro.lmk.psi_partial_stall_ms=200
-#ro.lmk.psi_complete_stall_ms=700
-#ro.lmk.thrashing_limit=30
-#ro.lmk.swap_util_max=100
-#ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
+echo 'ro.lmk.kill_heaviest_task=true
+ro.lmk.use_psi=true
+ro.lmk.use_cgroup_v2=true
+ro.lmk.use_minfree_levels=false
+ro.lmk.thrashing_limit_decay=50
+ro.lmk.downgrade_pressure=30
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.psi_complete_stall_ms=700
+ro.lmk.thrashing_limit=30
+ro.lmk.swap_util_max=100
+ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
 
 echo '
 prebuilt_etc {
@@ -212,9 +212,6 @@ echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
 
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
-
-#echo 'ro.lmk.swap_free_low_percentage=5' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
-#echo 'ro.lmk.swap_util_max=95' >> device/xiaomi/chime/configs/props/system.prop  ; check_fail
 
 cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
 mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
