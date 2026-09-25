@@ -103,6 +103,14 @@ else
   cleanup_self
   $resync_script
   if [ $? -ne 0 ]; then
+    #CalyxOS specific sync error. Will not sync without deletion: 
+    # Repo command failed due to the following `SyncError` errors:
+    # error: prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9: Cannot remove project: uncommitted changes are present.
+    rm -rf prebuilts/gcc/
+    for i in `find .repo/ | grep 'prebuilts/gcc/'`; do
+       rm -rf $i
+    done
+
     repo forall -c "git clean -fdx ; git reset --hard HEAD"
     $resync_script ; check_fail
   fi
