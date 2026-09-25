@@ -104,12 +104,12 @@ else
   $resync_script
   if [ $? -ne 0 ]; then
     #Sorry :(
-    #Try to sync normally first before error. crave /opt/sync/resync.sh does not resolve this problem.
+    #First try to sync normally before error. crave /opt/sync/resync.sh does not resolve this problem.
     #CalyxOS specific sync error. This always happens. Will not sync against lineage-23.2 without deletion: 
     #  - Repo command failed due to the following `SyncError` errors:
     #  - error: prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9: Cannot remove project: uncommitted changes are present.
     rm -rf prebuilts/gcc/
-    for i in `find .repo/ | grep 'prebuilts/gcc/'`; do
+    for i in $(find .repo/ | grep 'prebuilts/gcc/'); do
        rm -rf $i
     done
 
