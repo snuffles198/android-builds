@@ -184,8 +184,7 @@ if ! ls vendor/google/gearhead/proprietary/; then
   export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
   curl -o devon.zip -L "$DEVON_URL" ; check_fail
   sudo apt update
-  sudo apt -y install 7zip erofs-utils virtualenv android-sdk-libsparse-utils 
-  platform-utils
+  sudo apt -y install 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils
   virtualenv dumpyara
   dumpyara/bin/pip install dumpyara
   dumpyara/bin/dumpyara devon.zip
