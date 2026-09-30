@@ -267,6 +267,7 @@ ro.lmk.thrashing_limit=30
 ro.lmk.swap_util_max=100
 ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
 
+echo '
 prebuilt_etc {
     name: "init.custom.rc",
     src: "etc/init.custom.rc",
@@ -277,7 +278,6 @@ echo 'on property:sys.boot_completed=1
     exec -- /system/bin/sleep 10
     write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
-
 
 cd ../../../
 
