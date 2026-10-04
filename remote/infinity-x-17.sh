@@ -1,0 +1,384 @@
+#!/bin/bash
+
+source ~/android-builds/dev-secrets/telegram.sh
+source ~/android-builds/dev-secrets/secrets.sh
+source ~/android-builds/dev-secrets/ntfy.sh
+source .env
+source /home/admin/.profile
+source /home/admin/.bashrc
+source /tmp/crave_bashrc
+rm -f .env
+
+mkdir -p /tmp/src
+if [ ! -d /tmp/src/android ] || [ -L /tmp/src/android ]; then
+  if [ "$(pwd)" != "/tmp/src/android" ]; then
+    rm -rf /tmp/src/android
+    ln -s "$(pwd)" /tmp/src/android
+  fi
+fi
+cd /tmp/src/android/
+
+set -v
+
+# Template helper variables
+PACKAGE_NAME=Project_Infinity-X-4
+VARIANT_NAME=user
+BUILD_TYPE=vanilla
+DEVICE_BRANCH=lineage-24.0-BETA
+VENDOR_BRANCH=lineage-24.0-BETA
+XIAOMI_BRANCH=lineage-24.0
+GENOTA_ARGS="infinity 4"
+REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle --no-repo-verify -g default,-mips,-darwin,-notdefault"
+REPO_URL=" -u https://github.com/ProjectInfinity-X/manifest -b 17 $REPO_PARAMS"
+TODAY=`date +"%d%m%y"`
+OTA_SED_STRING="ProjectInfinity-X/official_devices/.*json"
+OTA_SED_REPLACE_STRING="Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
+SECONDS=0
+export TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
+if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=$(echo $@ | cut -d ":" -f 2) ; fi
+export B_HOST=$(hostname)
+if grep 'aosp@crave.io' /home/admin/.gitconfig ; then export B_HOST=crave.io ; fi
+alias curl='curl --retry 5 --retry-delay 30 --connect-timeout 30 -C -'
+
+notify_send() {
+  local MSG
+  MSG="$@"
+  TIME_TAKEN=$(printf '%dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60)))
+  curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="Build $PACKAGE_NAME on $B_HOST $MSG $TIME_TAKEN $(date) JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
+  curl -s -d "Build $PACKAGE_NAME on $B_HOST $MSG $TIME_TAKEN $(date) JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
+}
+
+notify_send "started."
+
+cleanup_self () {
+  cd /tmp/src/android/
+  rm -rf vendor/lineage-priv/keys vendor/lineage-priv priv-keys
+  cd packages/apps/Updater/ && git reset --hard && cd ../../../
+  cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+  cd build/soong/ && git reset --hard && cd ../../
+  rm -rf hardware/xiaomi/ device/xiaomi/chime/ vendor/xiaomi/chime/ kernel/xiaomi/chime/
+  rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml* builder.sh goupload.sh GOFILE.txt
+  rm -rf /tmp/android-certs* /home/admin/venv/ custom_scripts/
+  cd /tmp/src/android/
+}
+
+check_fail () {
+  if [ $? -ne 0 ]; then 
+    notify_send "failed."
+    curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+    cleanup_self
+    echo fail > result.txt
+    exit 1 
+  fi
+}
+
+# repo sync. or not.
+if ls /opt/crave/resync.sh; then
+  resync_script=/opt/crave/resync.sh
+else
+  curl -o resync.sh -L https://raw.githubusercontent.com/accupara/docker-images/refs/heads/master/aosp/common/resync.sh
+  chmod a+x resync.sh
+  resync_script=/tmp/src/android/resync.sh
+fi
+if echo "$@" | grep resume; then
+  echo "resuming"
+else
+  repo init $REPO_URL  ; check_fail
+  cleanup_self
+  $resync_script
+  if [ $? -ne 0 ]; then
+    repo forall -c "git clean -fdx ; git reset --hard HEAD"
+    $resync_script ; check_fail
+  fi
+fi
+
+notify_send "repo sync done."
+
+# Download trees
+rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
+rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
+curl -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A17.tar.xz" ; check_fail
+tar xf kernel.tar.xz ; check_fail
+rm -f kernel.tar.xz
+curl -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
+tar xf lineage-22.1.tar.xz ; check_fail
+rm -f lineage-22.1.tar.xz
+git clone https://github.com/snuffles198/device_tree --depth=1 -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
+git clone https://github.com/snuffles198/vendor_tree --depth=1 -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
+git clone https://github.com/LineageOS/android_hardware_xiaomi --depth=1 -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
+
+
+# Setup AOSP source 
+patch -f -p 1 < wfdservice.rc.patch ; check_fail
+cd packages/modules/Connectivity/ && git reset --hard && cd ../../../
+patch -f -p 1 < InterfaceController.java.patch ; check_fail
+rm -f InterfaceController.java.patch wfdservice.rc.patch strings.xml.*
+rm -f vendor/xiaomi/chime/proprietary/system_ext/etc/init/wfdservice.rc.rej
+rm -f packages/modules/Connectivity/staticlibs/device/com/android/net/module/util/ip/InterfaceController.java.rej
+
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
+cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
+mv strings.xml.1 strings.xml
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+check_fail
+
+for i in `grep -R '<string name="unofficial_build_suffix">' packages/apps/Settings/res | cut -d ':' -f 1` ; do
+  cat $i | sed -e 's#<string name="unofficial_build_suffix">.*string>#<string name="unofficial_build_suffix">- Community</string>#g' > $i.1
+  mv $i.1 $i
+done
+cd vendor/infinity/
+cat config/version.mk | sed -e 's/INFINITY_BUILD_TYPE ?= UNOFFICIAL/INFINITY_BUILD_TYPE := COMMUNITY/g' > config/version.mk.1
+mv config/version.mk.1 config/version.mk
+cd ../..
+
+sed -i -e 's#ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
+sed -i -e 's#ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)#g' vendor/infinity/build/tasks/kernel.mk
+sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))#NOT_NEEDED_DISCARD_567 := true#g' vendor/infinity/build/tasks/kernel.mk
+
+grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+if [ $? -ne 0 ] ; then
+   cd frameworks/base/
+   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
+   patch -p 1 -f < 1.patch ; check_fail
+   cd ../../
+fi
+
+cat vendor/infinity/prebuilt/common/bin/backuptool.sh | sed -e 's/ro.infinity.aversion/ro.infinity.a\.\*version/g' > vendor/infinity/prebuilt/common/bin/backuptool.sh.1
+mv vendor/infinity/prebuilt/common/bin/backuptool.sh.1 vendor/infinity/prebuilt/common/bin/backuptool.sh
+
+if grep cpp-full-3.9.1-vendorcompat hardware/lineage/compat/Android.bp && grep cpp-full-3.9.1-vendorcompat prebuilts/misc/protobuf_vendorcompat/Android.bp; then
+rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
+fi
+if grep cpp-full-21.12-vendorcompat hardware/lineage/compat/Android.bp && grep cpp-full-21.12-vendorcompat prebuilts/misc/protobuf_vendorcompat/Android.bp; then
+rm -f prebuilts/misc/protobuf_vendorcompat/Android.bp
+fi
+
+#Setup device tree
+
+cd device/xiaomi/chime
+#git revert --no-edit ea4aba08985fe0addebcaed19a86e86bad64239c #squiggly
+git revert --no-edit 0a790d4fabf2745212e827d5868f9703b2ec47ed #blur by defaut
+curl -o configs/powerhint.json -L "https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/powerhint.json.axion.7.txt" ; check_fail
+cat AndroidProducts.mk | sed -e s/lineage/infinity/g > AndroidProducts.mk.1
+mv AndroidProducts.mk.1 AndroidProducts.mk
+cat lineage_chime.mk | sed -e s/lineage/infinity/g > lineage_chime.mk.1
+mv lineage_chime.mk.1 lineage_chime.mk
+mv lineage_chime.mk infinity_chime.mk
+echo 'INFINITY_MAINTAINER := "Joe"' >> infinity_chime.mk
+#cat BoardConfig.mk | sed -e s#vendor/lineage/config/device_framework_matrix.xml#vendor/infinity/config/device_framework_matrix.xml#g > BoardConfig.mk.1
+cat BoardConfig.mk | grep -v 'vendor/lineage/config/device_framework_matrix.xml' > BoardConfig.mk.1
+mv BoardConfig.mk.1 BoardConfig.mk
+echo 'ro.product.marketname=POCO M3 / Redmi 9T' >> configs/props/system.prop
+echo 'ro.infinity.soc=Qualcomm SM6115 Snapdragon 662' >> configs/props/system.prop
+echo 'ro.infinity.battery=6000 mAh' >> configs/props/system.prop
+echo 'ro.infinity.display=1080 x 2340' >> configs/props/system.prop
+echo 'ro.infinity.camera=48MP + 8MP' >> configs/props/system.prop
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
+echo 'ro.launcher.blur.appLaunch=0' >> configs/props/product.prop
+echo 'ro.surface_flinger.supports_background_blur=1' >> configs/props/product.prop
+echo 'persist.sys.sf.disable_blurs=1' >> configs/props/product.prop
+echo 'ro.sf.blurs_are_expensive=1' >> configs/props/product.prop
+echo 'TARGET_ENABLE_BLUR := true' >> infinity_chime.mk
+
+echo 'ro.lmk.kill_heaviest_task=true
+ro.lmk.use_psi=true
+ro.lmk.use_cgroup_v2=true
+ro.lmk.use_minfree_levels=false
+ro.lmk.thrashing_limit_decay=50
+ro.lmk.downgrade_pressure=30
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.psi_complete_stall_ms=700
+ro.lmk.thrashing_limit=30
+ro.lmk.swap_util_max=100
+ro.lmk.swap_free_low_percentage=10' >> configs/props/system.prop
+
+echo '
+prebuilt_etc {
+    name: "init.custom.rc",
+    src: "etc/init.custom.rc",
+    sub_dir: "init",
+    filename: "init.custom.rc",
+}' >> rootdir/Android.bp
+
+echo 'on property:sys.boot_completed=1
+    exec -- /system/bin/sleep 10
+    write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
+
+echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
+
+cd -
+
+cat device/xiaomi/chime/infinity_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
+mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
+cat device/xiaomi/chime/infinity_chime.mk | grep -v WITH_GAPPS > device/xiaomi/chime/infinity_chime.mk.1
+mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
+
+# GAPPS
+if echo $@ | grep GAPPS ; then
+   echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+   cd packages/apps/Updater/ && git reset --hard && cd ../../../
+   cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
+   cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
+   mv strings.xml.1 strings.xml
+   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.
+   cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+   notify_send "Build $PACKAGE_NAME on crave.io OTA string: Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json"
+   check_fail
+else
+# VANILLA
+   echo 'WITH_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'RESERVE_SPACE_FOR_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
+   notify_send "Build $PACKAGE_NAME on crave.io OTA string: $OTA_SED_REPLACE_STRING"
+fi
+
+cat device/xiaomi/chime/BoardConfig.mk | grep -v TARGET_KERNEL_CLANG_VERSION > device/xiaomi/chime/BoardConfig.mk.1
+mv device/xiaomi/chime/BoardConfig.mk.1 device/xiaomi/chime/BoardConfig.mk
+echo 'TARGET_KERNEL_CLANG_VERSION := stablekern' >> device/xiaomi/chime/BoardConfig.mk
+echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> device/xiaomi/chime/BoardConfig.mk
+
+echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
+echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+echo 'PRODUCT_PACKAGES += Updater' >> device/xiaomi/chime/device.mk
+
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/device.mk
+echo 'TARGET_DISABLE_EPPE := true' >> device/xiaomi/chime/BoardConfig.mk
+
+# Get and decrypt signing keys
+curl -o keys.1  -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/keys/BinlFm0d0LoeeibAVCofXsbYTCtcRHpo
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_1" -d keys.1 > keys.2
+gpg --pinentry-mode=loopback --passphrase "$GPG_PASS_2" -d keys.2 > keys.tar
+tar xf keys.tar
+rm -f keys.1 keys.2 keys.tar
+
+notify_send "build it."
+
+# Build it
+set +v
+
+source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
+lunch infinity_chime-user         ; check_fail
+mka installclean
+
+if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
+  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
+fi
+
+( sleep 3600;
+  if pgrep soong_build; then
+    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
+    curl -s -d "build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
+    rm -rf /tmp/src/android/vendor/lineage-priv ;
+    kill -9 $$ ;
+  fi
+) &
+
+mka bacon -j$(nproc --all)  ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "succeeded."
+
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+OUT_FILE=$(ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1)
+OUT_FILE_MD5=$(md5sum "$OUT_FILE")
+OUT_FILE=$(pwd)/$OUT_FILE
+if [[ ! -f $OUT_FILE ]]; then
+   OUT_FILE=builder.sh
+fi
+
+curl -T "$OUT_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=$(cat out.json | cut -d '"' -f 4)
+notify_send "MD5:$OUT_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh $GENOTA_ARGS "$OUT_FILE"
+curl -L -F document=@"$OUT_FILE.json.txt" -F caption="OTA $OUT_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
+
+notify_send "completed."
+
+CONTINUE=0
+if echo $@ | grep CONTINUE ; then
+   CONTINUE=1
+fi
+if [ $CONTINUE == 1 ] ; then
+   echo CONTINUE
+
+grep -vE 'WITH_GAPPS|RESERVE_SPACE_FOR_GAPPS' device/xiaomi/chime/infinity_chime.mk > device/xiaomi/chime/infinity_chime.mk.1
+mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk   
+echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
+echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+cd packages/apps/Updater/ && git reset --hard && cd ../../../
+cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
+cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
+mv strings.xml.1 strings.xml
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.
+cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+notify_send "Build $PACKAGE_NAME on crave.io OTA string: Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json"
+check_fail
+
+set +v
+
+source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
+lunch infinity_chime-user         ; check_fail
+mka installclean
+
+if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
+  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
+fi
+
+( sleep 3600;
+  if pgrep soong_build; then
+    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
+    curl -s -d "build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
+    rm -rf /tmp/src/android/vendor/lineage-priv ;
+    kill -9 $$ ;
+  fi
+) &
+
+mka bacon -j$(nproc --all)  ; check_fail
+
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*.zip .
+OUT_FILE=$(ls --color=never -1tr $PACKAGE_NAME*.zip | tail -1)
+OUT_FILE_MD5=$(md5sum "$OUT_FILE")
+OUT_FILE=$(pwd)/$OUT_FILE
+if [[ ! -f $OUT_FILE ]]; then
+   OUT_FILE=builder.sh
+fi
+
+curl -T "$OUT_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=$(cat out.json | cut -d '"' -f 4)
+notify_send "MD5:$OUT_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh $GENOTA_ARGS "$OUT_FILE"
+curl -L -F document=@"$OUT_FILE.json.txt" -F caption="OTA $OUT_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
+
+notify_send "completed."
+
+fi #CONTINUE
+
+cleanup_self
+
+exit 0

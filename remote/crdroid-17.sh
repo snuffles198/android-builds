@@ -21,16 +21,16 @@ cd /tmp/src/android/
 set -v
 
 # Template helper variables
-PACKAGE_NAME=lineage-24
+PACKAGE_NAME=crDroidAndroid-17
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
 DEVICE_BRANCH=lineage-24.0-BETA
 VENDOR_BRANCH=lineage-24.0-BETA
 XIAOMI_BRANCH=lineage-24.0
-GENOTA_ARGS="lineage 24"
+GENOTA_ARGS="crdroid 13"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
-REPO_URL="-u https://github.com/LineageOS/android.git -b lineage-24.0 $REPO_PARAMS"
-OTA_SED_STRING="https://download.lineageos.org/api/v1/{device}/{type}/{incr}"
+REPO_URL="-u https://github.com/crdroidandroid/android.git -b 17.0 $REPO_PARAMS"
+OTA_SED_STRING="crdroidandroid/android_vendor_crDroidOTA/.*json"
 OTA_SED_REPLACE_STRING="https://raw.githubusercontent.com/Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.$BUILD_TYPE.chime.json"
 SECONDS=0
 export TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -124,6 +124,9 @@ if [ $? -ne 0 ] ; then
   cd ../../
 fi
 
+sed -i 's/"maintainer".*$/"maintainer": "Joe7500",/g' vendor/crDroidOTA/chime.json
+sed -i '/val maintainer = resolvedMaintainer/i \        resolvedMaintainer = "Joe7500"\n        resolvedDonateUrl = null' packages/apps/Settings/src/com/android/settings/deviceinfo/firmwareversion/BuildMaintainerPreference.kt
+
 # Setup device tree
 cd device/xiaomi/chime
 
@@ -145,8 +148,6 @@ echo 'PERF_ANIM_OVERRIDE := true' >> device.mk
 echo 'VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)' >> BoardConfig.mk
 
 echo 'TARGET_DISABLE_EPPE := true' >> device.mk
-
-#echo "PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false" >> device.mk
 
 echo 'ro.lmk.kill_heaviest_task=true
 ro.lmk.use_psi=true
@@ -171,6 +172,12 @@ echo 'on property:sys.boot_completed=1
     write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
+echo 'CR_MAINTAINER := Joe7500' >> lineage_chime.mk
+
+sed -i 's#</resources>##g' overlays/Frameworks/res/values/config.xml
+echo '    <bool name="config_deviceSupportsHighPerfTransitions">false</bool>' >> overlays/Frameworks/res/values/config.xml
+echo '</resources>' >> overlays/Frameworks/res/values/config.xml
+
 cd ../../../
 
 # Get and decrypt signing keys
@@ -189,7 +196,6 @@ source build/envsetup.sh          ; check_fail
 source build/envsetup.sh
 export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
-lunch lineage_chime-cp2a-user
 
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
@@ -205,8 +211,9 @@ fi
   fi
 ) &
 
+breakfast chime user
 mka installclean
-mka bacon -j$(nproc --all) ; check_fail
+brunch chime user -j$(nproc --all) ; check_fail
 
 set -v
 
