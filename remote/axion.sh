@@ -267,13 +267,13 @@ echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
 cd ../../../
 
-grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
-if [ $? -ne 0 ] ; then
-   cd frameworks/base/
-   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
-   patch -p 1 -f < 1.patch ; check_fail
-   cd ../../
-fi
+#grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
+#if [ $? -ne 0 ] ; then
+#   cd frameworks/base/
+#   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
+#   patch -p 1 -f < 1.patch ; check_fail
+#   cd ../../
+#fi
 
 grep -vE 'genfscon.*proc.*/sys/vm/dirty_writeback_centisecs.*u:object_r:proc_dirty:s0' device/xiaomi/chime/sepolicy/vendor/genfs_contexts > device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1
 mv device/xiaomi/chime/sepolicy/vendor/genfs_contexts.1 device/xiaomi/chime/sepolicy/vendor/genfs_contexts
