@@ -267,6 +267,7 @@ echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
 cd ../../../
 
+cd frameworks/base/ && git reset --hard ; cd /tmp/src/android/
 #grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 #if [ $? -ne 0 ] ; then
 #   cd frameworks/base/
