@@ -142,6 +142,9 @@ echo 'persist.sys.sf.disable_blurs=1' >> configs/props/system.prop
 echo 'ro.sf.blurs_are_expensive=1' >> configs/props/system.prop
 echo 'TARGET_ENABLE_BLUR := true' >> lineage_chime.mk
 
+echo 'ro.surface_flinger.blur_disabled_by_default=false' >> configs/props/system.prop
+echo 'TARGET_SUPPORTS_BLUR := false'>> lineage_chime.mk
+
 echo 'persist.sys.activity_anim_perf_override=true' >> configs/props/product.prop
 echo 'PERF_ANIM_OVERRIDE := true' >> device.mk
 
