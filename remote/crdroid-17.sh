@@ -174,9 +174,9 @@ echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
 echo 'CR_MAINTAINER := Joe7500' >> lineage_chime.mk
 
-sed -i 's#</resources>##g' overlays/Frameworks/res/values/config.xml
-echo '    <bool name="config_deviceSupportsHighPerfTransitions">false</bool>' >> overlays/Frameworks/res/values/config.xml
-echo '</resources>' >> overlays/Frameworks/res/values/config.xml
+#sed -i 's#</resources>##g' overlays/Frameworks/res/values/config.xml
+#echo '    <bool name="config_deviceSupportsHighPerfTransitions">false</bool>' >> overlays/Frameworks/res/values/config.xml
+#echo '</resources>' >> overlays/Frameworks/res/values/config.xml
 
 cd ../../../
 
