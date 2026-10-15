@@ -103,12 +103,8 @@ else
   cleanup_self
   $resync_script
   if [ $? -ne 0 ]; then
-    #Sorry :(
-    #First try to sync normally before error. crave /opt/crave/resync.sh does not resolve this problem:
-    #https://foss.crave.io/app/#/build/info/301924?team=14
-    #CalyxOS specific sync error. This always happens. Will not sync against lineage-23.2 without deletion: 
-    #  - Repo command failed due to the following `SyncError` errors:
     #  - error: prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9: Cannot remove project: uncommitted changes are present.
+    rm -rf external/chromium-webview
     rm -rf prebuilts/gcc/
     for i in $(find .repo/ | grep 'prebuilts/gcc/'); do
        rm -rf $i
@@ -184,12 +180,15 @@ if ! ls vendor/google/gearhead/proprietary/; then
   export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
   curl -o devon.zip -L "$DEVON_URL" ; check_fail
   sudo apt update
-  sudo apt -y install 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils
+  for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils ; do
+    apt -y install $i
+  done
   virtualenv dumpyara
   dumpyara/bin/pip install dumpyara
   dumpyara/bin/dumpyara devon.zip
   cd device/google/gearhead/
   ./extract-files.py /tmp/src/android/devon
+  check_fail
   cd ../../../
   rm -rf devon dumpyara devon.zip
 fi

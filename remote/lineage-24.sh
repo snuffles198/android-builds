@@ -124,6 +124,25 @@ if [ $? -ne 0 ] ; then
   cd ../../
 fi
 
+cd frameworks/base/
+echo 'diff --git a/services/core/java/com/android/server/pm/ComputerEngine.java b/services/core/java/com/android/server/pm/ComputerEngine.java
+index 3300f3481..5a41e5c6d 100644
+--- a/services/core/java/com/android/server/pm/ComputerEngine.java
++++ b/services/core/java/com/android/server/pm/ComputerEngine.java
+@@ -1486,9 +1486,6 @@ public class ComputerEngine implements Computer {
+     public static native boolean isDebuggable();
+
+     public static boolean isMicrogSigned(AndroidPackage p) {
+-        if (!isDebuggable()) {
+-            return false;
+-        }
+
+         // Allowlist the following apps:
+         // * com.android.vending - microG Companion
+' > 2.patch
+patch -p 1 -f < 2.patch
+cd -
+
 # Setup device tree
 cd device/xiaomi/chime
 
