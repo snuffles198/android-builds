@@ -122,6 +122,10 @@ cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$V
 mv strings.xml.1 strings.xml
 cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+cd vendor/infinity/overlay/updater/res/values
+cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
+mv strings.xml.1 strings.xml
+cd /tmp/src/android/
 check_fail
 
 for i in `grep -R '<string name="unofficial_build_suffix">' packages/apps/Settings/res | cut -d ':' -f 1` ; do
@@ -219,6 +223,7 @@ mv device/xiaomi/chime/infinity_chime.mk.1 device/xiaomi/chime/infinity_chime.mk
 if echo $@ | grep GAPPS ; then
    echo 'WITH_GAPPS := true' >> device/xiaomi/chime/infinity_chime.mk
    echo 'RESERVE_SPACE_FOR_GAPPS := false' >> device/xiaomi/chime/infinity_chime.mk
+   echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
    cd packages/apps/Updater/ && git reset --hard && cd ../../../
    cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
    cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
