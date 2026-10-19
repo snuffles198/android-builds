@@ -181,7 +181,7 @@ if ! ls vendor/google/gearhead/proprietary/; then
   curl -o devon.zip -L "$DEVON_URL" ; check_fail
   sudo apt update
   for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils ; do
-    apt -y install $i
+    sudo apt -y install $i
   done
   virtualenv dumpyara
   dumpyara/bin/pip install dumpyara
