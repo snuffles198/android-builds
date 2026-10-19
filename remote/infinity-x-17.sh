@@ -330,8 +330,9 @@ cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
-cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
+echo 'PRODUCT_PACKAGES += UpdaterGMSOverlay' >> device/xiaomi/chime/device.mk
 notify_send "Build $PACKAGE_NAME on crave.io OTA string: Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json"
 check_fail
 
