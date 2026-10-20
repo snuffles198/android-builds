@@ -127,6 +127,9 @@ if [ $? -ne 0 ] ; then
   cd ../../
 fi
 
+sed -i 's/ro.lineage.version/ro.rising.version/g' vendor/lineage/prebuilt/common/bin/backuptool.sh
+sed -i 's/export V=9.0/export V=9/g' vendor/lineage/prebuilt/common/bin/backuptool.sh
+
 rm -f hardware/xiaomi/megvii/Android.bp
 
 # Setup device tree
