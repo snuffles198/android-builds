@@ -24,19 +24,15 @@ set -v
 PACKAGE_NAME=calyx
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-23.2
-VENDOR_BRANCH=lineage-23.2
-XIAOMI_BRANCH=lineage-23.2
-REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android16-qpr2 --git-lfs --depth=1 --no-tags --no-clone-bundle "
+DEVICE_BRANCH=lineage-24.0-BETA
+VENDOR_BRANCH=lineage-24.0-BETA
+XIAOMI_BRANCH=lineage-24.0
+REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android17 --git-lfs --depth=1 --no-tags --no-clone-bundle "
 OTA_SED_STRING="https://release.calyxos.org/ota/"
 OTA_SED_REPLACE_STRING="https://joes-android-builds.sourceforge.io/ota/"
 alias curl='curl --retry 5 --retry-delay 30 --connect-timeout 30 -C -'
 
 # Random template helper stuff
-export BUILD_USERNAME=user
-export BUILD_HOSTNAME=localhost 
-export KBUILD_BUILD_USER=user
-export KBUILD_BUILD_HOST=localhost
 SECONDS=0
 if echo $@ | grep "JJ_SPEC:" ; then export JJ_SPEC=`echo $@ | cut -d ":" -f 2` ; fi
 TG_URL="https://api.telegram.org/bot$TG_TOKEN/sendMessage"
@@ -47,6 +43,7 @@ notify_send() {
    MSG="$@"
    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="$MSG `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1
    curl -s -d "$MSG `env LC_ALL="" TZ=Africa/Harare LC_TIME="C.UTF-8" date`. JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1
+
 }
 
 notify_send "Build $PACKAGE_NAME on crave.io started."
@@ -80,6 +77,7 @@ check_fail () {
           exit 1
        else
           notify_send "Build $PACKAGE_NAME on crave.io failed."
+          curl -L -F document=@"out/error.log" -F caption="error log" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 	  echo "oh no. script failed"
           cleanup_self
 	  echo fail > result.txt
@@ -164,7 +162,7 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
    cd frameworks/base/
-  curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A16-QPR2.java.patch
+  curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A17.java.patch
   patch -p 1 -f < 1.patch ; check_fail
   cd ../../
 fi
@@ -284,16 +282,28 @@ echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/confi
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/device.mk
 echo 'PERF_ANIM_OVERRIDE := true' >> device/xiaomi/chime/BoardConfig.mk
 
-# Kernel setup
-#cd kernel/xiaomi/chime/
-#bash do_ksun-susfs.sh ; check_fail
-#cd ../../../
-
 # Build it
 set +v
-
 source build/envsetup.sh          ; check_fail
 breakfast chime user              ; check_fail
+
+export BUILD_USERNAME=user
+export BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user
+export KBUILD_BUILD_HOST=localhost
+
+#oom soong
+if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
+  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
+fi
+#oom r8
+cd build/soong
+curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+patch -p 1 -f < 1.patch
+rm 1.patch
+cd /tmp/src/android
+
 m installclean
 m                         ; check_fail
 m target-files-package otatools-package otatools-keys-package

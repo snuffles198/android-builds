@@ -272,10 +272,17 @@ export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
 
+#oom soong
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
   sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
+#oom r8
+cd build/soong
+curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+patch -p 1 -f < 1.patch
+rm 1.patch
+cd /tmp/src/android
 
 ( sleep 3600;
   if pgrep soong_build; then
@@ -345,10 +352,17 @@ export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 lunch infinity_chime-user         ; check_fail
 mka installclean
 
+#oom soong
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
   sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
+#oom r8
+cd build/soong
+curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+patch -p 1 -f < 1.patch
+rm 1.patch
+cd /tmp/src/android
 
 ( sleep 3600;
   if pgrep soong_build; then
