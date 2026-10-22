@@ -99,6 +99,12 @@ if echo "$@" | grep resume; then
 else
   repo init $REPO_URL  ; check_fail
   cleanup_self
+  repo sync --force-sync --no-clone-bundle --optimized-fetch --no-tags --prune external/chromium-webview
+  if [ $? -ne 0 ]; then
+    rm -rf .repo/projects/external/chromium-webview.git
+    rm -rf .repo/project-objects/platform/external/chromium-webview.git
+    rm -rf external/chromium-webview
+  fi
   $resync_script
   if [ $? -ne 0 ]; then
     #  - error: prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9: Cannot remove project: uncommitted changes are present.
@@ -107,7 +113,6 @@ else
     for i in $(find .repo/ | grep 'prebuilts/gcc/'); do
        rm -rf $i
     done
-
     repo forall -c "git clean -fdx ; git reset --hard HEAD"
     $resync_script ; check_fail
   fi
