@@ -262,3 +262,4 @@ notify_send "completed."
 
 cleanup_self
 exit 0
+
