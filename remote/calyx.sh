@@ -133,8 +133,8 @@ rm -f lineage-22.1.tar.xz
 curl -C - -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
 tar xf toolchain.tar.xz ; check_fail
 rm -f toolchain.tar.xz
-git clone https://github.com/Joe7500/device_xiaomi_chime.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
-git clone https://github.com/Joe7500/vendor_xiaomi_chime.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
+git clone https://github.com/snuffles198/device_tree.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
+git clone https://github.com//snuffles198/vendor_tree.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
 
 # Setup AOSP source 
@@ -167,7 +167,7 @@ sed -i -e 's#GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KER
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
    cd frameworks/base/
-  curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A17.java.patch
+  curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A17.patch
   patch -p 1 -f < 1.patch ; check_fail
   cd ../../
 fi
