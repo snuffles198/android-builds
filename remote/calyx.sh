@@ -124,7 +124,7 @@ notify_send "Build $PACKAGE_NAME on crave.io repo sync done. $TIME_TAKEN."
 # Download trees
 rm -rf kernel/xiaomi/chime/ vendor/xiaomi/chime/ device/xiaomi/chime/ hardware/xiaomi/
 rm -rf prebuilts/clang/host/linux-x86/clang-stablekern/
-curl -C - -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A16.tar.xz" ; check_fail
+curl -C - -o kernel.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/kernel-prebuilt-perf-valeryn-A17.tar.xz" ; check_fail
 tar xf kernel.tar.xz ; check_fail
 rm -f kernel.tar.xz
 curl -C - -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
@@ -181,7 +181,7 @@ rm -rf sign/
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
   export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-  curl -o devon.zip -L "$DEVON_URL" ; check_fail
+  curl -o devon.zip  -L "$DEVON_URL" ; check_fail
   sudo apt update
   for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils ; do
     sudo apt -y install $i
@@ -230,6 +230,7 @@ cat device.mk | grep -v 'libtinyxml ' > device.mk.1
 mv device.mk.1 device.mk
 cat device.mk | sed -e 's#hardware/lineage/interfaces/power-libperfmgr#hardware/calyx/interfaces/power-libperfmgr#g' > device.mk.1
 mv device.mk.1 device.mk
+sed -i s#device/lineage/sepolicy/libion/sepolicy.mk#device/calyx/sepolicy/libion/sepolicy.mk#g BoardConfig.mk
 
 grep -v lirc_device sepolicy/vendor/device.te > sepolicy/vendor/device.te.1
 mv sepolicy/vendor/device.te.1 sepolicy/vendor/device.te
