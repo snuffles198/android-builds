@@ -206,11 +206,13 @@ if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
 #oom r8
-cd build/soong
-curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
-patch -p 1 -f < 1.patch
-rm 1.patch
-cd /tmp/src/android
+if ! grep HighmemPool build/soong/android/defs.go ; then
+  cd build/soong
+  curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+  patch -p 1 -f < 1.patch
+  rm 1.patch
+  cd /tmp/src/android
+fi
 
 ( sleep 3600;
   if pgrep soong_build; then
