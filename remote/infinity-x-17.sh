@@ -231,6 +231,7 @@ if echo $@ | grep GAPPS ; then
    cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
    cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
    cd vendor/infinity/overlay/updater/res/values
+   git restore strings.xml
    cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
    mv strings.xml.1 strings.xml
    cd /tmp/src/android/
@@ -346,6 +347,7 @@ mv strings.xml.1 strings.xml
 cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 cd vendor/infinity/overlay/updater/res/values
+git restore strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
 cd /tmp/src/android/
