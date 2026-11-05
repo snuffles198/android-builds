@@ -181,7 +181,10 @@ rm -rf sign/
 # Android auto prebuilts not included. Extract from official ota package.
 if ! ls vendor/google/gearhead/proprietary/; then
   export   DEVON_URL=`curl -s https://calyxos.org/get/ota/ | grep devon-ota_update | cut -d '"' -f 2 | head -1`
-  curl -o devon.zip  -L "$DEVON_URL" ; check_fail
+  while true; do
+    curl --retry 5 --retry-delay 30 --connect-timeout 30 -C - -o devon.zip -L "$DEVON_URL"
+    if [ $? -eq 0 ]; then break ; fi
+  done 
   sudo apt update
   for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils ; do
     sudo apt -y install $i
@@ -282,6 +285,9 @@ echo 'on property:sys.boot_completed=1
     write /proc/sys/vm/swappiness 100' > rootdir/etc/init.custom.rc
 echo 'PRODUCT_PACKAGES += init.custom.rc' >> device.mk
 
+sed -i 's/android.hardware.audio.sounddose-vendor-impl/libvulkan/g' device.mk
+sed -i 's/disable_configstore/libvulkan/g' device.mk
+
 cd ../../../
 
 echo 'persist.sys.activity_anim_perf_override=true' >> device/xiaomi/chime/configs/props/product.prop
@@ -304,11 +310,13 @@ if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
 fi
 #oom r8
-cd build/soong
-curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
-patch -p 1 -f < 1.patch
-rm 1.patch
-cd /tmp/src/android
+if ! grep HighmemPool build/soong/android/defs.go ; then
+  cd build/soong
+  curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+  patch -p 1 -f < 1.patch
+  rm 1.patch
+  cd /tmp/src/android
+fi
 
 m installclean
 m                         ; check_fail
