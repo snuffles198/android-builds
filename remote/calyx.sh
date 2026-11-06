@@ -130,9 +130,9 @@ rm -f kernel.tar.xz
 curl -C - -o lineage-22.1.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/lineage-22.1.tar.xz" ; check_fail
 tar xf lineage-22.1.tar.xz ; check_fail
 rm -f lineage-22.1.tar.xz
-curl -C - -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
-tar xf toolchain.tar.xz ; check_fail
-rm -f toolchain.tar.xz
+#curl -C - -o toolchain.tar.xz -L "https://github.com/Joe7500/Builds/releases/download/Stuff/toolchain.tar.xz" ; check_fail
+#tar xf toolchain.tar.xz ; check_fail
+#rm -f toolchain.tar.xz
 git clone https://github.com/snuffles198/device_tree.git -b $DEVICE_BRANCH device/xiaomi/chime ; check_fail
 git clone https://github.com//snuffles198/vendor_tree.git -b $VENDOR_BRANCH vendor/xiaomi/chime ; check_fail
 git clone https://github.com/LineageOS/android_hardware_xiaomi -b $XIAOMI_BRANCH hardware/xiaomi ; check_fail
