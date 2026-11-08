@@ -291,15 +291,6 @@ if ! grep HighmemPool build/soong/android/defs.go ; then
   cd /tmp/src/android
 fi
 
-( sleep 3600;
-  if pgrep soong_build; then
-    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
-    curl -s -d "build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
-    rm -rf /tmp/src/android/vendor/lineage-priv ;
-    kill -9 $$ ;
-  fi
-) &
-
 breakfast chime user
 mka installclean
 brunch chime user -j$(nproc --all) ; check_fail
