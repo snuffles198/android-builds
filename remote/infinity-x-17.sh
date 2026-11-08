@@ -327,8 +327,6 @@ bash genota.sh $GENOTA_ARGS "$OUT_FILE"
 curl -L -F document=@"$OUT_FILE.json.txt" -F caption="OTA $OUT_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 rm -f genota.sh
 
-notify_send "completed."
-
 CONTINUE=0
 if echo $@ | grep CONTINUE ; then
    CONTINUE=1

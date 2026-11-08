@@ -244,14 +244,78 @@ if ! grep HighmemPool build/soong/android/defs.go ; then
   cd /tmp/src/android
 fi
 
-( sleep 3600;
-  if pgrep soong_build; then
-    curl -s -X POST $TG_URL -d chat_id=$TG_CID -d text="build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" > /dev/null 2>&1 ;
-    curl -s -d "build failed. soong timed out after limit. $(date). JJ_SPEC:$JJ_SPEC" "ntfy.sh/$NTFYSUB" > /dev/null 2>&1 ;
-    rm -rf /tmp/src/android/vendor/lineage-priv ;
-    kill -9 $$ ;
-  fi
-) &
+mka installclean
+rise b -j$(nproc --all) ; check_fail
+
+set -v
+
+echo success > result.txt
+notify_send "succeeded."
+
+# Upload output to pixeldrain
+cp out/target/product/chime/$PACKAGE_NAME*ota*.zip .
+OUT_FILE=$(ls --color=never -1tr $PACKAGE_NAME*ota*.zip | tail -1)
+OUT_FILE_MD5=$(md5sum "$OUT_FILE")
+OUT_FILE=$(pwd)/$OUT_FILE
+if [[ ! -f $OUT_FILE ]]; then
+   OUT_FILE=builder.sh
+fi
+curl -T "$OUT_FILE" -u :$PDAPIKEY https://pixeldrain.com/api/file/ > out.json
+PD_ID=$(cat out.json | cut -d '"' -f 4)
+notify_send "MD5:$OUT_FILE_MD5 https://pixeldrain.com/u/$PD_ID"
+rm -f out.json
+
+# Generate and send OTA json file
+curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads/main/genota.sh
+bash genota.sh $GENOTA_ARGS "$OUT_FILE"
+curl -L -F document=@"$OUT_FILE.json.txt" -F caption="OTA $OUT_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
+rm -f genota.sh
+
+
+
+CONTINUE=0
+if echo $@ | grep CONTINUE ; then
+   CONTINUE=1
+fi
+if [ $CONTINUE == 1 ] ; then
+   echo CONTINUE
+
+cd device/xiaomi/chime
+
+sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
+sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
+sed -i s/^.*WITH_GMS.*$//g lineage_chime.mk
+sed -i s/^.*PRODUCT_PACKAGES += Gallery2.*$//g device.mk
+
+echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
+echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
+echo 'WITH_GMS := true' >> lineage_chime.mk
+
+cd ../../../
+
+set +v
+
+source build/envsetup.sh          ; check_fail
+source build/envsetup.sh
+source build/envsetup.sh
+
+export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
+export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
+riseup chime user
+
+#oom soong
+if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
+  sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
+  sed -i $'/^func main() {/a\\\tdebug.SetMemoryLimit(40 * 1024 * 1024 * 1024)\\n\\tdebug.SetGCPercent(25)\\n' build/soong/cmd/soong_build/main.go
+fi
+#oom r8
+if ! grep HighmemPool build/soong/android/defs.go ; then
+  cd build/soong
+  curl -o 1.patch -L https://github.com/PixelOS-AOSP/android_build_soong/commit/173bd39389e5d1d91b27db80000f3479dbaf7add.patch
+  patch -p 1 -f < 1.patch
+  rm 1.patch
+  cd /tmp/src/android
+fi
 
 mka installclean
 rise b -j$(nproc --all) ; check_fail
@@ -279,6 +343,8 @@ curl -o genota.sh -L https://raw.githubusercontent.com/Joe7500/Builds/refs/heads
 bash genota.sh $GENOTA_ARGS "$OUT_FILE"
 curl -L -F document=@"$OUT_FILE.json.txt" -F caption="OTA $OUT_FILE.json.txt" -F chat_id="$TG_CID" -X POST https://api.telegram.org/bot$TG_TOKEN/sendDocument > /dev/null 2>&1
 rm -f genota.sh
+
+fi # CONTINUE
 
 notify_send "completed."
 
