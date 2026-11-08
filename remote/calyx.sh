@@ -184,9 +184,10 @@ if ! ls vendor/google/gearhead/proprietary/; then
   while true; do
     curl --retry 5 --retry-delay 30 --connect-timeout 30 -C - -o devon.zip -L "$DEVON_URL"
     if [ $? -eq 0 ]; then break ; fi
-  done 
+  done
+  unzip -t devon.zip; check_fail
   sudo apt update
-  for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils ; do
+  for i in 7zip erofs-utils virtualenv android-sdk-libsparse-utils platform-utils android-tools-adb android-tools-fastboot; do
     sudo apt -y install $i
   done
   virtualenv dumpyara
@@ -319,8 +320,7 @@ if ! grep HighmemPool build/soong/android/defs.go ; then
 fi
 
 m installclean
-m                         ; check_fail
-m target-files-package otatools-package otatools-keys-package
+m target-files-package otatools-package otatools-keys-package  -j$(nproc --all) ; check_fail
 
 set -v
 
