@@ -24,8 +24,8 @@ set -v
 PACKAGE_NAME=calyx
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-24.0-BETA
-VENDOR_BRANCH=lineage-24.0-BETA
+DEVICE_BRANCH=lineage-24.0
+VENDOR_BRANCH=lineage-24.0
 XIAOMI_BRANCH=lineage-24.0
 REPO_URL="-u https://gitlab.com/CalyxOS/platform_manifest -b android17 --git-lfs --depth=1 --no-tags --no-clone-bundle "
 OTA_SED_STRING="https://release.calyxos.org/ota/"

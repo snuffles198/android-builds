@@ -24,8 +24,8 @@ set -v
 PACKAGE_NAME=Project_Infinity-X-4
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-24.0-BETA
-VENDOR_BRANCH=lineage-24.0-BETA
+DEVICE_BRANCH=lineage-24.0
+VENDOR_BRANCH=lineage-24.0
 XIAOMI_BRANCH=lineage-24.0
 GENOTA_ARGS="infinity 4"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle --no-repo-verify -g default,-mips,-darwin,-notdefault"

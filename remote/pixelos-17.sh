@@ -24,8 +24,8 @@ set -v
 PACKAGE_NAME=PixelOS
 VARIANT_NAME=user
 BUILD_TYPE=vanilla
-DEVICE_BRANCH=lineage-24.0-BETA
-VENDOR_BRANCH=lineage-24.0-BETA
+DEVICE_BRANCH=lineage-24.0
+VENDOR_BRANCH=lineage-24.0
 XIAOMI_BRANCH=lineage-24.0
 GENOTA_ARGS="pixelos 17"
 REPO_PARAMS=" --git-lfs --depth=1 --no-tags --no-clone-bundle"
