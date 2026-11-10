@@ -120,7 +120,7 @@ cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.chime.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
-cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#and-dump/cl/main/cl.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 cd vendor/infinity/overlay/updater/res/values
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
@@ -228,7 +228,7 @@ if echo $@ | grep GAPPS ; then
    cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
    cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
    mv strings.xml.1 strings.xml
-   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+   cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#and-dump/cl/main/cl.txt#g" > strings.xml.1
    cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
    cd vendor/infinity/overlay/updater/res/values
    git restore strings.xml
@@ -333,7 +333,7 @@ cd packages/apps/Updater/ && git reset --hard && cd ../../../
 cp packages/apps/Updater/app/src/main/res/values/strings.xml strings.xml
 cat strings.xml | sed -e "s#$OTA_SED_STRING#Joe7500/Builds/main/$PACKAGE_NAME.$VARIANT_NAME.gapps.json#g" > strings.xml.1
 mv strings.xml.1 strings.xml
-cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#Joe7500/Builds/main/infx-16.txt#g" > strings.xml.1
+cat strings.xml | sed -e "s#ProjectInfinity-X/official_devices/.*\.txt#and-dump/cl/main/cl.txt#g" > strings.xml.1
 cp strings.xml.1 packages/apps/Updater/app/src/main/res/values/strings.xml
 cd vendor/infinity/overlay/updater/res/values
 git restore strings.xml
