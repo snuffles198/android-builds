@@ -172,6 +172,8 @@ touch dummy
 echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/addon.d/.placeholder' >> device.mk
 echo 'PRODUCT_COPY_FILES += $(LOCAL_PATH)/dummy:$(TARGET_COPY_OUT_SYSTEM)/system/addon.d/.placeholder' >> device.mk
 
+sed -i s/^.*BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE.*$//g BoardConfig.mk 
+
 cd ../../../
 
 cat device/xiaomi/chime/lineage_chime.mk | grep -v RESERVE_SPACE_FOR_GAPPS > device/xiaomi/chime/lineage_chime.mk.1
