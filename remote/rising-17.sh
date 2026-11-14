@@ -201,6 +201,7 @@ if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
    echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
    echo 'WITH_GMS := true' >> lineage_chime.mk
+   sed -i s/^.*BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE.*$//g BoardConfig.mk
 else
    echo "RESERVE_SPACE_FOR_GAPPS := true" >> lineage_chime.mk
    echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
@@ -290,6 +291,7 @@ sed -i s/^.*PRODUCT_PACKAGES += Gallery2.*$//g device.mk
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
 echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
 echo 'WITH_GMS := true' >> lineage_chime.mk
+sed -i s/^.*BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE.*$//g BoardConfig.mk
 
 cd ../../../
 
