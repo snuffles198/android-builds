@@ -119,7 +119,7 @@ mv strings.xml.new.txt strings.xml.backup.orig.txt
 cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 
-if date | grep -i 'Sun Nov 15.*2026'; then
+if date | grep -i '.*Sun Nov 15.*2026.*'; then
 cd frameworks/base/ 
 git fetch
 git pull --unshallow
