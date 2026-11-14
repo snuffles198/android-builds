@@ -125,7 +125,7 @@ cd frameworks/base/
 git fetch
 git pull --unshallow
 git revert --no-edit 6772376fba33d92f064c8945114a19b5009cdd32
-cd /
+cd /tmp/src/android
 fi
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
