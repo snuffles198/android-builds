@@ -119,6 +119,12 @@ mv strings.xml.new.txt strings.xml.backup.orig.txt
 cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 
+if date | grep -i 'Sun Nov 15.*2026'; then
+git fetch
+git pull --unshallow
+git revert --no-edit 6772376fba33d92f064c8945114a19b5009cdd32
+fi
+
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
 if [ $? -ne 0 ] ; then
   cd frameworks/base/
