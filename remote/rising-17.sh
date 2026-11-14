@@ -120,9 +120,11 @@ cp strings.xml.backup.orig.txt strings.xml
 cp -f strings.xml packages/apps/Updater/app/src/main/res/values/strings.xml
 
 if date | grep -i 'Sun Nov 15.*2026'; then
+cd frameworks/base/ 
 git fetch
 git pull --unshallow
 git revert --no-edit 6772376fba33d92f064c8945114a19b5009cdd32
+cd /
 fi
 
 grep activity_anim_perf_override frameworks/base/core/java/android/view/animation/AnimationUtils.java
@@ -130,7 +132,7 @@ if [ $? -ne 0 ] ; then
   cd frameworks/base/
   curl -o 1.patch -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/src/AnimUtils-A17.patch
   patch -p 1 -f < 1.patch ; check_fail
-  cd ../../
+  cd /tmp/src/android
 fi
 
 sed -i 's/ro.lineage.version/ro.rising.version/g' vendor/lineage/prebuilt/common/bin/backuptool.sh
