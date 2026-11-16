@@ -23,7 +23,7 @@ axion)
 	REMOTE=/home/frs/project/joes-android-builds/axion/
 	;;
 calyx)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/calyx-17/.repo . || exit 1
@@ -34,7 +34,7 @@ calyx)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 pixelos)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/pixelos-17/.repo . || exit 1
@@ -45,7 +45,7 @@ pixelos)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 voltage)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/voltage-17/.repo . || exit 1
@@ -59,7 +59,7 @@ crdroid-10)
 	REMOTE=/home/frs/project/joes-android-builds/crDroid/10/
 	;;
 crDroidAndroid-15)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/crDroid-11/.repo . || exit 1
@@ -70,7 +70,7 @@ crDroidAndroid-15)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 crDroidAndroid-16)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/crDroid-12/.repo . || exit 1
@@ -81,7 +81,7 @@ crDroidAndroid-16)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 crDroidAndroid-17)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/crDroid-13/.repo . || exit 1
@@ -98,7 +98,7 @@ lineage-21)
 	REMOTE=/home/frs/project/joes-android-builds/LineageOS/21/
 	;;
 lineage-22)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s  ~/hdd1/repo.git/lineage-22.2/.repo . || exit 1
@@ -109,7 +109,7 @@ lineage-22)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 lineage-23)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s  ~/hdd1/repo.git/lineage-23.2/.repo . || exit 1
@@ -120,7 +120,7 @@ lineage-23)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 lineage-24)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s  ~/hdd1/repo.git/lineage-24.0/.repo . || exit 1
@@ -131,7 +131,7 @@ lineage-24)
         cp *.zip /home/user/hdd1/ROMS/
         ;;
 Project_Infinity-X)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s  ~/hdd1/repo.git/inf-x17/.repo . || exit 1
@@ -142,7 +142,7 @@ Project_Infinity-X)
         cp *.zip /home/user/hdd1/ROMS/
 	;;
 RisingOS_Revived)
-        rm -rf $BUILD_DIR/
+        if ! echo $@ | grep skip-clean ; then rm -rf $BUILD_DIR/ ; fi
         mkdir $BUILD_DIR
         cd $BUILD_DIR/ || exit 1
         ln -s /home/user/hdd1/repo.git/rising-17/.repo . || exit 1

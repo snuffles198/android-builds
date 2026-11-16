@@ -194,8 +194,8 @@ echo 'PRODUCT_BUILD_PROP_OVERRIDES += \
     RisingMaintainer="Joe"' >> lineage_chime.mk
 echo 'ro.build.product=chime' >> configs/props/system.prop
 
-sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
-sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
+sed -i 's/^.*RESERVE_SPACE_FOR_GAPPS.*$//g' lineage_chime.mk
+sed -i 's/^.*WITH_GAPPS.*$//g' lineage_chime.mk
 
 if echo $@ | grep GAPPS ; then
    echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
@@ -283,10 +283,10 @@ if [ $CONTINUE == 1 ] ; then
 
 cd device/xiaomi/chime
 
-sed -i s/^.*RESERVE_SPACE_FOR_GAPPS.*$//g lineage_chime.mk
-sed -i s/^.*WITH_GAPPS.*$//g lineage_chime.mk
-sed -i s/^.*WITH_GMS.*$//g lineage_chime.mk
-sed -i s/^.*PRODUCT_PACKAGES += Gallery2.*$//g device.mk
+sed -i 's/^.*RESERVE_SPACE_FOR_GAPPS.*$//g' lineage_chime.mk
+sed -i 's/^.*WITH_GAPPS.*$//g' lineage_chime.mk
+sed -i 's/^.*WITH_GMS.*$//g' lineage_chime.mk
+sed -i 's/^.*PRODUCT_PACKAGES += Gallery2.*$//g' device.mk
 
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
 echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
