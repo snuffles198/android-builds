@@ -287,11 +287,11 @@ sed -i 's/^.*RESERVE_SPACE_FOR_GAPPS.*$//g' lineage_chime.mk
 sed -i 's/^.*WITH_GAPPS.*$//g' lineage_chime.mk
 sed -i 's/^.*WITH_GMS.*$//g' lineage_chime.mk
 sed -i 's/^.*PRODUCT_PACKAGES += Gallery2.*$//g' device.mk
+sed -i 's/^.*BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE.*$//g' BoardConfig.mk
 
 echo "RESERVE_SPACE_FOR_GAPPS := false" >> lineage_chime.mk
 echo "TARGET_PREBUILT_LAWNCHAIR_LAUNCHER := false"
 echo 'WITH_GMS := true' >> lineage_chime.mk
-sed -i s/^.*BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE.*$//g BoardConfig.mk
 
 cd ../../../
 
