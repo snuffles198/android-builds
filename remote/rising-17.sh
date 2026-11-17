@@ -132,10 +132,10 @@ sed -i 's/export V=9.0/export V=9/g' vendor/lineage/prebuilt/common/bin/backupto
 
 rm -f hardware/xiaomi/megvii/Android.bp
 
-curl -o default_wallpaper.webp -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/default_wallpaper.webp
-cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-nodpi
-cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
-cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw600dp-nodpi
+#curl -o default_wallpaper.webp -L https://raw.githubusercontent.com/snuffles198/android-builds/refs/heads/main/remote/utils/default_wallpaper.webp
+#cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-nodpi
+#cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw720dp-nodpi
+#cp -f default_wallpaper.webp vendor/rising/overlays/AndroidOverlay/res/drawable-sw600dp-nodpi
 
 # Setup device tree
 cd device/xiaomi/chime
@@ -231,6 +231,9 @@ export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 riseup chime user
 
+rm -fv out/*log*
+rm -fv out/*trace*
+
 #oom soong
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
   sed -i $'/"runtime"/a\\\t"runtime/debug"' build/soong/cmd/soong_build/main.go
@@ -304,6 +307,9 @@ source build/envsetup.sh
 export BUILD_USERNAME=user BUILD_HOSTNAME=localhost
 export KBUILD_BUILD_USER=user KBUILD_BUILD_HOST=localhost
 riseup chime user
+
+rm -fv out/*log*
+rm -fv out/*trace*
 
 #oom soong
 if ! grep SetMemoryLimit build/soong/cmd/soong_build/main.go; then
